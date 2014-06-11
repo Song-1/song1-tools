@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="resources"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_05"/>
+	<classpathentry kind="lib" path="lib/aliyun-openservices-1.0.12.jar"/>
+	<classpathentry kind="lib" path="lib/htmlparser.jar"/>
+	<classpathentry kind="lib" path="lib/httpclient-4.1.3.jar"/>
+	<classpathentry kind="lib" path="lib/httpcore-4.1.4.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-codec-1.7.jar"/>
+	<classpathentry kind="lib" path="lib/jdom-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/jid3lib-0.5.4.jar" sourcepath="D:/java/jars/jid3lib-0.5.4.src.zip"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
