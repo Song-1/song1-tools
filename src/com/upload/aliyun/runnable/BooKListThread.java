@@ -32,7 +32,7 @@ public class BooKListThread implements Runnable {
 		if(bookName != null){
 			int index = bookName.lastIndexOf(File.separator) + 1;
 			this.bookName = new String(bookName.substring(index));
-			this.bookType = new String(bookName.substring(0,index-1));
+			this.bookType = new String(bookName.substring(0,index-1)).replace(File.separator, "/");
 		}
 		this.bookFiles = bookFiles;
 		count = 0;
