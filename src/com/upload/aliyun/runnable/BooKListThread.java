@@ -12,6 +12,7 @@ import com.upload.aliyun.MusicConstants;
 import com.upload.aliyun.util.JavascriptUtil;
 import com.upload.aliyun.util.NetWorkUtil;
 import com.upload.aliyun.util.OSSUploadUtil;
+import com.upload.aliyun.util.POIUtil;
 import com.upload.aliyun.util.StringUtil;
 
 /**
@@ -79,17 +80,10 @@ public class BooKListThread implements Runnable {
 		boolean flag = OSSUploadUtil.isObjectExist(MusicConstants.BUKET_NAME, key);
 		String url = MusicConstants.getUrl(key);
 		System.out.println(url);
-		url = StringUtil.encodeURL(url);
+		//url = StringUtil.encodeURL(url);
 		if (!flag) {
 			System.out.println(threadName+"\t" + file.getName() + "此文件不存在");
-//			try {
-//				OSSUploadUtil.uploadBigFile(MusicConstants.BUKET_NAME, key, file);
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//				count++;
-//				System.out.println(threadName + " ::: 上传文件发生异常,再次上传............." + count);
-//				saveData(name,key,sort,file);
-//			}
+			return;
 		}
 		if(key.endsWith(".jpg")){
 			imgUrl = url;
@@ -114,10 +108,14 @@ public class BooKListThread implements Runnable {
 	
 	private boolean saveTheBook(){
 		Map<String, String> m = new HashMap<String, String>();
+		BookDataInfo book = POIUtil.getObjFormList(bookName);
 		m.put("name",bookName);
 		m.put("sort", bookType);
 		m.put("_add_", _add_);
 		m.put("img", imgUrl);
+		m.put("desc", book.getDesc());
+		m.put("author", book.getAuthor());
+		m.put("player", book.getPlayer());
 		String res = NetWorkUtil.doPost(MusicConstants.URL_SAVE_DATA_BOOK_LIST, m, NetWorkUtil.ENCODE);
 		String bookId = JavascriptUtil.getSaveBookResponse(res);
 		if("success".equalsIgnoreCase(bookId)){

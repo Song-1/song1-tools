@@ -63,9 +63,12 @@ public class NetWorkUtil {
 		try {
 			StringBuffer params = new StringBuffer();
 			for (Map.Entry<String, String> element : parameters.entrySet()) {
-				params.append(element.getKey().toString());
+				params.append(element.getKey());
 				params.append("=");
-				params.append(URLEncoder.encode(element.getValue().toString(), recvEncoding));
+				String value = element.getValue();
+				if(value != null){
+					params.append(URLEncoder.encode(element.getValue(), recvEncoding));
+				}
 				params.append("&");
 			}
 

@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import com.upload.aliyun.runnable.BooKListThread;
 import com.upload.aliyun.util.JavascriptUtil;
 import com.upload.aliyun.util.OSSUploadUtil;
+import com.upload.aliyun.util.POIUtil;
 
 /**
  * @author Administrator
@@ -57,15 +58,20 @@ public class StartMain {
 					}
 				}
 			} else if (file.isFile()) {
-				String filePath = file.getParent();
-				filePath = filePath.replace(MusicConstants.BASE_FILE_PATH + File.separator, "");
-				if (fileMaps.get(filePath) == null) {
-					List<File> fileList = new ArrayList<File>();
-					fileList.add(file);
-					fileMaps.put(filePath, fileList);
-				} else {
-					List<File> fileList = fileMaps.get(filePath);
-					fileList.add(file);
+				String name = file.getName();
+				if(name.endsWith(".xls") ||name.endsWith(".xlsx")){
+					POIUtil.doExcel(file);
+				}else{
+					String filePath = file.getParent();
+					filePath = filePath.replace(MusicConstants.BASE_FILE_PATH + File.separator, "");
+					if (fileMaps.get(filePath) == null) {
+						List<File> fileList = new ArrayList<File>();
+						fileList.add(file);
+						fileMaps.put(filePath, fileList);
+					} else {
+						List<File> fileList = fileMaps.get(filePath);
+						fileList.add(file);
+					}
 				}
 			}
 		}
