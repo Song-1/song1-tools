@@ -1,4 +1,3 @@
-
 /**
  * 将Json字符串格式化成Json对象
  * @param data
@@ -24,7 +23,7 @@ function getDoSaveResponseId(data){
 	}
 	return null;
 }
-
+// test
 function doTheJsonGetCount(data){
 	var result_str = "";
 	if(data != null && data != ""){
