@@ -23,7 +23,7 @@ function getDoSaveResponseId(data){
 	}
 	return null;
 }
-// test
+// test rebase
 function doTheJsonGetCount(data){
 	var result_str = "";
 	if(data != null && data != ""){
