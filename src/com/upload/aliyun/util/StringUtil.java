@@ -5,6 +5,8 @@ package com.upload.aliyun.util;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,6 +44,21 @@ public class StringUtil {
 		}
 		str = str.replace("%2F", "/");
 		str = str.replace("%3A", ":");
+		return str;
+	}
+	public static String getFormateDate(String parrten){
+		if(parrten == null){
+			return getFormateDate();
+		}
+		Date date = new Date();
+		SimpleDateFormat formate = new SimpleDateFormat(parrten);
+		String str = formate.format(date);
+		return str;
+	}
+	public static String getFormateDate(){
+		Date date = new Date();
+		SimpleDateFormat formate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss:SSS");
+		String str = formate.format(date);
 		return str;
 	}
 	

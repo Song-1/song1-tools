@@ -12,7 +12,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import com.upload.aliyun.runnable.BooKListThread;
+import com.upload.aliyun.runnable.book.BooKListThread;
+import com.upload.aliyun.runnable.music.GetMusicTypeFromExcel;
 import com.upload.aliyun.util.JavascriptUtil;
 import com.upload.aliyun.util.OSSUploadUtil;
 import com.upload.aliyun.util.POIUtil;
@@ -32,6 +33,16 @@ public class StartMain {
 			OSSUploadUtil.init();
 			JavascriptUtil.init();
 			//
+			if("music".equals(MusicConstants.DO_TYPE)){
+				File file = new File(MusicConstants.MUSIC_TIME_TYPE_MAPPING_FILE_PATH);
+				if(file.exists()){
+					String name = file.getName();
+					if(name.endsWith(".xls") ||name.endsWith(".xlsx")){
+						new GetMusicTypeFromExcel().doExcel(file);
+					}
+				}
+			}
+			///
 			eachFiles();
 			doFile();
 
@@ -60,7 +71,10 @@ public class StartMain {
 			} else if (file.isFile()) {
 				String name = file.getName();
 				if(name.endsWith(".xls") ||name.endsWith(".xlsx")){
-					POIUtil.doExcel(file);
+					POIUtil poiutil = DoExcelFactory.getBean();
+					if(poiutil != null){
+						poiutil.doExcel(file);
+					}
 				}else{
 					String filePath = file.getParent();
 					filePath = filePath.replace(MusicConstants.BASE_FILE_PATH + File.separator, "");
@@ -88,7 +102,10 @@ public class StartMain {
 			}
 			System.out.println(fileListName);
 			long start = System.currentTimeMillis();
-			new BooKListThread(fileListName, fileList).run();
+			Runnable runnable = DoSaveFactory.getBean(fileListName, fileList);
+			if(runnable != null){
+				runnable.run();
+			}
 			long end = System.currentTimeMillis();
 			long times = (end - start) /1000;
 			System.out.println(fileListName + " \t cost:::" + times);

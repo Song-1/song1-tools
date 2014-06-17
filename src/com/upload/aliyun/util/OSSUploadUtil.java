@@ -16,6 +16,7 @@ import com.aliyun.openservices.ClientException;
 import com.aliyun.openservices.oss.OSSClient;
 import com.aliyun.openservices.oss.OSSException;
 import com.aliyun.openservices.oss.model.CompleteMultipartUploadRequest;
+import com.aliyun.openservices.oss.model.CopyObjectResult;
 import com.aliyun.openservices.oss.model.InitiateMultipartUploadRequest;
 import com.aliyun.openservices.oss.model.InitiateMultipartUploadResult;
 import com.aliyun.openservices.oss.model.ListMultipartUploadsRequest;
@@ -50,6 +51,7 @@ public class OSSUploadUtil {
 
 	/**
 	 * 单个小文件上传
+	 * 
 	 * @param client
 	 * @param bucket
 	 * @param key
@@ -57,7 +59,7 @@ public class OSSUploadUtil {
 	 * @return
 	 * @throws FileNotFoundException
 	 */
-	public static String uploadObject( String bucket, String key, File uploadFile) throws FileNotFoundException {
+	public static String uploadObject(String bucket, String key, File uploadFile) throws FileNotFoundException {
 		String suffix = key.substring(key.lastIndexOf(".") + 1);
 		FileInputStream fin = new FileInputStream(uploadFile);
 		// 创建上传Object的Metadata
@@ -274,7 +276,7 @@ public class OSSUploadUtil {
 	 * @param name
 	 * @return
 	 */
-	public static boolean isObjectExist( String bucket, String filePath, String name) {
+	public static boolean isObjectExist(String bucket, String filePath, String name) {
 		ListObjectsRequest listObjectsRequest = new ListObjectsRequest(bucket);
 		// 设置参数
 		listObjectsRequest.setDelimiter("/");
@@ -312,6 +314,20 @@ public class OSSUploadUtil {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * 阿里云服务器资源复制
+	 * @param sourceBucketName
+	 * @param sourceKey
+	 * @param destinationBucketName
+	 * @param destinationKey
+	 */
+	public static void copyObject(String sourceBucketName, String sourceKey, String destinationBucketName, String destinationKey) {
+		if(client != null){
+			 CopyObjectResult result  = client.copyObject(sourceBucketName, sourceKey, destinationBucketName, destinationKey);
+			 System.out.println("[File Copy]Etag:::" + result.getETag());
+		}
 	}
 
 }

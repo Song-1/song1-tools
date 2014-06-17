@@ -35,8 +35,14 @@ public class MusicConstants {
 	public static final String PATH_CONFIG_UPLOAD_PROPERTIES = "config/upload.properties";
 	public static final String PATH_CONFIG_DOJSON_JS = "config/doJson.js";
 	
+	public static String DO_TYPE = "";
 	public static String URL_SAVE_DATA_BOOK = "";
 	public static String URL_SAVE_DATA_BOOK_LIST = "";
+	public static String URL_SAVE_DATA_SONG = "";
+	public static String URL_SAVE_DATA_SONG_LIST = "";
+	
+	//
+	public static String MUSIC_TIME_TYPE_MAPPING_FILE_PATH = "";
 	/**
 	 * 加载配置文件
 	 * @throws Exception
@@ -52,6 +58,10 @@ public class MusicConstants {
 			BASE_FILE_PATH = p.getProperty("upload.from.file.path").replace("/", File.separator);
 			URL_SAVE_DATA_BOOK = p.getProperty("do.save.data.url.book");
 			URL_SAVE_DATA_BOOK_LIST = p.getProperty("do.save.data.url.booklist");
+			URL_SAVE_DATA_SONG = p.getProperty("do.save.data.url.song");
+			URL_SAVE_DATA_SONG_LIST = p.getProperty("do.save.data.url.songlist");
+			DO_TYPE = p.getProperty("do.save.data.type");
+			MUSIC_TIME_TYPE_MAPPING_FILE_PATH = p.getProperty("music.time.type.mapping.file.path");
 			fIn.close();
 			fIn = null;
 		}else{
