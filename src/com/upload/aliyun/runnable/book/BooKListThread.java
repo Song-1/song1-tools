@@ -12,7 +12,6 @@ import com.upload.aliyun.MusicConstants;
 import com.upload.aliyun.util.JavascriptUtil;
 import com.upload.aliyun.util.NetWorkUtil;
 import com.upload.aliyun.util.OSSUploadUtil;
-import com.upload.aliyun.util.POIUtil;
 import com.upload.aliyun.util.StringUtil;
 
 /**
@@ -24,7 +23,6 @@ public class BooKListThread implements Runnable {
 	private String bookName;
 	private String bookType;
 	private List<File> bookFiles;
-	private int count;
 	private String  bookSort;
 	private String _add_;
 	private String imgUrl= "";
@@ -36,7 +34,6 @@ public class BooKListThread implements Runnable {
 			this.bookType = new String(bookName.substring(0,index-1)).replace(File.separator, "/");
 		}
 		this.bookFiles = bookFiles;
-		count = 0;
 		threadName = "BooKListThread_" + bookName;
 		_add_ ="";
 	}

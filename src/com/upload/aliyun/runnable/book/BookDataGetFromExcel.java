@@ -3,7 +3,6 @@
  */
 package com.upload.aliyun.runnable.book;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -22,14 +21,14 @@ import com.upload.aliyun.util.POIUtil;
  */
 public class BookDataGetFromExcel extends POIUtil {
 
-	private  CopyOnWriteArrayList<CellRangeAddress> CellRangeAddressList = new CopyOnWriteArrayList<CellRangeAddress>();
-	private  boolean istheSameBook = false;
-	private  BookDataInfo model = null;
-	public static  List<BookDataInfo> bookList = new ArrayList<BookDataInfo>();
+	private CopyOnWriteArrayList<CellRangeAddress> CellRangeAddressList = new CopyOnWriteArrayList<CellRangeAddress>();
+	private boolean istheSameBook = false;
+	private BookDataInfo model = null;
+	public static List<BookDataInfo> bookList = new ArrayList<BookDataInfo>();
 
 	public static void main(String[] args) {
-		String path = "E:/职场培训 5.21.xls";
-		File file = new File(path);
+		// String path = "E:/职场培训 5.21.xls";
+		// File file = new File(path);
 		// doExcel(file);
 	}
 

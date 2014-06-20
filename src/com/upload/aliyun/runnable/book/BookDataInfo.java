@@ -3,7 +3,6 @@
  */
 package com.upload.aliyun.runnable.book;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 

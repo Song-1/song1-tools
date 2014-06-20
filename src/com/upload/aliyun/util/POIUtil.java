@@ -21,9 +21,9 @@ import org.omg.CORBA.BooleanHolder;
 public abstract class POIUtil {
 
 	public static void main(String[] args) {
-		String path = "E:/职场培训 5.21.xls";
-		File file = new File(path);
-		// doExcel(file);
+//		String path = "E:/职场培训 5.21.xls";
+//		File file = new File(path);
+//		// doExcel(file);
 	}
 
 	/**

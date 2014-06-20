@@ -23,7 +23,7 @@ import com.upload.aliyun.util.StringUtil;
  *
  */
 public class MusicListThread implements Runnable {
-	private String threadName;
+	//private String threadName;
 	private String bookName;
 	private List<File> bookFiles;
 	private String _add_;
@@ -36,7 +36,7 @@ public class MusicListThread implements Runnable {
 			this.bookName = new String(bookName.substring(index));
 		}
 		this.bookFiles = bookFiles;
-		threadName = "BooKListThread_" + bookName;
+		//threadName = "BooKListThread_" + bookName;
 		_add_ ="";
 	}
 
@@ -60,7 +60,7 @@ public class MusicListThread implements Runnable {
 				String fileName = file.getName();
 				saveData(fileName,key, file);
 			} else {
-				System.out.println(key + "\t此文件已被移动......");
+				FileDoUtil.outLog(key + "\t此文件已被移动......");
 			}
 		}
 	}
@@ -78,6 +78,10 @@ public class MusicListThread implements Runnable {
 			return;
 		}else if(key.endsWith(".mp3")){
 			mp3Info = MP3Util.getMP3Info(file.getAbsolutePath());
+//			if(mp3Info != null){
+//				String sss = file.getAbsolutePath() + "\r\n"+ mp3Info.getSongTitle() + "\t" + mp3Info.getArtist();
+//				FileDoUtil.outLog(sss);
+//			}
 		}
 		System.out.println(name + "\t" + url + "\t" +key);
 		String rus = saveBookFile(name, url);
