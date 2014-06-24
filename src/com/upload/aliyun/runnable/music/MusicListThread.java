@@ -100,8 +100,8 @@ public class MusicListThread implements Runnable {
 			m.put("name",mp3Info.getSongTitle());
 			m.put("singer", mp3Info.getArtist());
 			m.put("lyric", mp3Info.getSongLyric());
-			m.put("timestate", "");
-			m.put("coderate", "");
+			m.put("coderate", mp3Info.getBitRate());
+			m.put("timestate", mp3Info.getTrackLength());
 		}else{
 			int index = name.lastIndexOf(".");
 			name = new String(name.substring(0,index));

@@ -92,10 +92,10 @@ public class MusicConstants {
 	 */
 	public static String getUrl(String key){
 		StringBuffer strb = new StringBuffer(100);
-		strb.append(PROTOCOL);
-		strb.append(BUKET_NAME);
-		strb.append(".");
-		strb.append( ALIYUN_IMAGE_HOST);
+//		strb.append(PROTOCOL);
+//		strb.append(BUKET_NAME);
+//		strb.append(".");
+//		strb.append( ALIYUN_IMAGE_HOST);
 		if(!key.startsWith("/")){
 			strb.append("/");
 		}

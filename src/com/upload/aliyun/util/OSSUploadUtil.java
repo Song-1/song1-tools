@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -47,6 +49,16 @@ public class OSSUploadUtil {
 	public static void init() {
 		ClientConfiguration config = new ClientConfiguration();
 		client = new OSSClient(MusicConstants.PROTOCOL + MusicConstants.ALIYUN_IMAGE_HOST, MusicConstants.ALIYUN_ACCESSKEYID, MusicConstants.ALIYUN_ACCESSKEYSECRET, config);
+	}
+	
+	public static String generateAliyunURL(String bucket,String key,long expirationTimes){
+		long times = new Date().getTime();
+		System.out.println(times);
+		Date expiration = new Date(times + expirationTimes);
+		System.out.println(expiration.getTime());
+		URL url = client.generatePresignedUrl(bucket, key, expiration);
+		System.out.println(url);
+		return url.toString();
 	}
 
 	/**

@@ -27,7 +27,11 @@ public class StartMain {
 			// /// 加载配置文件
 			MusicConstants.loadConfig();
 			OSSUploadUtil.init();
+//			String key = "test/樱桃时光/熬夜/思念的/回忆里的青春/song.mp3";
+//			String url = OSSUploadUtil.generateAliyunURL(MusicConstants.BUKET_NAME, key, 10000L);
+//			System.out.println(url);
 			JavascriptUtil.init();
+			
 			//
 			if("music".equals(MusicConstants.DO_TYPE)){
 				File file = new File(MusicConstants.MUSIC_TIME_TYPE_MAPPING_FILE_PATH);
