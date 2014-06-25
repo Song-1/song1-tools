@@ -73,7 +73,7 @@ public class MusicListThread implements Runnable {
 			FileDoUtil.outLog("[ " + StringUtil.getFormateDate() + " ]"  + file.getAbsolutePath() + "   服务器此文件不存在");
 			return;
 		}
-		if(key.endsWith(".jpg")){
+		if(key.endsWith(".jpg") || key.endsWith(".png")){
 			imgUrl = url;
 			return;
 		}else if(key.endsWith(".mp3")){

@@ -82,7 +82,7 @@ public class BooKListThread implements Runnable {
 			System.out.println(threadName+"\t" + file.getName() + "此文件不存在");
 			return;
 		}
-		if(key.endsWith(".jpg")){
+		if(key.endsWith(".jpg") || key.endsWith(".png")){
 			imgUrl = url;
 			return;
 		}
