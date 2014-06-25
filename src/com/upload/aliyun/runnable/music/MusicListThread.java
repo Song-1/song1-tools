@@ -13,6 +13,7 @@ import org.farng.mp3.util.MP3Util;
 
 import com.upload.aliyun.MusicConstants;
 import com.upload.aliyun.util.FileDoUtil;
+import com.upload.aliyun.util.ImageFileUtil;
 import com.upload.aliyun.util.JavascriptUtil;
 import com.upload.aliyun.util.NetWorkUtil;
 import com.upload.aliyun.util.OSSUploadUtil;
@@ -73,7 +74,7 @@ public class MusicListThread implements Runnable {
 			FileDoUtil.outLog("[ " + StringUtil.getFormateDate() + " ]"  + file.getAbsolutePath() + "   服务器此文件不存在");
 			return;
 		}
-		if(key.endsWith(".jpg") || key.endsWith(".png")){
+		if(ImageFileUtil.isImageFile(key)){
 			imgUrl = url;
 			return;
 		}else if(key.endsWith(".mp3")){

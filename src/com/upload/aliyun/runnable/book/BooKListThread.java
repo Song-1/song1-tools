@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.upload.aliyun.MusicConstants;
+import com.upload.aliyun.util.ImageFileUtil;
 import com.upload.aliyun.util.JavascriptUtil;
 import com.upload.aliyun.util.NetWorkUtil;
 import com.upload.aliyun.util.OSSUploadUtil;
@@ -82,7 +83,7 @@ public class BooKListThread implements Runnable {
 			System.out.println(threadName+"\t" + file.getName() + "此文件不存在");
 			return;
 		}
-		if(key.endsWith(".jpg") || key.endsWith(".png")){
+		if(ImageFileUtil.isImageFile(key)){
 			imgUrl = url;
 			return;
 		}
