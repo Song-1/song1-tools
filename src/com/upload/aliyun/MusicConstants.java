@@ -97,9 +97,9 @@ public class MusicConstants {
 //		strb.append(BUKET_NAME);
 //		strb.append(".");
 //		strb.append( ALIYUN_IMAGE_HOST);
-		if(!key.startsWith("/")){
-			strb.append("/");
-		}
+//		if(!key.startsWith("/")){
+//			strb.append("/");
+//		}
 		strb.append(key);
 		return strb.toString();
 	}
