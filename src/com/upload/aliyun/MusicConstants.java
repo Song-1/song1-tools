@@ -82,6 +82,7 @@ public class MusicConstants {
 			put("mp3", "audio/mpeg");
 			put("jpeg", "image/jpeg");
 			put("jpg", "application/x-jpg");
+			put("png", "image/x-png");
 		}
 	};
 	

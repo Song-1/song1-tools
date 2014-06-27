@@ -1,5 +1,6 @@
 package com.upload.aliyun.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -83,6 +84,31 @@ public class OSSUploadUtil {
 		}
 		meta.setContentType(contentType);
 		PutObjectResult result = client.putObject(bucket, key, fin, meta);
+		return result.getETag();
+	}
+	
+	/**
+	 * 单个小文件上传
+	 * 
+	 * @param client
+	 * @param bucket
+	 * @param key
+	 * @param uploadFile
+	 * @return
+	 * @throws FileNotFoundException
+	 */
+	public static String uploadImage(String bucket, String key, byte[] uploadFile) throws FileNotFoundException {
+		InputStream sbs = new ByteArrayInputStream(uploadFile); 
+		// 创建上传Object的Metadata
+		ObjectMetadata meta = new ObjectMetadata();
+		meta.setContentLength(uploadFile.length);
+		String suffix = key.substring(key.lastIndexOf(".") + 1);
+		String contentType = (String) MusicConstants.contentTypeMap.get(suffix);
+		if (contentType == null) {
+			contentType = (String) MusicConstants.contentTypeMap.get("stream");
+		}
+		meta.setContentType(contentType);
+		PutObjectResult result = client.putObject(bucket, key, sbs, meta);
 		return result.getETag();
 	}
 

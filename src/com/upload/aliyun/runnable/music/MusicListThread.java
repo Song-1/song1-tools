@@ -4,6 +4,7 @@
 package com.upload.aliyun.runnable.music;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,18 +55,51 @@ public class MusicListThread implements Runnable {
 			return;
 		}
 		for (File file : bookFiles) {
+			String img = null;
 			String key = file.getAbsolutePath();
+			System.out.println(key);
+			boolean endsWith = key.endsWith(".mp3");
+			if (endsWith) {
+				byte[] imageByte = ImageFileUtil.getImageByte(key);
+				String filename = key.substring(0, key.lastIndexOf("."));
+				if (imageByte != null) {
+					try {
+						filename = filename.replace(MusicConstants.BASE_FILE_PATH + File.separator, "");
+						img = filename + ".jpg";
+						img = img.replace(File.separator, "/");
+						img = MusicConstants.SERVER_PATH_ROOT + img;
+						if (!OSSUploadUtil.isObjectExist("cherrytime", img)) {
+							OSSUploadUtil.uploadImage("cherrytime", img, imageByte);
+						}
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					}
+				}
+			}
 			key = key.replace(MusicConstants.BASE_FILE_PATH + File.separator, "");
 			key = key.replace(File.separator, "/");
 			if (file.exists()) {
 				String fileName = file.getName();
-				saveData(fileName,key, file);
+				if (img == null) {
+					saveData(fileName,key, file);
+				}else{
+					saveData(fileName,key, file,img);
+				}
 			} else {
 				FileDoUtil.outLog(key + "\t此文件已被移动......");
 			}
 		}
 	}
 
+	/**
+	 * 
+	 * @Title: saveData  保存数据
+	 * @param name 
+	 * @param key
+	 * @param file    
+	 * void    
+	 * @throws
+	 */
 	public void saveData(String name,String key,File file) {
 		key = MusicConstants.SERVER_PATH_ROOT + key;
 		boolean flag = OSSUploadUtil.isObjectExist(MusicConstants.BUKET_NAME, key);
@@ -78,7 +112,9 @@ public class MusicListThread implements Runnable {
 			imgUrl = url;
 			return;
 		}else if(key.endsWith(".mp3")){
+			
 			mp3Info = MP3Util.getMP3Info(file.getAbsolutePath());
+			
 //			if(mp3Info != null){
 //				String sss = file.getAbsolutePath() + "\r\n"+ mp3Info.getSongTitle() + "\t" + mp3Info.getArtist();
 //				FileDoUtil.outLog(sss);
@@ -90,13 +126,48 @@ public class MusicListThread implements Runnable {
 		addBookId(bookId);
 	}
 	
+	
+	/**
+	 * 
+	 * @Title: saveData  保存数据
+	 * @param name 
+	 * @param key
+	 * @param file    
+	 * void    
+	 * @throws
+	 */
+	public void saveData(String name,String key,File file,String img) {
+		key = MusicConstants.SERVER_PATH_ROOT + key;
+		boolean flag = OSSUploadUtil.isObjectExist(MusicConstants.BUKET_NAME, key);
+		String url = MusicConstants.getUrl(key);
+		if (!flag) {
+			FileDoUtil.outLog("[ " + StringUtil.getFormateDate() + " ]"  + file.getAbsolutePath() + "   服务器此文件不存在");
+			return;
+		}
+		if(ImageFileUtil.isImageFile(key)){
+			imgUrl = url;
+			return;
+		}else if(key.endsWith(".mp3")){
+			
+			mp3Info = MP3Util.getMP3Info(file.getAbsolutePath());
+			
+//			if(mp3Info != null){
+//				String sss = file.getAbsolutePath() + "\r\n"+ mp3Info.getSongTitle() + "\t" + mp3Info.getArtist();
+//				FileDoUtil.outLog(sss);
+//			}
+		}
+		System.out.println(name + "\t" + url + "\t" +key);
+		String rus = saveBookFile(name, url,img);
+		String bookId = JavascriptUtil.getSaveBookResponse(rus);
+		addBookId(bookId);
+	}
+	
 	private void addBookId(String bookId){
 		_add_+= bookId+ ",";
 	}
 	
 	private String saveBookFile(String name,String url){
 		Map<String, String> m = new HashMap<String, String>();
-		
 		if(mp3Info != null && mp3Info.getSongTitle() != null && !"".equals(mp3Info.getSongTitle().trim())){
 			m.put("name",mp3Info.getSongTitle());
 			m.put("singer", mp3Info.getArtist());
@@ -109,6 +180,25 @@ public class MusicListThread implements Runnable {
 			m.put("name",name);
 		}
 		m.put("url", url);
+		return NetWorkUtil.doPost(MusicConstants.URL_SAVE_DATA_SONG, m, NetWorkUtil.ENCODE);
+	}
+	
+	
+	private String saveBookFile(String name,String url,String img){
+		Map<String, String> m = new HashMap<String, String>();
+		if(mp3Info != null && mp3Info.getSongTitle() != null && !"".equals(mp3Info.getSongTitle().trim())){
+			m.put("name",mp3Info.getSongTitle());
+			m.put("singer", mp3Info.getArtist());
+			m.put("lyric", mp3Info.getSongLyric());
+			m.put("coderate", mp3Info.getBitRate());
+			m.put("timestate", mp3Info.getTrackLength());
+		}else{
+			int index = name.lastIndexOf(".");
+			name = new String(name.substring(0,index));
+			m.put("name",name);
+		}
+		m.put("url", url);
+		m.put("img", img);
 		return NetWorkUtil.doPost(MusicConstants.URL_SAVE_DATA_SONG, m, NetWorkUtil.ENCODE);
 	}
 	
