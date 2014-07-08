@@ -119,7 +119,7 @@ public class BooKListThread implements Runnable {
 		Map<String, String> m = new HashMap<String, String>();
 		m.put("name",name);
 		m.put("url", url);
-		m.put("sort", sort);
+		m.put("seat", sort);
 		return NetWorkUtil.doPost(MusicConstants.URL_SAVE_DATA_BOOK, m, NetWorkUtil.ENCODE);
 	}
 	
