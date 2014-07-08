@@ -12,6 +12,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.omg.CORBA.BooleanHolder;
 
+import com.upload.aliyun.util.FileDoUtil;
 import com.upload.aliyun.util.POIUtil;
 
 /**
@@ -27,7 +28,7 @@ public class GetMusicTypeFromExcel  extends POIUtil {
 		File file = new File(path);
 		new GetMusicTypeFromExcel().doExcel(file);
 		for (MusicTypeDataInfo model : bookList) {
-			System.out.println(model);
+			FileDoUtil.outLog(model.toString());
 		}
 	}
 	private int isTheSameRow = -1;

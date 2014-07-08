@@ -54,11 +54,11 @@ public class OSSUploadUtil {
 	
 	public static String generateAliyunURL(String bucket,String key,long expirationTimes){
 		long times = new Date().getTime();
-		System.out.println(times);
+		FileDoUtil.outLog(times+"");
 		Date expiration = new Date(times + expirationTimes);
-		System.out.println(expiration.getTime());
+		FileDoUtil.outLog(expiration.getTime()+"");
 		URL url = client.generatePresignedUrl(bucket, key, expiration);
-		System.out.println(url);
+		FileDoUtil.outLog(url.toString());
 		return url.toString();
 	}
 
@@ -118,7 +118,7 @@ public class OSSUploadUtil {
 		long size = uploadFile.length();
 		int partCount = calPartCount(size);
 		if (partCount <= 1) {
-			System.out.println("[INFO]上传文件的大小小于一个Part的字节数：" + PART_SIZE + ",使用单文件上传");
+			FileDoUtil.outLog("[INFO]上传文件的大小小于一个Part的字节数：" + PART_SIZE + ",使用单文件上传");
 			uploadObject(bucketName, key, uploadFile);
 		} else {
 			String uploadId = "";
@@ -129,7 +129,7 @@ public class OSSUploadUtil {
 			MultipartUploadListing listing = client.listMultipartUploads(listMultipartUploadsRequest);
 			// 遍历所有上传事件
 			for (MultipartUpload multipartUpload : listing.getMultipartUploads()) {
-				System.out.println("Key: " + multipartUpload.getKey() + " UploadId: " + multipartUpload.getUploadId());
+				FileDoUtil.outLog("Key: " + multipartUpload.getKey() + " UploadId: " + multipartUpload.getUploadId());
 				if (key.equals(multipartUpload.getKey())) {
 					isBreakPointUploadFlag = true;
 					uploadId = multipartUpload.getUploadId();
@@ -153,7 +153,7 @@ public class OSSUploadUtil {
 				if (isBreakPointUploadFlag) {
 					for (PartSummary part : partSummaryList) {
 						System.out.print("PartNumber: " + part.getPartNumber() + " ETag: " + part.getETag());
-						System.out.println("    size : " + part.getSize());
+						FileDoUtil.outLog("    size : " + part.getSize());
 						if (partNumber == part.getPartNumber()) {
 							if (curPartSize != part.getSize()) {
 								start += part.getSize();
@@ -174,7 +174,7 @@ public class OSSUploadUtil {
 			if (eTags.size() != partCount) {
 				throw new IllegalStateException("Multipart上传失败，有Part未上传成功。");
 			}
-			System.out.println("over");
+			FileDoUtil.outLog("over");
 			completeMultipartUpload(client, bucketName, key, uploadId, eTags);
 		}
 	}
@@ -258,7 +258,7 @@ public class OSSUploadUtil {
 				UploadPartResult uploadPartResult = client.uploadPart(uploadPartRequest);
 				long endtTime = System.currentTimeMillis();
 				long times = (endtTime - startTime) / 1000L;
-				System.out.println("part :: " + partId + " size :: " + size + "  times ::: " + times);
+				FileDoUtil.outLog("part :: " + partId + " size :: " + size + "  times ::: " + times);
 				eTags.add(uploadPartResult.getPartETag());
 
 			} catch (Exception e) {
@@ -364,7 +364,7 @@ public class OSSUploadUtil {
 	public static void copyObject(String sourceBucketName, String sourceKey, String destinationBucketName, String destinationKey) {
 		if(client != null){
 			 CopyObjectResult result  = client.copyObject(sourceBucketName, sourceKey, destinationBucketName, destinationKey);
-			 System.out.println("[File Copy]Etag:::" + result.getETag());
+			 FileDoUtil.outLog("[File Copy]Etag:::" + result.getETag());
 		}
 	}
 

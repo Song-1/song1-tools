@@ -45,7 +45,7 @@ public class MusicListThread implements Runnable {
 	@Override
 	public void run() {
 		saveBook();
-		if(saveTheBook()){
+		if(saveSongList()){
 			saveBook();
 		}
 	}
@@ -57,7 +57,7 @@ public class MusicListThread implements Runnable {
 		for (File file : bookFiles) {
 			String img = null;
 			String key = file.getAbsolutePath();
-			System.out.println(key);
+			FileDoUtil.outLog("文件阿里云key："+key);
 			boolean endsWith = key.endsWith(".mp3");
 			if (endsWith) {
 				byte[] imageByte = ImageFileUtil.getImageByte(key);
@@ -68,8 +68,8 @@ public class MusicListThread implements Runnable {
 						img = filename + ".jpg";
 						img = img.replace(File.separator, "/");
 						img = MusicConstants.SERVER_PATH_ROOT + img;
-						if (!OSSUploadUtil.isObjectExist("cherrytime", img)) {
-							OSSUploadUtil.uploadImage("cherrytime", img, imageByte);
+						if (!OSSUploadUtil.isObjectExist(MusicConstants.BUKET_NAME, img)) {
+							OSSUploadUtil.uploadImage(MusicConstants.BUKET_NAME, img, imageByte);
 						}
 					} catch (FileNotFoundException e) {
 						e.printStackTrace();
@@ -120,7 +120,7 @@ public class MusicListThread implements Runnable {
 //				FileDoUtil.outLog(sss);
 //			}
 		}
-		System.out.println(name + "\t" + url + "\t" +key);
+		FileDoUtil.outLog(name + "\t" + url + "\t" +key);
 		String rus = saveBookFile(name, url);
 		String bookId = JavascriptUtil.getSaveBookResponse(rus);
 		addBookId(bookId);
@@ -156,8 +156,8 @@ public class MusicListThread implements Runnable {
 //				FileDoUtil.outLog(sss);
 //			}
 		}
-		System.out.println(name + "\t" + url + "\t" +key);
-		String rus = saveBookFile(name, url,img);
+		FileDoUtil.outLog(name + "\t" + url + "\t" +key);
+		String rus = saveSongFile(name, url,img);
 		String bookId = JavascriptUtil.getSaveBookResponse(rus);
 		addBookId(bookId);
 	}
@@ -184,7 +184,7 @@ public class MusicListThread implements Runnable {
 	}
 	
 	
-	private String saveBookFile(String name,String url,String img){
+	private String saveSongFile(String name,String url,String img){
 		Map<String, String> m = new HashMap<String, String>();
 		if(mp3Info != null && mp3Info.getSongTitle() != null && !"".equals(mp3Info.getSongTitle().trim())){
 			m.put("name",mp3Info.getSongTitle());
@@ -202,16 +202,17 @@ public class MusicListThread implements Runnable {
 		return NetWorkUtil.doPost(MusicConstants.URL_SAVE_DATA_SONG, m, NetWorkUtil.ENCODE);
 	}
 	
-	private boolean saveTheBook(){
+	private boolean saveSongList(){
 		Map<String, String> m = new HashMap<String, String>();
 		MusicDataInfo song = MusicDataGetFromExcel.getObjFormList(bookName);
 		m.put("name",bookName);
 		m.put("_add_", _add_);
 		m.put("img", imgUrl);
 		m.put("desc", song.getDesc());
-		m.put("enverionment", song.getEnverionment());//环境
+		String enverionment = song.getEnverionment();
+		m.put("enverionment", enverionment);//环境
 		m.put("category", song.getCategory());//心情
-		m.put("times", GetMusicTypeFromExcel.getTimes(song.getEnverionment()));//心情
+		m.put("times", GetMusicTypeFromExcel.getTimes(enverionment));//心情
 		String res = NetWorkUtil.doPost(MusicConstants.URL_SAVE_DATA_SONG_LIST, m, NetWorkUtil.ENCODE);
 		String bookId = JavascriptUtil.getSaveBookResponse(res);
 		if("success".equalsIgnoreCase(bookId)){

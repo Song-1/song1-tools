@@ -22,13 +22,25 @@ public class MusicConstants {
 	public static final String ALIYUN_ACCESSKEYID = "ndm6c0zcwyz1x6n5hqe66rig";
 	public static final String ALIYUN_ACCESSKEYSECRET = "uDbjGwyWTrXwzGjDZUoMdRUq9cE=";
 	public static final String ALIYUN_IMAGE_HOST = "oss-cn-hangzhou.aliyuncs.com";
-	//
+	/**
+	 * 要上传的bucket名称
+	 */
 	public static String BUKET_NAME = "";
+	/**
+	 * 协议
+	 */
 	public static final String PROTOCOL = "http://";
+	/**
+	 * 阿里云服务器根目录
+	 */
 	public static String SERVER_PATH_ROOT = "";
-	//
+	/**
+	 * 本地根目录
+	 */
 	public static String BASE_FILE_PATH = "";
-	
+	/**
+	 * 需要上传的列表
+	 */
 	public static List<FileUploadInfoModel> UPLOAD_FILE_LIST = new ArrayList<FileUploadInfoModel>(200);
 	
 	//
@@ -36,9 +48,25 @@ public class MusicConstants {
 	public static final String PATH_CONFIG_DOJSON_JS = "config/doJson.js";
 	
 	public static String DO_TYPE = "";
+	/**
+	 * 保存书集的接口url
+	 */
 	public static String URL_SAVE_DATA_BOOK = "";
+	/**
+	 * 保存书单的接口url
+	 */
 	public static String URL_SAVE_DATA_BOOK_LIST = "";
+	/**
+	 * 保存歌曲的接口url
+	 */
 	public static String URL_SAVE_DATA_SONG = "";
+	/**
+	 * 跟新歌曲的接口url
+	 */
+	public static String URL_UPDATE_DATA_SONG = "";
+	/**
+	 * 保存歌单的接口url
+	 */
 	public static String URL_SAVE_DATA_SONG_LIST = "";
 	
 	//
@@ -54,25 +82,31 @@ public class MusicConstants {
 			Properties p = new Properties();
 			p.load(fIn);
 			BUKET_NAME = p.getProperty("upload.to.buket");
+			FileDoUtil.outLog("BUKET_NAME:"+BUKET_NAME);
 			SERVER_PATH_ROOT = p.getProperty("upload.to.root");
+			if (!SERVER_PATH_ROOT.endsWith("/")) {
+				SERVER_PATH_ROOT = SERVER_PATH_ROOT + "/";
+			}
+			FileDoUtil.outLog("SERVER_PATH_ROOT:"+SERVER_PATH_ROOT);
 			BASE_FILE_PATH = p.getProperty("upload.from.file.path").replace("/", File.separator);
 			URL_SAVE_DATA_BOOK = p.getProperty("do.save.data.url.book");
 			URL_SAVE_DATA_BOOK_LIST = p.getProperty("do.save.data.url.booklist");
 			URL_SAVE_DATA_SONG = p.getProperty("do.save.data.url.song");
 			URL_SAVE_DATA_SONG_LIST = p.getProperty("do.save.data.url.songlist");
 			DO_TYPE = p.getProperty("do.save.data.type");
+			FileDoUtil.outLog("需要上传的是:"+DO_TYPE);
 			MUSIC_TIME_TYPE_MAPPING_FILE_PATH = p.getProperty("music.time.type.mapping.file.path");
 			fIn.close();
 			fIn = null;
 		}else{
-			System.out.println("[error]the file not found......");
+			FileDoUtil.outLog("[error]the file not found......");
 		}
 	}
 	
 	public static void main(String[] args)throws Exception {
 		loadConfig();
-		System.out.println(BUKET_NAME);
-		System.out.println(BASE_FILE_PATH);
+		FileDoUtil.outLog(BUKET_NAME);
+		FileDoUtil.outLog(BASE_FILE_PATH);
 	}
 	
 	public final static Map<String,String> contentTypeMap = new HashMap<String,String>() {

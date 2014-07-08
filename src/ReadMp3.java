@@ -2,9 +2,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.RandomAccessFile;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
+
+import com.upload.aliyun.util.FileDoUtil;
 
 public class ReadMp3 {
 	private RandomAccessFile ran = null;
@@ -13,7 +13,7 @@ public class ReadMp3 {
 	public ReadMp3() throws FileNotFoundException, URISyntaxException, MalformedURLException {
 		file = new File("//testupload2.oss-cn-hangzhou.aliyuncs.com/cherrytimemusic/qq/song.mp3");
 		ran = new RandomAccessFile(file, "r");
-		System.out.println("文件裝載完畢");
+		FileDoUtil.outLog("文件裝載完畢");
 
 	}
 
@@ -25,7 +25,7 @@ public class ReadMp3 {
 
 		read.ran.read(buffer);
 		SongInfo info = new SongInfo(buffer);
-		System.out.println("name:" + info.getSongName() + " year:" + info.getYear() + " 歌手:" + info.getArtist() + " 專輯名:" + info.getAlbum() + " 備注:" + info.getComment());
+		FileDoUtil.outLog("name:" + info.getSongName() + " year:" + info.getYear() + " 歌手:" + info.getArtist() + " 專輯名:" + info.getAlbum() + " 備注:" + info.getComment());
 
 	}
 }

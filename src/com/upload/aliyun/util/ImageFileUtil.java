@@ -39,6 +39,14 @@ public class ImageFileUtil {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @Title: getImageByte 获取id3信息中的图片
+	 * @param mp3filepath
+	 * @return    
+	 * byte[]    
+	 * @throws
+	 */
 	public static byte[] getImageByte(String mp3filepath){
 		byte[] imageData = null;
 		try {
@@ -70,8 +78,8 @@ public class ImageFileUtil {
 			String filename = "01 - 2 Brothers on the 4th Floor - Dreams.mp3";
 			String suffix = filename.substring(filename.lastIndexOf(".")+1);
 			String filename1 = filename.substring(0, filename.lastIndexOf("."));
-			System.out.println(filename1);
-			System.out.println(suffix);
+			FileDoUtil.outLog(filename1);
+			FileDoUtil.outLog(suffix);
 			String url =dir +  filename;  
 			File sourceFile = new File(url);  
 			org.jaudiotagger.audio.mp3.MP3File mp3file = new org.jaudiotagger.audio.mp3.MP3File(sourceFile); 
@@ -80,7 +88,7 @@ public class ImageFileUtil {
 			FrameBodyAPIC body = (FrameBodyAPIC) frame.getBody();  
 			byte[] imageData = body.getImageData();  
 			Image img=Toolkit.getDefaultToolkit().createImage(imageData, 0,imageData.length);  
-			System.out.println("img----" + imageData);  
+			FileDoUtil.outLog("img----" + imageData);  
 			ImageIcon icon = new ImageIcon(img);              
 			FileOutputStream fos = new FileOutputStream(dir + filename1 + ".jpg");  
 			fos.write(imageData);  

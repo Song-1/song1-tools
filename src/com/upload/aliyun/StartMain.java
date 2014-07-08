@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.upload.aliyun.runnable.music.GetMusicTypeFromExcel;
+import com.upload.aliyun.util.FileDoUtil;
 import com.upload.aliyun.util.JavascriptUtil;
 import com.upload.aliyun.util.OSSUploadUtil;
 import com.upload.aliyun.util.POIUtil;
@@ -29,7 +30,7 @@ public class StartMain {
 			OSSUploadUtil.init();
 //			String key = "test/樱桃时光/熬夜/思念的/回忆里的青春/song.mp3";
 //			String url = OSSUploadUtil.generateAliyunURL(MusicConstants.BUKET_NAME, key, 10000L);
-//			System.out.println(url);
+//			FileDoUtil.outLog(url);
 			JavascriptUtil.init();
 			
 			//
@@ -54,7 +55,7 @@ public class StartMain {
 
 	public static void eachFiles() {
 		File file = new File(MusicConstants.BASE_FILE_PATH);
-		System.out.println(MusicConstants.BASE_FILE_PATH);
+		FileDoUtil.outLog("本地根目录："+MusicConstants.BASE_FILE_PATH);
 		getFile(file);
 
 	}
@@ -100,7 +101,7 @@ public class StartMain {
 			if (fileList == null) {
 				continue;
 			}
-			System.out.println(fileListName);
+			FileDoUtil.outLog(fileListName);
 			long start = System.currentTimeMillis();
 			Runnable runnable = DoSaveFactory.getBean(fileListName, fileList);
 			if(runnable != null){
@@ -108,7 +109,7 @@ public class StartMain {
 			}
 			long end = System.currentTimeMillis();
 			long times = (end - start) /1000;
-			System.out.println(fileListName + " \t cost:::" + times);
+			FileDoUtil.outLog(fileListName + " \t cost:::" + times);
 			//pool.execute(new BooKListThread(fileListName, fileList));			
 		}
 //		pool.shutdown();

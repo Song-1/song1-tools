@@ -38,7 +38,7 @@ public class JavascriptUtil {
 				}
 			}
 		} catch (Exception e) {
-			System.out.println("调用Javascript脚本初始化发生异常..........");
+			FileDoUtil.outLog("调用Javascript脚本初始化发生异常..........");
 			e.printStackTrace();
 		}
 	}

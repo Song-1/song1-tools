@@ -46,7 +46,7 @@ public abstract class POIUtil {
 				}
 
 			} catch (Exception e) {
-				System.out.println("读取Excel[" + file.getAbsolutePath() + "]文件发生异常.............");
+				FileDoUtil.outLog("读取Excel[" + file.getAbsolutePath() + "]文件发生异常.............");
 				e.printStackTrace();
 			}
 

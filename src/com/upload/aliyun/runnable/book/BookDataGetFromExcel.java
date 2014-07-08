@@ -93,7 +93,7 @@ public class BookDataGetFromExcel extends POIUtil {
 				return true;
 			}
 			if (row == lastRow && column == lastColumn) {
-				// System.out.println("remove" + row + ":" + column);
+				// FileDoUtil.outLog("remove" + row + ":" + column);
 				CellRangeAddressList.remove(ca);
 				istheSameBook = (istheSameBook ? false : istheSameBook);
 				if (model != null && model.getUuid() != null) {

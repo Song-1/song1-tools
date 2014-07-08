@@ -14,6 +14,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.omg.CORBA.BooleanHolder;
 
+import com.upload.aliyun.util.FileDoUtil;
 import com.upload.aliyun.util.POIUtil;
 
 /**
@@ -32,7 +33,7 @@ public class MusicDataGetFromExcel extends POIUtil {
 		File file = new File(path);
 		new MusicDataGetFromExcel().doExcel(file);
 		for(MusicDataInfo model : bookList){
-			System.out.println(model);
+			FileDoUtil.outLog(model.toString());
 		}
 	}
 
@@ -77,7 +78,7 @@ public class MusicDataGetFromExcel extends POIUtil {
 				return true;
 			}
 			if (row == lastRow && column == lastColumn) {
-				// System.out.println("remove" + row + ":" + column);
+				// FileDoUtil.outLog("remove" + row + ":" + column);
 				CellRangeAddressList.remove(ca);
 				istheSameBook = (istheSameBook ? false : istheSameBook);
 				if (model != null && model.getListName() != null) {

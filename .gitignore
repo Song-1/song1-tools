@@ -1,3 +1,5 @@
 /bin/
 
 /test/
+.hiberclipse
+.settings/org.eclipse.core.resources.prefs

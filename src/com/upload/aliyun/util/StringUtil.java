@@ -64,6 +64,6 @@ public class StringUtil {
 	
 	public static void main(String[] args) throws Exception {
 		String url = "http://testupload2.oss-cn-hangzhou.aliyuncs.com/test/状元听书/状元听书/职场培训/职场提升/如何成为一个成功的职业经理人/如何成为一个成功的职业经理人（高品质）/如何成为一个成功的职业经理人1.mp3";
-		System.out.println(encodeURL(url));
+		FileDoUtil.outLog(encodeURL(url));
 	}
 }

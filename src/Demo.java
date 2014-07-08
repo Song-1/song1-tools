@@ -8,6 +8,8 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.upload.aliyun.util.FileDoUtil;
+
 public class Demo {
   public static void main(String[] args) throws Exception {
     Map<String,String> m = new HashMap<String,String>();
@@ -16,7 +18,7 @@ public class Demo {
     m.put("name", "nihao hello");
     m.put("url", "http://www.baidu.com");
     String rus = doPost(url, m, code);
-    System.out.println(rus);
+    FileDoUtil.outLog(rus.toString());
   }
 
   public static String doPost(String reqUrl, Map<String,String> parameters, String recvEncoding) {
