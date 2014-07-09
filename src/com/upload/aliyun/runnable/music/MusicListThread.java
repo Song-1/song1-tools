@@ -55,7 +55,16 @@ public class MusicListThread implements Runnable {
 		}
 		for (File file : bookFiles) {
 			String key = file.getAbsolutePath();
-			key = key.replace(MusicConstants.BASE_FILE_PATH + File.separator, "");
+			String basePath = "";
+			if(MusicConstants.BASE_FILE_PATH.endsWith("/")){
+				basePath = MusicConstants.BASE_FILE_PATH;
+				basePath = new String(basePath.substring(0,basePath.length() - 1)) + File.separator;
+			}else if(MusicConstants.BASE_FILE_PATH.endsWith(File.separator)){
+				basePath = MusicConstants.BASE_FILE_PATH;
+			}else{
+				basePath = MusicConstants.BASE_FILE_PATH + File.separator;
+			}
+			key = key.replace(basePath, "");
 			key = key.replace(File.separator, "/");
 			if (file.exists()) {
 				String fileName = file.getName();
