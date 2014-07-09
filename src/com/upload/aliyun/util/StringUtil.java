@@ -32,7 +32,7 @@ public class StringUtil {
 		return m.replaceAll("").trim();
 	}
 
-	public static String encodeURL(String str)  {
+	public static String encodeURL(String str) {
 		if (str == null) {
 			return "";
 		}
@@ -46,8 +46,9 @@ public class StringUtil {
 		str = str.replace("%3A", ":");
 		return str;
 	}
-	public static String getFormateDate(String parrten){
-		if(parrten == null){
+
+	public static String getFormateDate(String parrten) {
+		if (parrten == null) {
 			return getFormateDate();
 		}
 		Date date = new Date();
@@ -55,13 +56,18 @@ public class StringUtil {
 		String str = formate.format(date);
 		return str;
 	}
-	public static String getFormateDate(){
+
+	public static String getFormateDate() {
 		Date date = new Date();
 		SimpleDateFormat formate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss:SSS");
 		String str = formate.format(date);
 		return str;
 	}
-	
+
+	public static boolean isEmptyString(String str) {
+		return (str == null) || (str.trim().equals(""));
+	}
+
 	public static void main(String[] args) throws Exception {
 		String url = "http://testupload2.oss-cn-hangzhou.aliyuncs.com/test/状元听书/状元听书/职场培训/职场提升/如何成为一个成功的职业经理人/如何成为一个成功的职业经理人（高品质）/如何成为一个成功的职业经理人1.mp3";
 		FileDoUtil.outLog(encodeURL(url));

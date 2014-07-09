@@ -4,7 +4,6 @@
 package com.upload.aliyun.runnable.music;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,36 +54,12 @@ public class MusicListThread implements Runnable {
 			return;
 		}
 		for (File file : bookFiles) {
-			String img = null;
 			String key = file.getAbsolutePath();
-			FileDoUtil.outLog("文件阿里云key："+key);
-			boolean endsWith = key.endsWith(".mp3");
-			if (endsWith) {
-				byte[] imageByte = ImageFileUtil.getImageByte(key);
-				String filename = key.substring(0, key.lastIndexOf("."));
-				if (imageByte != null) {
-					try {
-						filename = filename.replace(MusicConstants.BASE_FILE_PATH + File.separator, "");
-						img = filename + ".jpg";
-						img = img.replace(File.separator, "/");
-						img = MusicConstants.SERVER_PATH_ROOT + img;
-						if (!OSSUploadUtil.isObjectExist(MusicConstants.BUKET_NAME, img)) {
-							OSSUploadUtil.uploadImage(MusicConstants.BUKET_NAME, img, imageByte);
-						}
-					} catch (FileNotFoundException e) {
-						e.printStackTrace();
-					}
-				}
-			}
 			key = key.replace(MusicConstants.BASE_FILE_PATH + File.separator, "");
 			key = key.replace(File.separator, "/");
 			if (file.exists()) {
 				String fileName = file.getName();
-				if (img == null) {
-					saveData(fileName,key, file);
-				}else{
-					saveData(fileName,key, file,img);
-				}
+				saveData(fileName,key, file);
 			} else {
 				FileDoUtil.outLog(key + "\t此文件已被移动......");
 			}
@@ -104,6 +79,7 @@ public class MusicListThread implements Runnable {
 		key = MusicConstants.SERVER_PATH_ROOT + key;
 		boolean flag = OSSUploadUtil.isObjectExist(MusicConstants.BUKET_NAME, key);
 		String url = MusicConstants.getUrl(key);
+		String img = "";
 		if (!flag) {
 			FileDoUtil.outLog("[ " + StringUtil.getFormateDate() + " ]"  + file.getAbsolutePath() + "   服务器此文件不存在");
 			return;
@@ -114,14 +90,12 @@ public class MusicListThread implements Runnable {
 		}else if(key.endsWith(".mp3")){
 			
 			mp3Info = MP3Util.getMP3Info(file.getAbsolutePath());
-			
-//			if(mp3Info != null){
-//				String sss = file.getAbsolutePath() + "\r\n"+ mp3Info.getSongTitle() + "\t" + mp3Info.getArtist();
-//				FileDoUtil.outLog(sss);
-//			}
+			if (mp3Info != null) {
+				img = ImageFileUtil.uploadImage(file.getAbsolutePath());
+			}
 		}
 		FileDoUtil.outLog(name + "\t" + url + "\t" +key);
-		String rus = saveBookFile(name, url);
+		String rus = saveSongFile(name, url,img);
 		String bookId = JavascriptUtil.getSaveBookResponse(rus);
 		addBookId(bookId);
 	}

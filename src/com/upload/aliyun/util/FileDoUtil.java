@@ -103,6 +103,7 @@ public class FileDoUtil {
 		String date = StringUtil.getFormateDate("yyyy-MM-dd");
 		String path = getBasePath() + "log/debugLog_" + date + ".txt";
 //		FileDoUtil.outLog(path);
+		System.out.println("日志内容："+content);
 		outFile(path, content, true);
 	}
 	
@@ -114,6 +115,7 @@ public class FileDoUtil {
 	public static void sqlLog(String content) {
 		String date = StringUtil.getFormateDate("yyyy-MM-dd");
 		String path = getBasePath() + "log/debugLog_" + date + ".sql";
+		System.out.println("日志内容："+content);
 		outFile(path, content, true);
 	}
 	public String pathname = "F:\\ct\\场景：音乐文件+表格";
