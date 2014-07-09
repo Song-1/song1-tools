@@ -10,7 +10,10 @@
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-codec-1.7.jar"/>
 	<classpathentry kind="lib" path="lib/jdom-1.0.jar"/>
-	<classpathentry kind="lib" path="lib/jid3lib-0.5.4.jar" sourcepath="D:/java/jars/jid3lib-0.5.4.src.zip"/>
 	<classpathentry kind="lib" path="lib/poi-3.10-FINAL-20140208.jar"/>
+	<classpathentry kind="lib" path="lib/jid3lib-modify-0.5.4.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io-2.4.jar"/>
+	<classpathentry kind="lib" path="lib/icu4j.jar"/>
+	<classpathentry kind="lib" path="lib/jaudiotagger-2.2.1-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
