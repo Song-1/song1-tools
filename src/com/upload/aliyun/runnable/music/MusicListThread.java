@@ -125,7 +125,7 @@ public class MusicListThread implements Runnable {
 		int spIndex = name.indexOf("-");
 		if(spIndex > 0){
 			m.put("singer", new String(name.substring(0, spIndex)));
-			m.put("name", new String(name.substring(spIndex=1, index)));
+			m.put("name", new String(name.substring(spIndex+1, index)));
 		}else {
 			name = new String(name.substring(0, index));
 			m.put("name", name);
