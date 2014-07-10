@@ -115,13 +115,18 @@ public class MusicListThread implements Runnable {
 	private String saveSongFile(String name, String url, String img) {
 		Map<String, String> m = new HashMap<String, String>();
 		if (mp3Info != null && mp3Info.getSongTitle() != null && !"".equals(mp3Info.getSongTitle().trim())) {
-			m.put("name", mp3Info.getSongTitle());
-			m.put("singer", mp3Info.getArtist());
+			//m.put("name", mp3Info.getSongTitle());
+			//m.put("singer", mp3Info.getArtist());
 			m.put("lyric", mp3Info.getSongLyric());
 			m.put("coderate", mp3Info.getBitRate());
 			m.put("timestate", mp3Info.getTrackLength());
-		} else {
-			int index = name.lastIndexOf(".");
+		} 
+		int index = name.lastIndexOf(".");
+		int spIndex = name.indexOf("-");
+		if(spIndex > 0){
+			m.put("singer", new String(name.substring(0, spIndex)));
+			m.put("name", new String(name.substring(spIndex=1, index)));
+		}else {
 			name = new String(name.substring(0, index));
 			m.put("name", name);
 		}
