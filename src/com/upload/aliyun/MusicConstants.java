@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import com.upload.aliyun.util.FileDoUtil;
+import com.upload.aliyun.util.StringUtil;
 
 /**
  * @author Administrator
@@ -71,6 +72,8 @@ public class MusicConstants {
 	
 	//
 	public static String MUSIC_TIME_TYPE_MAPPING_FILE_PATH = "";
+	
+	public static Map<String,String> MUSIC_LOAD_EXCEL_CELL_MAPING = new HashMap<String, String>();
 	/**
 	 * 加载配置文件
 	 * @throws Exception
@@ -95,6 +98,10 @@ public class MusicConstants {
 			URL_SAVE_DATA_SONG_LIST = p.getProperty("do.save.data.url.songlist");
 			DO_TYPE = p.getProperty("do.save.data.type");
 			FileDoUtil.outLog("需要上传的是:"+DO_TYPE);
+			MUSIC_LOAD_EXCEL_CELL_MAPING.put("listname", p.getProperty("music.songlist.name"));
+			MUSIC_LOAD_EXCEL_CELL_MAPING.put("enverionment", p.getProperty("music.songlist.enverionment"));
+			MUSIC_LOAD_EXCEL_CELL_MAPING.put("category", p.getProperty("music.songlist.category"));
+			MUSIC_LOAD_EXCEL_CELL_MAPING.put("desc", p.getProperty("music.songlist.desc"));
 			MUSIC_TIME_TYPE_MAPPING_FILE_PATH = p.getProperty("music.time.type.mapping.file.path");
 			fIn.close();
 			fIn = null;
@@ -138,4 +145,12 @@ public class MusicConstants {
 		return strb.toString();
 	}
 	
+	public static int getVlaueFromMusicLoadExcelCellMaping(String key){
+		String value = MUSIC_LOAD_EXCEL_CELL_MAPING.get(key);
+		if(StringUtil.isEmptyString(value)){
+			return 0;
+		}else{
+			return Integer.parseInt(value);
+		}
+	}
 }

@@ -14,6 +14,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.omg.CORBA.BooleanHolder;
 
+import com.upload.aliyun.MusicConstants;
 import com.upload.aliyun.util.FileDoUtil;
 import com.upload.aliyun.util.POIUtil;
 
@@ -58,12 +59,14 @@ public class MusicDataGetFromExcel extends POIUtil {
 		if (model == null || str == null) {
 			return;
 		}
-		switch (index) {
-			case 0: model.setListName(str);break;
-			case 1: model.setEnverionment(str);break;
-			case 2: model.setCategory(str);break;
-			case 6: model.setDesc(str);break;
-			default:break;
+		if(index == MusicConstants.getVlaueFromMusicLoadExcelCellMaping("listname") ){
+			model.setListName(str);
+		}else if(index == MusicConstants.getVlaueFromMusicLoadExcelCellMaping("enverionment")){
+			model.setEnverionment(str);
+		}else if(index == MusicConstants.getVlaueFromMusicLoadExcelCellMaping("category")){
+			model.setCategory(str);
+		}else if(index == MusicConstants.getVlaueFromMusicLoadExcelCellMaping("desc")){
+			model.setDesc(str);
 		}
 	}
 

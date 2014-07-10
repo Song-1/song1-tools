@@ -41,6 +41,9 @@ public class StartMain {
 					if(name.endsWith(".xls") ||name.endsWith(".xlsx")){
 						new GetMusicTypeFromExcel().doExcel(file);
 					}
+				}else{
+					System.out.println("歌单分类文件不存在");
+					return ;
 				}
 			}
 			///
