@@ -141,11 +141,17 @@ public class MusicListThread implements Runnable {
 		m.put("name", bookName);
 		m.put("_add_", _add_);
 		m.put("img", imgUrl);
-		m.put("desc", song.getDesc());
-		String enverionment = song.getEnverionment();
-		m.put("enverionment", enverionment);// 环境
-		m.put("category", song.getCategory());// 心情
-		m.put("times", GetMusicTypeFromExcel.getTimes(enverionment));// 心情
+		if(song != null){
+			m.put("desc", song.getDesc());
+			String enverionment = song.getEnverionment();
+			if(StringUtil.isEmptyString(enverionment)){
+				FileDoUtil.outLog("请确认 歌单 :["+bookName+"]对应的Excel文件中的环境列数据是否存在");
+			}else{
+				m.put("times", GetMusicTypeFromExcel.getTimes(enverionment));// 心情
+				m.put("enverionment", enverionment);// 环境
+			}
+			m.put("category", song.getCategory());// 心情
+		}
 		String res = NetWorkUtil.doPost(MusicConstants.URL_SAVE_DATA_SONG_LIST, m, NetWorkUtil.ENCODE);
 		String bookId = JavascriptUtil.getSaveBookResponse(res);
 		if ("success".equalsIgnoreCase(bookId)) {

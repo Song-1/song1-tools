@@ -17,6 +17,7 @@ import org.omg.CORBA.BooleanHolder;
 import com.upload.aliyun.MusicConstants;
 import com.upload.aliyun.util.FileDoUtil;
 import com.upload.aliyun.util.POIUtil;
+import com.upload.aliyun.util.StringUtil;
 
 /**
  * @author Administrator
@@ -101,6 +102,10 @@ public class MusicDataGetFromExcel extends POIUtil {
 	}
 
 	public static MusicDataInfo getObjFormList(String bookName) {
+		if(StringUtil.isEmptyString(bookName)){
+			//FileDoUtil.outLog("歌单名称不能为空");
+			return null;
+		}
 		if (bookList != null) {
 			for (MusicDataInfo book : bookList) {
 				if (book != null && bookName.equals(book.getListName())) {

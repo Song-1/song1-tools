@@ -14,6 +14,7 @@ import org.omg.CORBA.BooleanHolder;
 
 import com.upload.aliyun.util.FileDoUtil;
 import com.upload.aliyun.util.POIUtil;
+import com.upload.aliyun.util.StringUtil;
 
 /**
  * @author Administrator
@@ -59,6 +60,9 @@ public class GetMusicTypeFromExcel  extends POIUtil {
 	}
 
 	public static String getTimes(String bookName) {
+		if(StringUtil.isEmptyString(bookName)){
+			return "";
+		}
 		String str = "";
 		if (bookList != null) {
 			for (MusicTypeDataInfo book : bookList) {
