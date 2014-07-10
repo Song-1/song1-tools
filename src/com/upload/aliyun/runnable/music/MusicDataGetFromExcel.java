@@ -29,7 +29,7 @@ public class MusicDataGetFromExcel extends POIUtil {
 	public static  List<MusicDataInfo> bookList = new ArrayList<MusicDataInfo>();
 
 	public static void main(String[] args) {
-		String path = "E:/樱桃时光/熬夜/熬夜 终.xls";
+		String path = "E:/樱桃时光/每日上传/20140707周一/cherrytime乐库/场景/冲凉/Lounge/relax/relax.xls";
 		File file = new File(path);
 		new MusicDataGetFromExcel().doExcel(file);
 		for(MusicDataInfo model : bookList){
@@ -59,10 +59,10 @@ public class MusicDataGetFromExcel extends POIUtil {
 			return;
 		}
 		switch (index) {
-			case 1: model.setListName(str);break;
-			case 3: model.setEnverionment(str);break;
-			case 4: model.setCategory(str);break;
-			case 7: model.setDesc(str);break;
+			case 0: model.setListName(str);break;
+			case 1: model.setEnverionment(str);break;
+			case 2: model.setCategory(str);break;
+			case 6: model.setDesc(str);break;
 			default:break;
 		}
 	}
