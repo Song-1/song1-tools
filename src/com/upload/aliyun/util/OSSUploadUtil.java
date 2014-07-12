@@ -344,18 +344,22 @@ public class OSSUploadUtil {
 			return false;
 		}
 		int index = key.lastIndexOf("/") + 1;
-		String filePath = new String(key.substring(0, index));
+		String filePath = new String(key.substring(0, index -1 ));
 		String name = new String(key.substring(index));
 		ListObjectsRequest listObjectsRequest = new ListObjectsRequest(bucket);
 		// 设置参数
 		listObjectsRequest.setDelimiter("/");
+		if (!filePath.endsWith("/")) {
+			filePath = filePath + "/";
+		}
 		listObjectsRequest.setPrefix(filePath);
+		listObjectsRequest.setMaxKeys(1000);
 		ObjectListing objectListing = aliyunConnect(listObjectsRequest);
 		// 遍历所有Object
 		for (OSSObjectSummary objectSummary : objectListing.getObjectSummaries()) {
 			String fileName = objectSummary.getKey();
-			fileName = fileName.replace(filePath, "");
-			if (name.equals(fileName)) {
+			String fileName_ = fileName.replace(filePath + "/", "");
+			if (name.equals(fileName_)) {
 				return true;
 			}
 		}

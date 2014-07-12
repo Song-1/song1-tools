@@ -112,7 +112,7 @@ public class StartMain {
 			}
 			long end = System.currentTimeMillis();
 			long times = (end - start) /1000;
-			FileDoUtil.outLog(fileListName + " \t cost:::" + times);
+			FileDoUtil.outLog(fileListName + " \t cost:::" + times +"秒\t\n");
 			//pool.execute(new BooKListThread(fileListName, fileList));			
 		}
 //		pool.shutdown();

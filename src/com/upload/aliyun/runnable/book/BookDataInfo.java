@@ -6,6 +6,8 @@ package com.upload.aliyun.runnable.book;
 import java.util.List;
 import java.util.UUID;
 
+import com.upload.aliyun.util.FileDoUtil;
+
 /**
  * @author Administrator
  *
@@ -91,15 +93,26 @@ public class BookDataInfo {
 		return bookInfo;
 	}
 
+	/**
+	 * 
+	 * @Title: setBookInfo 设置作者演播 
+	 * @param bookInfo    
+	 * void    
+	 * @throws
+	 */
 	public void setBookInfo(String bookInfo) {
 		if (bookInfo != null && !"".equals(bookInfo.trim())) {
 			int index = bookInfo.indexOf(spStr_2);
 			if (index > 0) {
 				setAuthor(new String(bookInfo.substring(index + spStr_2.length())).trim());
 				setPlayer(new String(bookInfo.substring(0, index)).replace(spStr_1, "").trim());
+			}else{
+				FileDoUtil.debugLog("没有作者或者演播或者格式不对");
 			}
+			this.bookInfo = bookInfo;
+		}else{
+			FileDoUtil.debugLog("作者或者演播为空");
 		}
-		this.bookInfo = bookInfo;
 	}
 
 	public String getDesc() {

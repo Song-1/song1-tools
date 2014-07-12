@@ -51,7 +51,7 @@ public class BooKListThread implements Runnable {
 	public void run() {
 		saveBook();
 		if(saveTheBook()){
-			saveBook();
+//			saveBook();
 		}
 	}
 
@@ -91,9 +91,24 @@ public class BooKListThread implements Runnable {
 
 	public void saveData(String name,String key,String sort,File file) {
 //		FileDoUtil.outLog("需要保存的是："+key);
-		key = MusicConstants.SERVER_PATH_ROOT + key;
+		if (!key.startsWith(MusicConstants.SERVER_PATH_ROOT)) {
+			key = MusicConstants.SERVER_PATH_ROOT + key;
+		}
 		FileDoUtil.outLog("需要保存的是（具体路径）："+key);
 		boolean flag = OSSUploadUtil.isObjectExist(MusicConstants.BUKET_NAME, key);
+		if (!flag) {
+			String key_temp = key.substring(0, key.lastIndexOf("/"));
+			String fileName = key.substring(key.lastIndexOf("/") + 1);
+			String key_1 = key_temp + key_temp.substring(key_temp.lastIndexOf("/"))  + "（高品质）/" + fileName;
+			flag = OSSUploadUtil.isObjectExist(MusicConstants.BUKET_NAME, key_1);
+		}
+		
+		if (!flag) {
+			String key_temp = key.substring(0, key.lastIndexOf("/"));
+			String fileName = key.substring(key.lastIndexOf("/") + 1);
+			String key_1 = key_temp + key_temp.substring(key_temp.lastIndexOf("/"))  + "(高品质)/" + fileName;
+			flag = OSSUploadUtil.isObjectExist(MusicConstants.BUKET_NAME, key_1);
+		}
 //		String suffix = key.substring(key.lastIndexOf(".")+1);
 		String url = MusicConstants.getUrl(key);
 		FileDoUtil.outLog(url);
@@ -116,7 +131,7 @@ public class BooKListThread implements Runnable {
 		}
 		String rus = saveBookFile(name, url, sort);
 		String bookId = JavascriptUtil.getSaveBookResponse(rus);
-		FileDoUtil.outLog("书集上传成功:"+rus + ":bookName\t\n");
+		FileDoUtil.outLog("书集上传成功:"+rus + ":"+bookName+"\t\n");
 		addBookId(bookId);
 	}
 	
@@ -141,15 +156,19 @@ public class BooKListThread implements Runnable {
 		m.put("_add_", _add_);
 		m.put("img", imgUrl);
 		m.put("desc", book.getDesc());
-		m.put("author", book.getAuthor());
-		m.put("player", book.getPlayer());
+		String author = book.getAuthor();
+		String player = book.getPlayer();
+		m.put("author", author);
+		m.put("player", player);
 		String res = NetWorkUtil.doPost(MusicConstants.URL_SAVE_DATA_BOOK_LIST, m, NetWorkUtil.ENCODE);
 		String bookId = JavascriptUtil.getSaveBookResponse(res);
+		if (StringUtil.isEmptyString(author) || StringUtil.isEmptyString(player)) {
+			FileDoUtil.debugLog("书单作者或者演播为空:" + bookId  + ":"+book.toString()+"\t\n");
+		}
 		if("success".equalsIgnoreCase(bookId)){
-			FileDoUtil.outLog("书单上传成功:"+bookId + ":bookName\t\n");
 			return true;
 		}
-		FileDoUtil.outLog("书单上传失败:"+bookId + ":bookName\t\n");
+		FileDoUtil.debugLog("书单上传失败:"+bookId + ":"+book.toString()+"\t\n");
 		return false;
 	}
 	
