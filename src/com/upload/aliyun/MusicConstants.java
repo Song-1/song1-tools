@@ -92,6 +92,9 @@ public class MusicConstants {
 			}
 			FileDoUtil.outLog("SERVER_PATH_ROOT:"+SERVER_PATH_ROOT);
 			BASE_FILE_PATH = p.getProperty("upload.from.file.path").replace("/", File.separator);
+			if (!BASE_FILE_PATH.endsWith("/")) {
+				BASE_FILE_PATH = BASE_FILE_PATH + "/";
+			}
 			URL_SAVE_DATA_BOOK = p.getProperty("do.save.data.url.book");
 			URL_SAVE_DATA_BOOK_LIST = p.getProperty("do.save.data.url.booklist");
 			URL_SAVE_DATA_SONG = p.getProperty("do.save.data.url.song");

@@ -358,7 +358,7 @@ public class OSSUploadUtil {
 		// 遍历所有Object
 		for (OSSObjectSummary objectSummary : objectListing.getObjectSummaries()) {
 			String fileName = objectSummary.getKey();
-			String fileName_ = fileName.replace(filePath + "/", "");
+			String fileName_ = fileName.replace(filePath, "");
 			if (name.equals(fileName_)) {
 				return true;
 			}
@@ -386,7 +386,8 @@ public class OSSUploadUtil {
 		} catch (Exception e) {
 			FileDoUtil.outLog("阿里云第" + a + "次连接错误：" + e.getMessage());
 			e.printStackTrace();
-			if (a <= 100) {
+			if (a <= 10000) {
+				a++;
 				objectListing = aliyunConnect(listObjectsRequest, a);
 			}
 		}

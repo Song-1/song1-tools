@@ -129,12 +129,25 @@ public class BooKListThread implements Runnable {
 			}
 			return;
 		}
+		if (isNumber(name)) {
+			String[] split = url.split("/");
+			name = split[3] + "-" + name;
+		}
 		String rus = saveBookFile(name, url, sort);
 		String bookId = JavascriptUtil.getSaveBookResponse(rus);
 		FileDoUtil.outLog("书集上传成功:"+rus + ":"+bookName+"\t\n");
 		addBookId(bookId);
 	}
 	
+	 public boolean isNumber(String str){
+	        java.util.regex.Pattern pattern=java.util.regex.Pattern.compile("^[0-9]+$");
+	        java.util.regex.Matcher match=pattern.matcher(str);
+	        if(match.matches()==false){
+	             return false;
+	        }else{
+	             return true;
+	        }
+	    }
 	private void addBookId(String bookId){
 		_add_+= bookId+ ",";
 	}
