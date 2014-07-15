@@ -49,8 +49,7 @@ public class OSSUploadUtil {
 	 */
 	public static void init() {
 		ClientConfiguration config = new ClientConfiguration();
-		client = new OSSClient(MusicConstants.PROTOCOL + MusicConstants.ALIYUN_IMAGE_HOST,
-				MusicConstants.ALIYUN_ACCESSKEYID, MusicConstants.ALIYUN_ACCESSKEYSECRET, config);
+		client = new OSSClient(MusicConstants.PROTOCOL + MusicConstants.ALIYUN_IMAGE_HOST, MusicConstants.ALIYUN_ACCESSKEYID, MusicConstants.ALIYUN_ACCESSKEYSECRET, config);
 	}
 
 	public static String generateAliyunURL(String bucket, String key, long expirationTimes) {
@@ -134,8 +133,7 @@ public class OSSUploadUtil {
 				if (key.equals(multipartUpload.getKey())) {
 					isBreakPointUploadFlag = true;
 					uploadId = multipartUpload.getUploadId();
-					ListPartsRequest listPartsRequest = new ListPartsRequest(bucketName, multipartUpload.getKey(),
-							uploadId);
+					ListPartsRequest listPartsRequest = new ListPartsRequest(bucketName, multipartUpload.getKey(), uploadId);
 					// 获取上传的所有Part信息
 					PartListing partListing = client.listParts(listPartsRequest);
 					partSummaryList = partListing.getParts();
@@ -166,8 +164,7 @@ public class OSSUploadUtil {
 						}
 					}
 				}
-				pool.execute(new UploadPartThread(client, bucketName, key, new FileInputStream(uploadFile), uploadId,
-						partNumber, PART_SIZE * i, curPartSize, eTags));
+				pool.execute(new UploadPartThread(client, bucketName, key, new FileInputStream(uploadFile), uploadId, partNumber, PART_SIZE * i, curPartSize, eTags));
 			}
 
 			pool.shutdown();
@@ -192,28 +189,24 @@ public class OSSUploadUtil {
 	}
 
 	// 初始化一个Multi-part upload请求。
-	private static String initMultipartUpload(OSSClient client, String bucketName, String key) throws OSSException,
-			ClientException {
+	private static String initMultipartUpload(OSSClient client, String bucketName, String key) throws OSSException, ClientException {
 		InitiateMultipartUploadResult initResult = getMultipartUpload(client, bucketName, key);
 		String uploadId = initResult.getUploadId();
 		return uploadId;
 	}
 
 	// 初始化一个Multi-part upload请求。
-	private static InitiateMultipartUploadResult getMultipartUpload(OSSClient client, String bucketName, String key)
-			throws OSSException, ClientException {
+	private static InitiateMultipartUploadResult getMultipartUpload(OSSClient client, String bucketName, String key) throws OSSException, ClientException {
 		InitiateMultipartUploadRequest initUploadRequest = new InitiateMultipartUploadRequest(bucketName, key);
 		InitiateMultipartUploadResult initResult = client.initiateMultipartUpload(initUploadRequest);
 		return initResult;
 	}
 
 	// 完成一个multi-part请求。
-	private static void completeMultipartUpload(OSSClient client, String bucketName, String key, String uploadId,
-			List<PartETag> eTags) throws OSSException, ClientException {
+	private static void completeMultipartUpload(OSSClient client, String bucketName, String key, String uploadId, List<PartETag> eTags) throws OSSException, ClientException {
 		// 为part按partnumber排序
 		Collections.sort(eTags, new EtagComparator());
-		CompleteMultipartUploadRequest completeMultipartUploadRequest = new CompleteMultipartUploadRequest(bucketName,
-				key, uploadId, eTags);
+		CompleteMultipartUploadRequest completeMultipartUploadRequest = new CompleteMultipartUploadRequest(bucketName, key, uploadId, eTags);
 		client.completeMultipartUpload(completeMultipartUploadRequest);
 	}
 
@@ -234,8 +227,7 @@ public class OSSUploadUtil {
 		private OSSClient client;
 		private String uploadId;
 
-		UploadPartThread(OSSClient client, String bucket, String object, FileInputStream uploadFile, String uploadId,
-				int partId, long start, long partSize, List<PartETag> eTags) {
+		UploadPartThread(OSSClient client, String bucket, String object, FileInputStream uploadFile, String uploadId, int partId, long start, long partSize, List<PartETag> eTags) {
 			this.uploadFile = uploadFile;
 			this.bucket = bucket;
 			this.object = object;
@@ -339,12 +331,18 @@ public class OSSUploadUtil {
 		return false;
 	}
 
+	/**
+	 * 判断阿里云服务器指定bucket下面是否存在此key值的文件 .<br>
+	 * @param bucket
+	 * @param key
+	 * @return
+	 */
 	public static boolean isObjectExist(String bucket, String key) {
 		if (key == null || "".equals(key.trim())) {
 			return false;
 		}
 		int index = key.lastIndexOf("/") + 1;
-		String filePath = new String(key.substring(0, index -1 ));
+		String filePath = new String(key.substring(0, index - 1));
 		String name = new String(key.substring(index));
 		ListObjectsRequest listObjectsRequest = new ListObjectsRequest(bucket);
 		// 设置参数
@@ -353,21 +351,29 @@ public class OSSUploadUtil {
 			filePath = filePath + "/";
 		}
 		listObjectsRequest.setPrefix(filePath);
-		listObjectsRequest.setMaxKeys(1000);
-		ObjectListing objectListing = aliyunConnect(listObjectsRequest);
-		// 遍历所有Object
-		for (OSSObjectSummary objectSummary : objectListing.getObjectSummaries()) {
-			String fileName = objectSummary.getKey();
-			String fileName_ = fileName.replace(filePath, "");
-			if (name.equals(fileName_)) {
-				return true;
+		listObjectsRequest.setMaxKeys(500);
+		ObjectListing objectListing = null;
+		// int rrrindex = 0;
+		String NextMarker = "";
+		while (true) {
+			listObjectsRequest.setMarker(NextMarker);
+			objectListing = aliyunConnect(listObjectsRequest);
+			NextMarker = objectListing.getNextMarker();
+			// 遍历所有Object
+			for (OSSObjectSummary objectSummary : objectListing.getObjectSummaries()) {
+				String fileName = objectSummary.getKey();
+				// FileDoUtil.outLog(fileName + "  index :::: " + rrrindex);
+				String fileName_ = fileName.replace(filePath, "");
+				if (name.equals(fileName_)) {
+					return true;
+				}
+				// rrrindex++;
+			}
+			if (!objectListing.isTruncated()) {
+				break;
 			}
 		}
 		return false;
-	}
-
-	private static ObjectListing aliyunConnect(ListObjectsRequest listObjectsRequest) {
-		return aliyunConnect(listObjectsRequest, 1);
 	}
 
 	/**
@@ -375,20 +381,22 @@ public class OSSUploadUtil {
 	 * @Title: aliyunConnect 当阿里云断线的时候重连,重连100次放弃
 	 * @param listObjectsRequest
 	 * @param a
-	 * @return    
-	 * ObjectListing    
+	 * @return ObjectListing
 	 * @throws
 	 */
-	private static ObjectListing aliyunConnect(ListObjectsRequest listObjectsRequest, int a) {
+	private static ObjectListing aliyunConnect(ListObjectsRequest listObjectsRequest) {
 		ObjectListing objectListing = null;
-		try {
-			objectListing = client.listObjects(listObjectsRequest);
-		} catch (Exception e) {
-			FileDoUtil.outLog("阿里云第" + a + "次连接错误：" + e.getMessage());
-			e.printStackTrace();
-			if (a <= 10000) {
-				a++;
-				objectListing = aliyunConnect(listObjectsRequest, a);
+		int CONNECT_COUNT = 0;
+		while (objectListing == null || CONNECT_COUNT < 100) {
+			try {
+				Thread.sleep(10000); // 线程沉睡10秒
+				FileDoUtil.outLog("阿里云第" + (++CONNECT_COUNT) + "次连接");
+				objectListing = client.listObjects(listObjectsRequest);
+				if (objectListing != null) {
+					break;
+				}
+			} catch (Exception e) {
+				FileDoUtil.outLog("阿里云第" + (++CONNECT_COUNT) + "次连接错误：" + e.getMessage());
 			}
 		}
 		return objectListing;
@@ -402,11 +410,9 @@ public class OSSUploadUtil {
 	 * @param destinationBucketName
 	 * @param destinationKey
 	 */
-	public static void copyObject(String sourceBucketName, String sourceKey, String destinationBucketName,
-			String destinationKey) {
+	public static void copyObject(String sourceBucketName, String sourceKey, String destinationBucketName, String destinationKey) {
 		if (client != null) {
-			CopyObjectResult result = client.copyObject(sourceBucketName, sourceKey, destinationBucketName,
-					destinationKey);
+			CopyObjectResult result = client.copyObject(sourceBucketName, sourceKey, destinationBucketName, destinationKey);
 			FileDoUtil.outLog("[File Copy]Etag:::" + result.getETag());
 		}
 	}
