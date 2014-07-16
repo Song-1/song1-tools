@@ -172,7 +172,6 @@ public class EnjoyFileEachUtil {
 					}
 				}
 			} else {
-				System.out.println(parentFloderName + "   " + floders);
 				addMappings(parentFloderName, file);
 			}
 		}

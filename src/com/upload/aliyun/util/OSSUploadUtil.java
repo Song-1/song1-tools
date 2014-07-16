@@ -389,7 +389,13 @@ public class OSSUploadUtil {
 	private static ObjectListing aliyunConnect(ListObjectsRequest listObjectsRequest) {
 		ObjectListing objectListing = null;
 		int CONNECT_COUNT = 0;
-		while (objectListing == null || CONNECT_COUNT < 100) {
+		try {
+			FileDoUtil.outLog("阿里云第" + (++CONNECT_COUNT) + "次连接");
+			objectListing = client.listObjects(listObjectsRequest);
+		} catch (Exception e) {
+			FileDoUtil.outLog("阿里云第" + (++CONNECT_COUNT) + "次连接错误：" + e.getMessage());
+		}
+		while (objectListing == null && CONNECT_COUNT < 100) {
 			try {
 				Thread.sleep(10000); // 线程沉睡10秒
 				FileDoUtil.outLog("阿里云第" + (++CONNECT_COUNT) + "次连接");

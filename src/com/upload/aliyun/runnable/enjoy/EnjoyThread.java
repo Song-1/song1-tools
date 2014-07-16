@@ -46,6 +46,7 @@ public class EnjoyThread {
 
 	// // 专辑歌曲
 	private static String saveAlbumSongs(List<File> songFiles) {
+		FileDoUtil.outLog(" [保存] 专辑歌曲");
 		String addId = "";
 		String funcName = "addalbumsong";
 		if(songFiles != null){
@@ -80,6 +81,10 @@ public class EnjoyThread {
 
 	// // 专辑所属歌手的所属地域
 	private static String saveSingerType(String singerTypeName) {
+		if(StringUtil.isEmptyString(singerTypeName)){
+			return null;
+		}
+		FileDoUtil.outLog(" [保存] 专辑所属歌手的所属地域");
 		String id = null;
 		String funcName = "addsingertype";
 		Map<String, String> map = new HashMap<String, String>();
@@ -94,6 +99,7 @@ public class EnjoyThread {
 		if(StringUtil.isEmptyString(singerName)){
 			return null;
 		}
+		FileDoUtil.outLog(" [保存] 专辑所属歌手");
 		String id = null;
 		String funcName = "addsinger";
 		Map<String, String> map = new HashMap<String, String>();
@@ -111,6 +117,7 @@ public class EnjoyThread {
 		if(StringUtil.isEmptyString(style)){
 			return null;
 		}
+		FileDoUtil.outLog(" [保存] 专辑所属风格");
 		String id = null;
 		String funcName = "addalbumstyle";
 		Map<String, String> map = new HashMap<String, String>();
@@ -127,12 +134,13 @@ public class EnjoyThread {
 		}else if(StringUtil.isEmptyString(data.getAlbumName())){
 			return null;
 		}
+		String name = data.getAlbumName();
+		FileDoUtil.outLog(" [保存] 专辑 :::" + name + " ==========  开始   =============   ");
 		String singerTypeId = saveSingerType(GetSingerInfoDataFromExcel.getMappingValue(data.getSingerName()));
 		String singerId = saveSinger(singerTypeId,data.getSingerName());
 		String addIds = saveAlbumSongs(data.getAlbumSongs());
 		String albumStyleId = saveAlbumStyle(data.getStyleName());
 		List<File> images = data.getAlbumImages();
-		String name = data.getAlbumName();
 		String imageURL = null;
 		String iconURL = null;
 		if(images != null){
@@ -165,6 +173,7 @@ public class EnjoyThread {
 		map.put("styleId", albumStyleId);
 		map.put("singerId", singerId);
 		NetWorkUtil.doPost(BASEPATH + funcName, map, NetWorkUtil.ENCODE);
+		FileDoUtil.outLog(" [保存] 专辑 :::" + name + " ==========  结束   =============");
 //		String content = NetWorkUtil.doPost(BASEPATH + funcName, map, NetWorkUtil.ENCODE);
 		//id = JavascriptUtil.getSaveEnjoyResponse(content);
 		return id;
