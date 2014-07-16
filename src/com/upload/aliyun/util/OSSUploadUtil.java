@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -70,9 +71,9 @@ public class OSSUploadUtil {
 	 * @param key
 	 * @param uploadFile
 	 * @return
-	 * @throws FileNotFoundException
+	 * @throws IOException 
 	 */
-	public static String uploadObject(String bucket, String key, File uploadFile) throws FileNotFoundException {
+	public static String uploadObject(String bucket, String key, File uploadFile) throws IOException {
 		String suffix = key.substring(key.lastIndexOf(".") + 1);
 		FileInputStream fin = new FileInputStream(uploadFile);
 		// 创建上传Object的Metadata
@@ -84,6 +85,7 @@ public class OSSUploadUtil {
 		}
 		meta.setContentType(contentType);
 		PutObjectResult result = client.putObject(bucket, key, fin, meta);
+		fin.close();
 		return result.getETag();
 	}
 

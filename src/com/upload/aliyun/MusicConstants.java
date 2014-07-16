@@ -74,6 +74,7 @@ public class MusicConstants {
 	public static String MUSIC_TIME_TYPE_MAPPING_FILE_PATH = "";
 	
 	public static Map<String,String> MUSIC_LOAD_EXCEL_CELL_MAPING = new HashMap<String, String>();
+	public static Properties CONFIG_PROPERTIES = null;
 	/**
 	 * 加载配置文件
 	 * @throws Exception
@@ -106,10 +107,21 @@ public class MusicConstants {
 			MUSIC_LOAD_EXCEL_CELL_MAPING.put("category", p.getProperty("music.songlist.category"));
 			MUSIC_LOAD_EXCEL_CELL_MAPING.put("desc", p.getProperty("music.songlist.desc"));
 			MUSIC_TIME_TYPE_MAPPING_FILE_PATH = p.getProperty("music.time.type.mapping.file.path");
+			CONFIG_PROPERTIES = p;
 			fIn.close();
 			fIn = null;
 		}else{
 			FileDoUtil.outLog("[error]the file not found......");
+		}
+	}
+	
+	public static String getPropertyValue(String key){
+		if(StringUtil.isEmptyString(key)){
+			return null;
+		}else if(CONFIG_PROPERTIES == null){
+			return null;
+		}else{
+			return CONFIG_PROPERTIES.getProperty(key);
 		}
 	}
 	

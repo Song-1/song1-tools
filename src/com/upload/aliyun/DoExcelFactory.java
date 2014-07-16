@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.upload.aliyun.runnable.book.BookDataGetFromExcel;
+import com.upload.aliyun.runnable.enjoy.GetSingerInfoDataFromExcel;
 import com.upload.aliyun.runnable.music.MusicDataGetFromExcel;
 import com.upload.aliyun.util.POIUtil;
 
@@ -20,6 +21,7 @@ public class DoExcelFactory {
 	static{
 		keyObjetMap.put("book", new BookDataGetFromExcel());
 		keyObjetMap.put("music", new MusicDataGetFromExcel());
+		keyObjetMap.put("enjoy", new GetSingerInfoDataFromExcel());
 	}
 	
 	public static POIUtil getBean(){

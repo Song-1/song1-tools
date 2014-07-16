@@ -59,5 +59,21 @@ public class JavascriptUtil {
 		}
 		return bookid;
 	}
+	/**
+	 * 获取保存享CD数据时返回的json数据里面的Id
+	 * @param returnJsonStr
+	 * @return
+	 */
+	public static String getSaveEnjoyResponse(String returnJsonStr){
+		String bookid = null;
+		try {
+			bookid = (String) invoke.invokeFunction("getDoSaveEnjoyResponseId", returnJsonStr);
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch (ScriptException e) {
+			e.printStackTrace();
+		}
+		return bookid;
+	}
 
 }

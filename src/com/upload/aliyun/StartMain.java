@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.upload.aliyun.runnable.enjoy.EnjoyFileEachUtil;
 import com.upload.aliyun.runnable.music.GetMusicTypeFromExcel;
 import com.upload.aliyun.util.FileDoUtil;
 import com.upload.aliyun.util.JavascriptUtil;
@@ -24,17 +25,15 @@ public class StartMain {
 
 	public static void main(String[] args) {
 		try {
-			// // 初始化操作
 			// /// 加载配置文件
 			MusicConstants.loadConfig();
 			OSSUploadUtil.init();
-//			String key = "test/樱桃时光/熬夜/思念的/回忆里的青春/song.mp3";
-//			String url = OSSUploadUtil.generateAliyunURL(MusicConstants.BUKET_NAME, key, 10000L);
-//			FileDoUtil.outLog(url);
 			JavascriptUtil.init();
-			
 			//
-			if("music".equals(MusicConstants.DO_TYPE)){
+			if("enjoy".equals(MusicConstants.DO_TYPE)){
+				EnjoyFileEachUtil.doEnjoy();
+				return;
+			}else if("music".equals(MusicConstants.DO_TYPE)){
 				File file = new File(MusicConstants.MUSIC_TIME_TYPE_MAPPING_FILE_PATH);
 				if(file.exists()){
 					String name = file.getName();

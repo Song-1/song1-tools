@@ -11,6 +11,7 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.omg.CORBA.BooleanHolder;
 
@@ -35,7 +36,7 @@ public abstract class POIUtil {
 			return;
 		}
 		if (file.exists()) {
-			FileInputStream fIn;
+			FileInputStream fIn = null;
 			try {
 				fIn = new FileInputStream(file);
 				HSSFWorkbook hssfWorkbook = new HSSFWorkbook(fIn);
@@ -48,6 +49,17 @@ public abstract class POIUtil {
 			} catch (Exception e) {
 				FileDoUtil.outLog("读取Excel[" + file.getAbsolutePath() + "]文件发生异常.............");
 				e.printStackTrace();
+			}finally{
+				if(fIn != null){
+					try{
+						fIn.close();
+					}catch(Exception e){
+						FileDoUtil.outLog("关闭Excel[" + file.getAbsolutePath() + "]文件流发生异常.............");
+						e.printStackTrace();
+					}finally{
+						fIn = null;
+					}
+				}
 			}
 
 		}
@@ -150,7 +162,7 @@ public abstract class POIUtil {
 	 * @param cell
 	 * @return
 	 */
-	public static String getCellValue(HSSFCell cell) {
+	public static String getCellValue(Cell cell) {
 		if (cell == null) {
 			return null;
 		}

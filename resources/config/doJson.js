@@ -23,6 +23,19 @@ function getDoSaveResponseId(data){
 	}
 	return null;
 }
+
+/**
+ * 获取保存操作之后返回的数据里面的ID
+ * @param data
+ * @returns
+ */
+function getDoSaveEnjoyResponseId(data){
+	var json_obj = getJsonObject(data);
+	if(json_obj != null && "1000" == json_obj.status){
+		return ""+json_obj.data;
+	}
+	return null;
+}
 // test rebase
 function doTheJsonGetCount(data){
 	var result_str = "";

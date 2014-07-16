@@ -67,6 +67,21 @@ public class StringUtil {
 	public static boolean isEmptyString(String str) {
 		return (str == null) || (str.trim().equals(""));
 	}
+	
+	/**
+	 * 判断是否匹配指定的正则表达式
+	 * @param str
+	 * @param reg
+	 * @return
+	 */
+	public static boolean isMatchReg(String str,String reg){
+		if(isEmptyString(str)){
+			return false;
+		}
+		Pattern p = Pattern.compile(reg);  
+		Matcher m = p.matcher(str); 
+		return m.find();
+	}
 
 	public static void main(String[] args) throws Exception {
 		String url = "http://testupload2.oss-cn-hangzhou.aliyuncs.com/test/状元听书/状元听书/职场培训/职场提升/如何成为一个成功的职业经理人/如何成为一个成功的职业经理人（高品质）/如何成为一个成功的职业经理人1.mp3";

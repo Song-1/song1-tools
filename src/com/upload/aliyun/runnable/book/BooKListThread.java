@@ -123,7 +123,7 @@ public class BooKListThread implements Runnable {
 					FileDoUtil.outLog("上传文件中。。。:"+file.getAbsolutePath());
 					OSSUploadUtil.uploadObject(MusicConstants.BUKET_NAME, key, file);
 					FileDoUtil.outLog("上传完毕:"+file.getAbsolutePath());
-				} catch (FileNotFoundException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}

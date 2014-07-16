@@ -21,7 +21,7 @@ import java.util.Map;
 public class NetWorkUtil {
 
 	public static String ENCODE = "UTF-8";
-	public static int TIME_OUT = 10000; // 超时时长(毫秒)
+	public static int TIME_OUT = 30000; // 超时时长(毫秒)
 
 	/**
 	 * @param args

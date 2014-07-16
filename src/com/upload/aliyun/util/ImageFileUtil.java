@@ -27,7 +27,7 @@ public class ImageFileUtil {
 	 * @return
 	 */
 	public static boolean isImageFile(String filePath) {
-		if (filePath == null || "".equals(filePath.trim())) {
+		if (StringUtil.isEmptyString(filePath)) {
 			return false;
 		}
 		for (String suffix : imageSuffix) {
@@ -69,6 +69,7 @@ public class ImageFileUtil {
 
 	/**
 	 * 上传歌曲的图片
+	 * 
 	 * @param mp3filepath
 	 * @return
 	 */
@@ -93,13 +94,55 @@ public class ImageFileUtil {
 				e.printStackTrace();
 			}
 		}
-		FileDoUtil.debugLog("歌曲图片:"+imageURL);
+		FileDoUtil.debugLog("歌曲图片:" + imageURL);
+		return imageURL;
+	}
+
+	public static String cutImageAndUpload(String bucket,String baseFilePath,File file,boolean isCutImage) {
+		String imageURL = null;
+		String tempImage = null;
+		if(StringUtil.isEmptyString(baseFilePath)){
+			baseFilePath = MusicConstants.BASE_FILE_PATH;
+		}
+		if(StringUtil.isEmptyString(bucket)){
+			bucket = MusicConstants.BUKET_NAME;
+		}
+		if(isCutImage){
+			tempImage =ImageDoUtil.cutImage(file);
+		}else{
+			tempImage = file.getAbsolutePath();
+		}
+		if (!StringUtil.isEmptyString(tempImage)) {
+			File tempImageFile = new File(tempImage);
+			try {
+				if (tempImageFile.exists()) {
+					tempImage = tempImage.replace(baseFilePath, "");
+					if(tempImage.startsWith(File.separator)){
+						tempImage = new String(tempImage.substring(File.separator.length()));
+					}else if(tempImage.startsWith("/")){
+						tempImage = new String(tempImage.substring(1));
+					}
+					imageURL = tempImage.replace(File.separator, "/");
+					if (!OSSUploadUtil.isObjectExist(bucket, imageURL)) {
+						FileDoUtil.debugLog(bucket + " bucket 下面的 " + imageURL + "不存在，正在上传中...");
+						OSSUploadUtil.uploadObject(bucket, imageURL, tempImageFile);
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			if(isCutImage){
+				tempImageFile.delete();
+			}
+		}
+		if(isCutImage)
+		FileDoUtil.debugLog("歌曲图片:" + imageURL);
 		return imageURL;
 	}
 
 	// // test
 	public static void main(String[] args) {
-		
+
 	}
 
 }
