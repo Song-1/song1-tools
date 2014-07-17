@@ -1,4 +1,4 @@
-package com.tools.song1.view;
+package com.tools.song1.view.enjoy;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -14,6 +14,7 @@ import org.eclipse.wb.swt.SWTResourceManager;
 
 import com.tools.song1.util.StringUtil;
 import com.tools.song1.util.ViewFileDoUtil;
+import com.tools.song1.view.MainView;
 import com.upload.aliyun.MusicConstants;
 import com.upload.aliyun.runnable.enjoy.EnjoyFileEachUtil;
 import com.upload.aliyun.runnable.enjoy.EnjoyThread;

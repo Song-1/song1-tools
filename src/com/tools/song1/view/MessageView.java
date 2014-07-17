@@ -55,11 +55,10 @@ public class MessageView {
 	 */
 	protected void createContents(String str) {
 		shell = new Shell();
-		shell.setSize(450, 300);
 		shell.setText("SWT Application");
-		shell.setSize(341, 227);
+		shell.setSize(341, 210);
 		shell.setText("操作提示");
-		shell.setLayout(new GridLayout(2, false));
+		shell.setLayout(new GridLayout(1, false));
 		new Label(shell, SWT.NONE);
 		new Label(shell, SWT.NONE);
 		
@@ -68,15 +67,14 @@ public class MessageView {
 		text.setForeground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_FOREGROUND));
 		text.setEditable(false);
 		text.setText(str);
-		GridData gd_text = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
-		gd_text.widthHint = 327;
-		gd_text.heightHint = 77;
-		text.setLayoutData(gd_text);
+//		gd_text.widthHint = 327;
+//		gd_text.heightHint = 77;
+		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		new Label(shell, SWT.NONE);
 		new Label(shell, SWT.NONE);
 		
 		Button btnNewButton = new Button(shell, SWT.NONE);
-		GridData gd_btnNewButton = new GridData(SWT.CENTER, SWT.CENTER, false, false, 2, 1);
+		GridData gd_btnNewButton = new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1);
 		gd_btnNewButton.heightHint = 32;
 		gd_btnNewButton.widthHint = 93;
 		btnNewButton.setLayoutData(gd_btnNewButton);
