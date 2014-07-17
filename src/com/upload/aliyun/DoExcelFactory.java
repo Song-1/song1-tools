@@ -6,10 +6,10 @@ package com.upload.aliyun;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.tools.song1.util.POIUtil;
 import com.upload.aliyun.runnable.book.BookDataGetFromExcel;
 import com.upload.aliyun.runnable.enjoy.GetSingerInfoDataFromExcel;
 import com.upload.aliyun.runnable.music.MusicDataGetFromExcel;
-import com.upload.aliyun.util.POIUtil;
 
 /**
  * @author Administrator

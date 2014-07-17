@@ -12,7 +12,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 
-import com.upload.aliyun.util.StringUtil;
+import com.tools.song1.util.StringUtil;
 
 public class MessageView {
 

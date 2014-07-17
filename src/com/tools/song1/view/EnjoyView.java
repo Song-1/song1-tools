@@ -14,12 +14,12 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 
+import com.tools.song1.util.FileDoUtil;
+import com.tools.song1.util.StringUtil;
 import com.upload.aliyun.MusicConstants;
 import com.upload.aliyun.runnable.enjoy.EnjoyFileEachUtil;
 import com.upload.aliyun.runnable.enjoy.EnjoyThread;
 import com.upload.aliyun.runnable.enjoy.EnjoyToDoType;
-import com.upload.aliyun.util.FileDoUtil;
-import com.upload.aliyun.util.StringUtil;
 
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.jface.viewers.ComboViewer;

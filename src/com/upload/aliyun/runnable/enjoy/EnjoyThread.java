@@ -10,11 +10,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.upload.aliyun.util.FileDoUtil;
-import com.upload.aliyun.util.ImageFileUtil;
-import com.upload.aliyun.util.JavascriptUtil;
-import com.upload.aliyun.util.NetWorkUtil;
-import com.upload.aliyun.util.StringUtil;
+import com.tools.song1.util.FileDoUtil;
+import com.tools.song1.util.ImageFileUtil;
+import com.tools.song1.util.JavascriptUtil;
+import com.tools.song1.util.NetWorkUtil;
+import com.tools.song1.util.StringUtil;
 
 /**
  * @author Administrator
