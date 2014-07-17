@@ -125,7 +125,7 @@ public class EnjoyFileEachUtil {
 //						if(flag){
 //							data.addSongs(file);
 //						}
-						data.addSongs(file);
+						data.addSongs(key,file);
 					}else if(ImageFileUtil.isImageFile(file.getAbsolutePath())){
 						data.addImages(file);
 					}else{

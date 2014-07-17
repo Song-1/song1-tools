@@ -45,12 +45,13 @@ public class EnjoyThread {
 	}
 
 	// // 专辑歌曲
-	private static String saveAlbumSongs(List<File> songFiles) {
+	private static String saveAlbumSongs(Map<String,File> songFiles) {
 		FileDoUtil.outLog(" [保存] 专辑歌曲");
 		String addId = "";
 		String funcName = "addalbumsong";
 		if(songFiles != null){
-			for (File file : songFiles) {
+			for(Map.Entry<String, File> entry : songFiles.entrySet()){
+				File file = entry.getValue();
 				if(file == null){
 					continue;
 				}else if(!file.exists()){
@@ -67,7 +68,7 @@ public class EnjoyThread {
 					map.put("name", name);
 					//map.put("timeState", "04:39");
 //					map.put("lyric", "test");
-//					map.put("url", "/sfs/sfsf/s/test");
+					map.put("url", entry.getKey());
 //					map.put("codeRate", "128");
 					map.put("seat", Integer.parseInt(seatStr)+"");
 					String content = NetWorkUtil.doPost(BASEPATH + funcName, map, NetWorkUtil.ENCODE);
