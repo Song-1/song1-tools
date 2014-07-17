@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.upload.aliyun.util;
+package com.tools.song1.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;

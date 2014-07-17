@@ -12,12 +12,12 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 
+import com.tools.song1.util.StringUtil;
+import com.tools.song1.util.ViewFileDoUtil;
 import com.upload.aliyun.MusicConstants;
 import com.upload.aliyun.runnable.enjoy.EnjoyFileEachUtil;
 import com.upload.aliyun.runnable.enjoy.EnjoyThread;
 import com.upload.aliyun.runnable.enjoy.EnjoyToDoType;
-import com.upload.aliyun.util.FileDoUtil;
-import com.upload.aliyun.util.StringUtil;
 
 public class EnjoyComposite extends Composite {
 	protected Composite shlcd;
@@ -98,7 +98,7 @@ public class EnjoyComposite extends Composite {
 		// /// event
 		btnNewButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				String singerTypeFloder = FileDoUtil.folderDig(shlcd.getShell());
+				String singerTypeFloder = ViewFileDoUtil.folderDig(shlcd.getShell());
 				if (!StringUtil.isEmptyString(singerTypeFloder)) {
 					text.setText(singerTypeFloder);
 				}
@@ -125,7 +125,7 @@ public class EnjoyComposite extends Composite {
 		btnNewButton_1.setText("选择");
 		btnNewButton_1.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				String albumStyleFloder = FileDoUtil.folderDig(shlcd.getShell());
+				String albumStyleFloder = ViewFileDoUtil.folderDig(shlcd.getShell());
 				if (!StringUtil.isEmptyString(albumStyleFloder)) {
 					text_1.setText(albumStyleFloder);
 				}

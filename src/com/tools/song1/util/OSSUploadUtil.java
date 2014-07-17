@@ -1,4 +1,4 @@
-package com.upload.aliyun.util;
+package com.tools.song1.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;

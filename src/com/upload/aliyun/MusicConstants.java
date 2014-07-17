@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import com.upload.aliyun.util.FileDoUtil;
-import com.upload.aliyun.util.StringUtil;
+import com.tools.song1.util.FileDoUtil;
+import com.tools.song1.util.StringUtil;
 
 /**
  * @author Administrator

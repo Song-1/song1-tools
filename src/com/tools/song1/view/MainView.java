@@ -6,9 +6,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+import com.tools.song1.util.JavascriptUtil;
+import com.tools.song1.util.OSSUploadUtil;
 import com.upload.aliyun.MusicConstants;
-import com.upload.aliyun.util.JavascriptUtil;
-import com.upload.aliyun.util.OSSUploadUtil;
 
 public class MainView {
 

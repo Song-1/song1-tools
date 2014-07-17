@@ -13,8 +13,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 
+import com.tools.song1.util.StringUtil;
 import com.upload.aliyun.MusicConstants;
-import com.upload.aliyun.util.StringUtil;
 
 public class MenuComposite extends Composite {
 	private Text text;

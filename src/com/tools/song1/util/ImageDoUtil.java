@@ -6,7 +6,7 @@
  * @date 2014年7月1日 上午9:34:33 
  * @version V1  
  */
-package com.upload.aliyun.util;
+package com.tools.song1.util;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
