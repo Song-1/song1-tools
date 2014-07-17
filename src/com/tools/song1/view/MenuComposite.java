@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import com.tools.song1.util.StringUtil;
+import com.tools.song1.view.enjoy.EnjoyComposite;
 import com.upload.aliyun.MusicConstants;
 
 public class MenuComposite extends Composite {
