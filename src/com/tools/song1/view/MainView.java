@@ -42,7 +42,8 @@ public class MainView {
 		shell.setSize(800, 600);
 		shell.setText("小工具");
 		shell.setLayout(new GridLayout());
-		new MenuComposite(shell, SWT.NONE);
+//		new MenuComposite(shell, SWT.NONE);
+		new LogComposite(shell, SWT.NONE);
 		shell.open();
 		shell.layout();
 		shell.pack();
@@ -54,19 +55,5 @@ public class MainView {
 		display.dispose();
 	}
 	
-	public void displayShell(Shell shellView){
-		shellView.open();
-		shellView.layout();
-	}
 
-	/**
-	 * Create contents of the window.
-	 */
-	protected void createContents() {
-		shell = new Shell();
-		shell.setSize(800, 600);
-		shell.setText("小工具");
-		shell.setLayout(new GridLayout());
-		new MenuComposite(shell, SWT.NONE);
-	}
 }
