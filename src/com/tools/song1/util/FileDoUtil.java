@@ -9,6 +9,8 @@ import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 
+import com.tools.song1.view.LogComposite;
+
 /**
  * @author Administrator
  *
@@ -103,6 +105,7 @@ public class FileDoUtil {
 		String path = getBasePath() + "log/log_" + date + ".txt";
 //		System.out.println("日志路径："+path);
 		System.out.println("日志内容："+content);
+		LogComposite.LOG_LIST.add("日志内容："+content);
 		outFile(path, content, true);
 	}
 	
