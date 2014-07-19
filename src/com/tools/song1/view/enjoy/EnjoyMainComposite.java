@@ -30,7 +30,7 @@ public class EnjoyMainComposite extends Composite {
 	 */
 	public EnjoyMainComposite(Composite parent, int style) {
 		super(parent, style);
-		setSize(800, 600);
+		setSize(800, 529);
 		Group group = new Group(this, SWT.NONE);
 		group.setFont(SWTResourceManager.getFont("微软雅黑", 10, SWT.NORMAL));
 		group.setText(" 服务器基路径设置 ");
@@ -50,15 +50,16 @@ public class EnjoyMainComposite extends Composite {
 				composite_1Map.put("enjoy.server.base.url", text.getText());
 			}
 		});
-		TabFolder tabFolder = new TabFolder(this, SWT.FILL);
-		tabFolder.setBounds(10, 125, 780, 465);
+		TabFolder tabFolder = new TabFolder(this, SWT.NONE);
+		tabFolder.setBounds(10, 125, 780, 400);
 
 		TabItem tbtmAll = new TabItem(tabFolder, SWT.NONE);
 		tbtmAll.setText("	全部上传	");
 
-		AllSvaeComposite composite_1 = new AllSvaeComposite(tabFolder, SWT.CENTER);
+		AllSvaeComposite composite_1 = new AllSvaeComposite(tabFolder, SWT.NONE);
 		composite_1.setParentDataMap(composite_1Map);
 		tbtmAll.setControl(composite_1);
+
 
 		TabItem tabItem = new TabItem(tabFolder, SWT.NONE);
 		tabItem.setText(" 按风格上传 ");
@@ -84,8 +85,6 @@ public class EnjoyMainComposite extends Composite {
 		
 		Label label = new Label(this, SWT.SEPARATOR | SWT.HORIZONTAL);
 		label.setBounds(10, 39, 780, 2);
-		
-		
 		
 	}
 

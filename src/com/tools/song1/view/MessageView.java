@@ -49,6 +49,24 @@ public class MessageView {
 			}
 		}
 	}
+	/**
+	 * Open the window.
+	 */
+	public void open(String str,Runnable runnable) {
+		if(StringUtil.isEmptyString(str)){
+			return;
+		}
+		Display display = Display.getDefault();
+		createContents(str);
+		shell.open();
+		shell.layout();
+		while (!shell.isDisposed()) {
+			if (!display.readAndDispatch()) {
+				display.sleep();
+			}
+			display.syncExec(runnable);
+		}
+	}
 
 	/**
 	 * Create contents of the window.

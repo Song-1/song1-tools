@@ -22,9 +22,24 @@ public class EnjoyFileEachUtil {
 
 	// /// test
 	public static void main(String[] args) {
-		test("E:/享CD/地域", EnjoyToDoType.SINGERTYPE);
-		test("E:/享CD/风格", EnjoyToDoType.ALBUMSTYLE);
-		System.out.println(ALBUM_STYLE_FILES_MAPPING);
+//		test("E:/享CD/地域", EnjoyToDoType.SINGERTYPE);
+//		test("E:/享CD/风格/古典", EnjoyToDoType.ALBUMSTYLE);
+		doEnjoyByAlbumStyle("E:/享CD/地域", EnjoyToDoType.SINGERTYPE);
+		doEnjoyByAlbumStyle("E:/享CD/风格/古典", EnjoyToDoType.ALBUMSTYLE);
+		for (Map.Entry<String, List<File>> entry : ALBUM_STYLE_FILES_MAPPING.entrySet()) {
+			System.out.println(entry.getKey());
+			List<File> files = entry.getValue();
+			if (files != null) {
+				System.out.println("-------------------------------------------------------------------");
+				for (File file : files) {
+					if (file == null) {
+						continue;
+					}
+					System.out.println(file.getAbsolutePath());
+				}
+				System.out.println("-------------------------------------------------------------------");
+			}
+		}
 	}
 
 	public static final String[] EXCEL_STUFFIXS = { ".xls", ".xlsx" };
@@ -97,8 +112,31 @@ public class EnjoyFileEachUtil {
 			break;
 		}
 	}
+	public static void doEnjoyByAlbumStyle(String path, EnjoyToDoType type) {
+		if (StringUtil.isEmptyString(path)) {
+			return;
+		}
+		ALBUM_STYLE_FILES_MAPPING.clear();
+		File baseFile = new File(path);
+		switch (type) {
+		case SINGERTYPE:
+			eachFile(baseFile, "", 1);
+			doSingerAndSingerTypeData();
+			break;
+		case ALBUMSTYLE:
+			eachFile(baseFile, "", 1);
+			//doEnjoyData(path);
+			break;
+		default:
+			break;
+		}
+	}
 	
 	public static void doEnjoyData(String path){
+		if(StringUtil.isEmptyString(path)){
+			return;
+		}
+		path = path.replace("/", File.separator);
 		if(path.endsWith("/")){
 			path = new String(path.substring(0,path.length() - 1)) + File.separator;
 		}else if(!path.endsWith(File.separator)){
@@ -117,8 +155,8 @@ public class EnjoyFileEachUtil {
 					String key = file.getAbsolutePath();
 					key = key.replace(path, "");
 					key = key.replace(File.separator, "/");
-					if (!key.startsWith(MusicConstants.SERVER_PATH_ROOT)) {
-						key = MusicConstants.SERVER_PATH_ROOT + key;
+					if (!key.startsWith(EnjoyThread.ALIYUN_SERVER_PATH_ROOT)) {
+						key = EnjoyThread.ALIYUN_SERVER_PATH_ROOT + key;
 					}
 					if(isMatchTheStuffix(file.getAbsolutePath(),ALBUM_SONG_STUFFIXS)){
 //						boolean flag = OSSUploadUtil.isObjectExist(MusicConstants.BUKET_NAME, key);

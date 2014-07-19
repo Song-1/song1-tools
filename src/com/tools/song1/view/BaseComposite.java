@@ -3,6 +3,7 @@ package com.tools.song1.view;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.widgets.Composite;
 
 public class BaseComposite extends Composite {

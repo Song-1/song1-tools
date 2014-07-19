@@ -22,7 +22,7 @@ public class EnjoyAlbumData {
 	private String albumName;
 	private String albumImage;
 	private String albumIcon;
-	private Map<String,File> albumSongs = new HashMap<String, File>();
+	private Map<String,File> albumSongs = new HashMap<String,File>();
 	private List<File> albumImages = new ArrayList<File>();
 	
 	
@@ -33,8 +33,8 @@ public class EnjoyAlbumData {
 		albumImages.add(file);
 	}
 	
-	public void addSongs(String key,File file){
-		if(file == null){
+	public void addSongs(String key, File file){
+		if(file == null || StringUtil.isEmptyString(key)){
 			return;
 		}else if(StringUtil.isEmptyString(key)){
 			return;
