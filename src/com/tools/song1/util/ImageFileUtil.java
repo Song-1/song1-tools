@@ -11,6 +11,7 @@ import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
 import org.jaudiotagger.tag.id3.framebody.FrameBodyAPIC;
 
 import com.upload.aliyun.MusicConstants;
+import com.upload.aliyun.runnable.enjoy.EnjoyThread;
 
 /**
  * @author Administrator
@@ -98,11 +99,14 @@ public class ImageFileUtil {
 		return imageURL;
 	}
 
-	public static String cutImageAndUpload(String bucket,String baseFilePath,File file,boolean isCutImage) {
+	public static String cutImageAndUpload(String bucket,String aliyunServerRoot,String baseFilePath,File file,boolean isCutImage) {
 		String imageURL = null;
 		String tempImage = null;
 		if(StringUtil.isEmptyString(baseFilePath)){
 			baseFilePath = MusicConstants.BASE_FILE_PATH;
+		}
+		if(StringUtil.isEmptyString(aliyunServerRoot)){
+			aliyunServerRoot = MusicConstants.SERVER_PATH_ROOT;
 		}
 		if(StringUtil.isEmptyString(bucket)){
 			bucket = MusicConstants.BUKET_NAME;
@@ -123,6 +127,9 @@ public class ImageFileUtil {
 						tempImage = new String(tempImage.substring(1));
 					}
 					imageURL = tempImage.replace(File.separator, "/");
+					if (!imageURL.startsWith(aliyunServerRoot)) {
+						imageURL = aliyunServerRoot + imageURL;
+					}
 					if (!OSSUploadUtil.isObjectExist(bucket, imageURL)) {
 						FileDoUtil.debugLog(bucket + " bucket 下面的 " + imageURL + "不存在，正在上传中...");
 						OSSUploadUtil.uploadObject(bucket, imageURL, tempImageFile);
@@ -135,7 +142,7 @@ public class ImageFileUtil {
 				tempImageFile.delete();
 			}
 		}
-		if(isCutImage)
+		//if(isCutImage)
 		FileDoUtil.debugLog("歌曲图片:" + imageURL);
 		return imageURL;
 	}

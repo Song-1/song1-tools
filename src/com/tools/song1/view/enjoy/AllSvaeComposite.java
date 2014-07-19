@@ -9,12 +9,14 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import com.tools.song1.constants.EnjoyConstans;
+import com.tools.song1.util.FileDoUtil;
 import com.tools.song1.util.StringUtil;
 import com.tools.song1.util.SystemPropertiesUtil;
 import com.tools.song1.util.ViewFileDoUtil;
@@ -131,7 +133,7 @@ public class AllSvaeComposite extends BaseComposite {
 		gd_txtMessage.widthHint = 665;
 		txtMessage.setLayoutData(gd_txtMessage);
 
-		Button btnNewButton_2 = new Button(shlcd, SWT.NONE);
+	    Button btnNewButton_2 = new Button(shlcd, SWT.NONE);
 		btnNewButton_2.setFont(SWTResourceManager.getFont("微软雅黑", 12, SWT.NORMAL));
 		GridData gd_btnNewButton_2 = new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1);
 		gd_btnNewButton_2.heightHint = 50;
@@ -161,7 +163,6 @@ public class AllSvaeComposite extends BaseComposite {
 				} else if (StringUtil.isEmptyString(albumStyleFloder)) {
 					txtMessage.setText("请选择享CD的风格目录");
 				} else {
-					txtMessage.setText("正在上传享CD文件,请等待...............");
 					SystemPropertiesUtil.addProperty(EnjoyConstans.ALIYUN_BUCKET_ALL, aliyunBucket);
 					SystemPropertiesUtil.addProperty(EnjoyConstans.ALIYUN_BASE_ROOT_ALL, aliyunBaseRoot);
 					SystemPropertiesUtil.addProperty(EnjoyConstans.SERVER_BASE_URL, baseUrl);
@@ -171,19 +172,38 @@ public class AllSvaeComposite extends BaseComposite {
 					EnjoyThread.ALIYUN_BUKET_NAME = aliyunBucket;
 					EnjoyThread.ALIYUN_SERVER_PATH_ROOT = aliyunBaseRoot;
 					EnjoyThread.BASEPATH = baseUrl;
-					//new Thread()
-//					FileDoUtil.outLog("处理地域..........................");
-//					EnjoyFileEachUtil.test(singerTypeFloder, EnjoyToDoType.SINGERTYPE);
-//					FileDoUtil.outLog("处理风格..........................");
-//					EnjoyFileEachUtil.test(albumStyleFloder, EnjoyToDoType.ALBUMSTYLE);
+					Display.getDefault().syncExec(new Runnable() {
+						@Override
+						public void run() {
+							txtMessage.setText("正在上传享CD文件,请等待...............");
+						}
+					});
+					EnjoyFileDoRunner runnable = new EnjoyFileDoRunner(singerTypeFloder, albumStyleFloder);
+					Display.getDefault().syncExec(runnable);
+					//new Thread().start();
 				}
 			}
 		});
 	}
 	
-//	private static class EnjoyFileDoRunner implements Runnable{
-//		
-//	}
+
+	private class EnjoyFileDoRunner implements Runnable {
+		private String singerTypeFloder;
+		private String albumStyleFloder;
+
+		public EnjoyFileDoRunner(String singerTypeFloder, String albumStyleFloder) {
+			this.singerTypeFloder = singerTypeFloder;
+			this.albumStyleFloder = albumStyleFloder;
+		}
+		@Override
+		public void run() {
+			FileDoUtil.outLog("处理地域..........................");
+			//EnjoyFileEachUtil.test(singerTypeFloder, EnjoyToDoType.SINGERTYPE);
+			FileDoUtil.outLog("处理风格..........................");
+			//EnjoyFileEachUtil.test(albumStyleFloder, EnjoyToDoType.ALBUMSTYLE);
+			txtMessage.setText("上传成功!");
+		}
+	}
 
 	@Override
 	protected void checkSubclass() {

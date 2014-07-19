@@ -3,6 +3,8 @@
  */
 package com.tools.song1.util;
 
+import java.io.File;
+
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Shell;
 
@@ -30,6 +32,7 @@ public class ViewFileDoUtil {
 			return null;
 		} else {
 			FileDoUtil.outLog("您选中的文件夹目录为：" + selecteddir);
+			selecteddir = selecteddir.replace("/", File.separator);
 			return selecteddir;
 		}
 	}

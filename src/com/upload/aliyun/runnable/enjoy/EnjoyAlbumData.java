@@ -5,7 +5,9 @@ package com.upload.aliyun.runnable.enjoy;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.tools.song1.util.StringUtil;
 
@@ -20,7 +22,7 @@ public class EnjoyAlbumData {
 	private String albumName;
 	private String albumImage;
 	private String albumIcon;
-	private List<File> albumSongs = new ArrayList<File>();
+	private Map<String,File> albumSongs = new HashMap<String,File>();
 	private List<File> albumImages = new ArrayList<File>();
 	
 	
@@ -31,11 +33,11 @@ public class EnjoyAlbumData {
 		albumImages.add(file);
 	}
 	
-	public void addSongs(File file){
-		if(file == null){
+	public void addSongs(String key, File file){
+		if(file == null || StringUtil.isEmptyString(key)){
 			return;
 		}
-		albumSongs.add(file);
+		albumSongs.put(key,file);
 	}
 	
 	public void addNameStr(String str){
@@ -92,7 +94,7 @@ public class EnjoyAlbumData {
 		this.albumIcon = albumIcon;
 	}
 
-	public List<File> getAlbumSongs() {
+	public Map<String,File> getAlbumSongs() {
 		return albumSongs;
 	}
 
