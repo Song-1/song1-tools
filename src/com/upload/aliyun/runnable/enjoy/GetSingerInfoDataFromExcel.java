@@ -122,7 +122,7 @@ public class GetSingerInfoDataFromExcel extends POIUtil{
 	}
 
 	@Override
-	public void doTheCell(int rowIndex, int cellIndex, HSSFRow row) {
+	public void doTheCell(int rowIndex, int cellIndex, Row row) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -134,7 +134,7 @@ public class GetSingerInfoDataFromExcel extends POIUtil{
 	}
 
 	@Override
-	public void initValue(HSSFSheet sheet) {
+	public void initValue(Sheet sheet) {
 		// TODO Auto-generated method stub
 		
 	}

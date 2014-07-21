@@ -9,7 +9,8 @@ import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.omg.CORBA.BooleanHolder;
 
 import com.upload.aliyun.util.FileDoUtil;
@@ -73,20 +74,24 @@ public class GetMusicTypeFromExcel  extends POIUtil {
 		}
 		return str;
 	}
-
+	@Override
+	public void doTheCell(int rowIndex, int cellIndex, Row row) {
+		// TODO Auto-generated method stub
+		
+	}
 	@Override
 	public void clearValues() {
 		// TODO Auto-generated method stub
+		
 	}
-
 	@Override
-	public void initValue(HSSFSheet sheet) {
+	public void initValue(Sheet sheet) {
 		// TODO Auto-generated method stub
+		
 	}
-
 	@Override
 	public void setModelValue(int cellIndex, String value) {
 		// TODO Auto-generated method stub
+		
 	}
-
 }

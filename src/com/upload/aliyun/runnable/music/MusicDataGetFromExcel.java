@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.omg.CORBA.BooleanHolder;
 
@@ -39,7 +39,7 @@ public class MusicDataGetFromExcel extends POIUtil {
 		}
 	}
 
-	public void doTheCell(int rowIndex, int cellIndex, HSSFRow row) {
+	public void doTheCell(int rowIndex, int cellIndex, Row row) {
 		BooleanHolder isFirstFlag = new BooleanHolder(false);
 		boolean flag = isMergedRegion(rowIndex, cellIndex, isFirstFlag);
 		if (flag) {
@@ -49,7 +49,7 @@ public class MusicDataGetFromExcel extends POIUtil {
 					model = new MusicDataInfo();
 				}
 				istheSameBook = true;
-				HSSFCell cell = row.getCell(cellIndex);
+				Cell cell = row.getCell(cellIndex);
 				String value = getCellValue(cell);
 				setModelValue(cellIndex, value);
 			}
@@ -123,8 +123,7 @@ public class MusicDataGetFromExcel extends POIUtil {
 	}
 
 	@Override
-	public void initValue(HSSFSheet sheet) {
+	public void initValue(Sheet sheet) {
 		CellRangeAddressList = getMergedRegions(sheet);
 	}
-
 }

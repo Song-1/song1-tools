@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.aliyun.openservices.oss.model.OSSObjectSummary;
 import com.upload.aliyun.runnable.enjoy.EnjoyFileEachUtil;
 import com.upload.aliyun.runnable.music.GetMusicTypeFromExcel;
 import com.upload.aliyun.util.FileDoUtil;
@@ -32,6 +33,12 @@ public class StartMain {
 			//
 			if("enjoy".equals(MusicConstants.DO_TYPE)){
 				EnjoyFileEachUtil.doEnjoy();
+				return;
+			}else if ("rename".equals(MusicConstants.DO_TYPE)) {
+				List<OSSObjectSummary> listObject = OSSUploadUtil.listObject("cherrytime", MusicConstants.SERVER_PATH_ROOT);
+				for (OSSObjectSummary ossObjectSummary : listObject) {
+					System.out.println(ossObjectSummary.getKey());
+				}
 				return;
 			}else if("music".equals(MusicConstants.DO_TYPE)){
 				File file = new File(MusicConstants.MUSIC_TIME_TYPE_MAPPING_FILE_PATH);
