@@ -3,6 +3,8 @@ package com.tools.song1.view;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -43,6 +45,7 @@ public class MessageView {
 		createContents(str);
 		shell.open();
 		shell.layout();
+		shell.addShellListener(new MessageShellListener());
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
@@ -102,6 +105,40 @@ public class MessageView {
 				shell.close();
 			}
 		});
+	}
+	
+	private class MessageShellListener implements ShellListener{
+
+		@Override
+		public void shellActivated(ShellEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void shellClosed(ShellEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void shellDeactivated(ShellEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void shellDeiconified(ShellEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void shellIconified(ShellEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+		
 	}
 
 }

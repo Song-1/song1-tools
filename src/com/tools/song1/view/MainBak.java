@@ -3,15 +3,24 @@ package com.tools.song1.view;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.beans.PojoProperties;
+import org.eclipse.core.databinding.observable.Realm;
+import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
@@ -23,6 +32,7 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import com.tools.song1.util.JavascriptUtil;
+import com.tools.song1.util.MyPrintStream;
 import com.tools.song1.util.OSSUploadUtil;
 import com.tools.song1.util.StringUtil;
 import com.tools.song1.util.SystemPropertiesUtil;
@@ -40,12 +50,14 @@ public class MainBak {
 	private Tree tree;
 	private Label lblNewLabel;
 	private Map<String, Composite> MENU_MAPPING = new HashMap<String, Composite>();
-	private String[] MENU_MESSAGES = { "音乐一号", "享CD", "享CD全部上传", "享CD按风格上传", "享CD按专辑上传" };
+	private String[] MENU_MESSAGES = { "音乐一号", "享CD", "享CD全部上传", "享CD按风格上传", "享CD按专辑上传", "全局设置" };
 	private Composite composite;
 	private Composite enjoyAllComposite;
 	private Composite enjoyByAlbumStyleComposite;
 	private Composite enjoyByAlbumComposite;
+	private GlobalSettingComposite globalSettingComposite;
 	private StackLayout compositeStackLayout;
+	private TreeItem trtmNewTreeitem;
 
 	/**
 	 * Launch the application.
@@ -53,16 +65,21 @@ public class MainBak {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		try {
-			MusicConstants.loadConfig();
-			SystemPropertiesUtil.init();
-			OSSUploadUtil.init();
-			JavascriptUtil.init();
-			MainBak window = new MainBak();
-			window.open();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		Display display = Display.getDefault();
+		Realm.runWithDefault(SWTObservables.getRealm(display), new Runnable() {
+			public void run() {
+				try {
+					MusicConstants.loadConfig();
+					SystemPropertiesUtil.init();
+					OSSUploadUtil.init();
+					JavascriptUtil.init();
+					MainBak window = new MainBak();
+					window.open();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 
 	/**
@@ -73,6 +90,34 @@ public class MainBak {
 		createContents();
 		shell.open();
 		shell.layout();
+		shell.addShellListener(new ShellListener() {
+			@Override
+			public void shellIconified(ShellEvent arg0) {
+			}
+			@Override
+			public void shellDeiconified(ShellEvent arg0) {
+			}
+			
+			@Override
+			public void shellDeactivated(ShellEvent arg0) {
+			}
+			
+			@Override
+			public void shellClosed(ShellEvent arg0) {
+				Control[] controls = shell.getChildren();
+				if(controls != null){
+					for (Control control : controls) {
+						control.dispose();
+					}
+				}
+			}
+			
+			@Override
+			public void shellActivated(ShellEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
@@ -90,23 +135,21 @@ public class MainBak {
 		shell.setText(MENU_MESSAGES[0]);
 		shell.setLayout(new FormLayout());
 
+		text = new Text(shell, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
+		FormData fd_text = new FormData();
+		fd_text.bottom = new FormAttachment(0, 578);
+		fd_text.right = new FormAttachment(0, 943);
+		fd_text.top = new FormAttachment(0, 407);
+		fd_text.left = new FormAttachment(0, 5);
+		text.setLayoutData(fd_text);
+		outPutStream();
+
 		label = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
 		FormData fd_label = new FormData();
 		fd_label.right = new FormAttachment(0, 943);
 		fd_label.top = new FormAttachment(0, 399);
 		fd_label.left = new FormAttachment(0);
 		label.setLayoutData(fd_label);
-
-		// MenuComposite scrolledComposite = new MenuComposite(shell, SWT.NONE);
-		// scrolledComposite.setBounds(10, 10, 798, 518);
-
-		text = new Text(shell, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
-		FormData fd_text = new FormData();
-		fd_text.bottom = new FormAttachment(0, 578);
-		fd_text.right = new FormAttachment(0, 943);
-		fd_text.top = new FormAttachment(0, 407);
-		fd_text.left = new FormAttachment(0, 10);
-		text.setLayoutData(fd_text);
 
 		Menu menu = new Menu(shell, SWT.BAR);
 		shell.setMenuBar(menu);
@@ -136,6 +179,9 @@ public class MainBak {
 		scrolledComposite.setContent(tree);
 		scrolledComposite.setMinSize(tree.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		tree.addSelectionListener(new TreeSelectionAdapter(tree));
+
+		trtmNewTreeitem = new TreeItem(tree, SWT.NONE);
+		trtmNewTreeitem.setText(MENU_MESSAGES[5]);
 
 		TreeItem trtmNewTreeitem_4 = new TreeItem(tree, SWT.NONE);
 		trtmNewTreeitem_4.setText(MENU_MESSAGES[1]);
@@ -178,18 +224,24 @@ public class MainBak {
 		enjoyAllComposite = new EnjoyAllComposite(composite, SWT.NONE);
 		enjoyByAlbumStyleComposite = new EnjoyByAlbumStyleComposite(composite, SWT.NONE);
 		enjoyByAlbumComposite = new EnjoyByAlbumComposite(composite, SWT.NONE);
-
+		globalSettingComposite = new GlobalSettingComposite(composite, SWT.NONE);
 		System.out.println("init .....................");
-		// ///输出重定向设置
-		// //MyPrintStream mps = new MyPrintStream(System.out, text);
-		// System.setOut(mps);
-		// System.setErr(mps);
-		// //// init
-		tree.setSelection(trtmNewTreeitem_4);
+		init(trtmNewTreeitem_4);
+
+	}
+
+	public void init(TreeItem selectItem) {
+		tree.setSelection(selectItem);
 		setLblNewLabelText("享CD");
 		compositeStackLayout.topControl = enjoyAllComposite;
 		composite.layout();
-
+	}
+	
+	private void outPutStream(){
+		// ///输出重定向设置
+		MyPrintStream mps = new MyPrintStream(System.out, text);
+		System.setOut(mps);
+		System.setErr(mps);
 	}
 
 	private void setLblNewLabelText(String value) {
@@ -204,6 +256,7 @@ public class MainBak {
 		MENU_MAPPING.put(MENU_MESSAGES[2], enjoyAllComposite);
 		MENU_MAPPING.put(MENU_MESSAGES[3], enjoyByAlbumStyleComposite);
 		MENU_MAPPING.put(MENU_MESSAGES[4], enjoyByAlbumComposite);
+		MENU_MAPPING.put(MENU_MESSAGES[5], globalSettingComposite);
 	}
 
 	/**
@@ -231,9 +284,21 @@ public class MainBak {
 					compositeStackLayout.topControl = enjoyByAlbumStyleComposite;
 				} else if (MENU_MESSAGES[4].equals(itemName)) {
 					compositeStackLayout.topControl = enjoyByAlbumComposite;
+				} else if (MENU_MESSAGES[5].equals(itemName)) {
+					compositeStackLayout.topControl = globalSettingComposite;
 				}
 				composite.layout();
 			}
 		}
+	}
+
+	protected DataBindingContext initDataBindings() {
+		DataBindingContext bindingContext = new DataBindingContext();
+		//
+		IObservableValue observeLocationShellObserveWidget = WidgetProperties.location().observe(shell);
+		IObservableValue locationShellObserveValue = PojoProperties.value("location").observe(shell);
+		bindingContext.bindValue(observeLocationShellObserveWidget, locationShellObserveValue, null, null);
+		//
+		return bindingContext;
 	}
 }
