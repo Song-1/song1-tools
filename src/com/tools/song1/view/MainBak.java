@@ -3,12 +3,6 @@ package com.tools.song1.view;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.beans.PojoProperties;
-import org.eclipse.core.databinding.observable.Realm;
-import org.eclipse.core.databinding.observable.value.IObservableValue;
-import org.eclipse.jface.databinding.swt.SWTObservables;
-import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.StackLayout;
@@ -65,21 +59,16 @@ public class MainBak {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Display display = Display.getDefault();
-		Realm.runWithDefault(SWTObservables.getRealm(display), new Runnable() {
-			public void run() {
-				try {
-					MusicConstants.loadConfig();
-					SystemPropertiesUtil.init();
-					OSSUploadUtil.init();
-					JavascriptUtil.init();
-					MainBak window = new MainBak();
-					window.open();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+		try {
+			MusicConstants.loadConfig();
+			SystemPropertiesUtil.init();
+			OSSUploadUtil.init();
+			JavascriptUtil.init();
+			MainBak window = new MainBak();
+			window.open();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -94,28 +83,29 @@ public class MainBak {
 			@Override
 			public void shellIconified(ShellEvent arg0) {
 			}
+
 			@Override
 			public void shellDeiconified(ShellEvent arg0) {
 			}
-			
+
 			@Override
 			public void shellDeactivated(ShellEvent arg0) {
 			}
-			
+
 			@Override
 			public void shellClosed(ShellEvent arg0) {
 				Control[] controls = shell.getChildren();
-				if(controls != null){
+				if (controls != null) {
 					for (Control control : controls) {
 						control.dispose();
 					}
 				}
 			}
-			
+
 			@Override
 			public void shellActivated(ShellEvent arg0) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
 		while (!shell.isDisposed()) {
@@ -236,8 +226,8 @@ public class MainBak {
 		compositeStackLayout.topControl = enjoyAllComposite;
 		composite.layout();
 	}
-	
-	private void outPutStream(){
+
+	private void outPutStream() {
 		// ///输出重定向设置
 		MyPrintStream mps = new MyPrintStream(System.out, text);
 		System.setOut(mps);
@@ -292,13 +282,4 @@ public class MainBak {
 		}
 	}
 
-	protected DataBindingContext initDataBindings() {
-		DataBindingContext bindingContext = new DataBindingContext();
-		//
-		IObservableValue observeLocationShellObserveWidget = WidgetProperties.location().observe(shell);
-		IObservableValue locationShellObserveValue = PojoProperties.value("location").observe(shell);
-		bindingContext.bindValue(observeLocationShellObserveWidget, locationShellObserveValue, null, null);
-		//
-		return bindingContext;
-	}
 }
