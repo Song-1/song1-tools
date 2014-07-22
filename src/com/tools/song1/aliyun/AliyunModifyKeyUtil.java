@@ -1,0 +1,20 @@
+/**
+ * 
+ */
+package com.tools.song1.aliyun;
+
+/**
+ * @author Administrator
+ *
+ */
+public class AliyunModifyKeyUtil {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}
