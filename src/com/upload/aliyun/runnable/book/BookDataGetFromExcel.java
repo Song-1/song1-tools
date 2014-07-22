@@ -64,18 +64,13 @@ public class BookDataGetFromExcel extends POIUtil {
 			model.setTypeLevelTwo(str);
 			break;
 		case 5:
-			if (str.contains("(")) {
-				str = str.substring(0, str.lastIndexOf("("));
-			}else if (str.contains("（")) {
-				str = str.substring(0, str.lastIndexOf("（"));
-			}
 			model.setName(str.trim());
 			break;
 		case 6:
-			model.setBookInfo(str);
+			model.setAuthor(str.trim());
 			break;
 		case 7:
-			model.setImg(str);
+			model.setPlayer(str.trim());
 			break;
 		case 8:
 			model.setDesc(str);
