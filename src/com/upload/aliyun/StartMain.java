@@ -57,11 +57,11 @@ public class StartMain {
 		//
 		while (true) {
 			System.out.println("=============== 请选择功能操作=================");
-			for(Map.Entry<Integer, String> entry : GLOBAL_MENU_MAP.entrySet()){
-				System.out.println(" 【"+entry.getKey().intValue()+"】 "+ entry.getValue());
+			for (Map.Entry<Integer, String> entry : GLOBAL_MENU_MAP.entrySet()) {
+				System.out.println(" 【" + entry.getKey().intValue() + "】 " + entry.getValue());
 			}
 			int doIndex = convertInputStr("请输入你要选择的操作的编号:::");
-			if(doIndex == 5){
+			if (doIndex == 5) {
 				System.out.println("系统退出..................");
 				break;
 			}
@@ -74,56 +74,59 @@ public class StartMain {
 		System.out.print(str);
 		Scanner scanner = new Scanner(System.in);
 		String value = scanner.nextLine();
-		if(StringUtil.isEmptyString(value)){
+		if (StringUtil.isEmptyString(value)) {
 			value = "";
 		}
 		value = value.trim();
 		return value;
 	}
+
 	public static int convertInputStr(String str) {
 		String intput = inputStr(str);
-		while(StringUtil.isEmptyString(intput)){
+		while (StringUtil.isEmptyString(intput)) {
 			System.out.println("输入不能为空!");
 			intput = inputStr(str);
 		}
 		boolean flag = true;
 		int doIndex = 0;
-		while(flag){
-			try{
-			 doIndex = Integer.parseInt(intput.trim());
-			}catch(Exception e){
+		while (flag) {
+			try {
+				doIndex = Integer.parseInt(intput.trim());
+			} catch (Exception e) {
 				System.out.println("输入的操作编号不对!");
 			}
-			if(doIndex > 0){
+			if (doIndex > 0) {
 				break;
 			}
 			intput = inputStr(str);
 		}
 		return doIndex;
 	}
-	
-	public static void doStart(int index){
+
+	public static void doStart(int index) {
 		switch (index) {
 		case 1:
 			System.out.println("开始上传樱桃时光的数据...........");
+			musicDoStart();
 			break;
 		case 2:
 			System.out.println("开始上传状元听书的数据...........");
+			bookDoStart();
 			break;
 		case 3:
 			System.out.println("开始上传享CD的数据...........");
 			EnjoyFileEachUtil.doEnjoy();
 			break;
 		case 4:
-			while(true){
+			while (true) {
 				System.out.println("=============== 请选择阿里云文件操作=================");
-				for(Map.Entry<Integer, String> entry : ALIYUN_MENU_MAP.entrySet()){
-					System.out.println(" 【"+entry.getKey().intValue()+"】 "+ entry.getValue());
+				for (Map.Entry<Integer, String> entry : ALIYUN_MENU_MAP.entrySet()) {
+					System.out.println(" 【" + entry.getKey().intValue() + "】 " + entry.getValue());
 				}
 				int doIndex = convertInputStr("请输入你要选择的操作的编号:::");
-				if(5 == doIndex){
+				if (5 == doIndex) {
 					break;
-				}else {
+				} else {
 					aliyunDoStart(doIndex);
 				}
 			}
@@ -133,10 +136,39 @@ public class StartMain {
 			System.out.println("没有此功能操作,请输入正确的功能操作编码...........");
 			break;
 		}
-		
+
 	}
-	
-	public static void aliyunDoStart(int doIndex){
+
+	public static void bookDoStart() {
+		try {
+			MusicConstants.DO_TYPE = "book";
+			eachFiles();
+			doFile();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public static void musicDoStart() {
+		try {
+			MusicConstants.DO_TYPE = "music";
+			File file = new File(MusicConstants.MUSIC_TIME_TYPE_MAPPING_FILE_PATH);
+			if (file.exists()) {
+				String name = file.getName();
+				if (name.endsWith(".xls") || name.endsWith(".xlsx")) {
+					new GetMusicTypeFromExcel().doExcel(file);
+				}
+			} else {
+				System.out.println("歌单分类文件不存在");
+				return;
+			}
+			eachFiles();
+			doFile();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void aliyunDoStart(int doIndex) {
 		switch (doIndex) {
 		case 1:
 			System.out.println(" 开始阿里云文件复制,请进行操作配置 :::");
@@ -153,7 +185,7 @@ public class StartMain {
 			String newBucket2 = inputStr("请输入移动到文件所属BUCKET::");
 			String newKey2 = inputStr("请输入移动到文件路径::");
 			OSSUploadUtil.modifyAliyunFloderName(oldBucket2, oldKey2, newBucket2, newKey2);
-			///// delete
+			// /// delete
 			break;
 		case 3:
 			System.out.println(" 开始阿里云文件删除,请进行操作配置 :::");
@@ -166,54 +198,54 @@ public class StartMain {
 			String bucket4 = inputStr("请输入查看文件所属BUCKET::");
 			String key4 = inputStr("请输入查看文件路径::");
 			key4 = key4.trim();
-			if(!key4.endsWith("/")){
+			if (!key4.endsWith("/")) {
 				key4 += "/";
 			}
 			String index = "-";
-			while(true){
+			while (true) {
 				List<String> list = new ArrayList<String>();
 				List<OSSObjectSummary> fileList = new ArrayList<OSSObjectSummary>();
 				OSSUploadUtil.listAliyunFloder(bucket4, key4, list, fileList);
 				System.out.println(key4);
-				System.out.println(index+"【功能】 ..");
+				System.out.println(index + "【功能】 ..");
 				for (String string : list) {
-					if(string.endsWith("/")){
-						string = new String(string.substring(0,string.length()-1));
+					if (string.endsWith("/")) {
+						string = new String(string.substring(0, string.length() - 1));
 					}
-					int i  = string.lastIndexOf("/");
-					if(i > 0){
+					int i = string.lastIndexOf("/");
+					if (i > 0) {
 						string = new String(string.substring(i + 1));
 					}
-					System.out.println(index+"【文件夹】 "+string);
+					System.out.println(index + "【文件夹】 " + string);
 				}
 				for (OSSObjectSummary os : fileList) {
 					String osName = os.getKey();
-					int i  = osName.lastIndexOf("/");
-					if(i > 0){
+					int i = osName.lastIndexOf("/");
+					if (i > 0) {
 						osName = new String(osName.substring(i + 1));
 					}
-					System.out.println(index+"【文件】 "+osName);
+					System.out.println(index + "【文件】 " + osName);
 				}
-				System.out.println(index+"【功能】 exit");
+				System.out.println(index + "【功能】 exit");
 				String inputStr = inputStr("请输入要查看文件夹路径(exit:退出;..:返回上层目录)::");
 				inputStr = inputStr.trim();
-				if("exit".equalsIgnoreCase(inputStr)){
+				if ("exit".equalsIgnoreCase(inputStr)) {
 					break;
 				}
-				if("..".equals(inputStr)){
-					if(key4.endsWith("/")){
-						key4 = new String(key4.substring(0,key4.length()-1));
+				if ("..".equals(inputStr)) {
+					if (key4.endsWith("/")) {
+						key4 = new String(key4.substring(0, key4.length() - 1));
 					}
-					int i  = key4.lastIndexOf("/");
-					if(i > 0){
-						key4 = new String(key4.substring(0,i + 1));
+					int i = key4.lastIndexOf("/");
+					if (i > 0) {
+						key4 = new String(key4.substring(0, i + 1));
 					}
-					index = new String(index.substring(0, index.length() - 1));
-				}else{
+					index = "-".equals(index)?index : new String(index.substring(0, index.length() - 1));
+				} else {
 					key4 += inputStr + "/";
 					index += "-";
 				}
-				if(!key4.endsWith("/")){
+				if (!key4.endsWith("/")) {
 					key4 += "/";
 				}
 			}
@@ -223,7 +255,7 @@ public class StartMain {
 			System.out.println("没有此功能操作,请输入正确的功能操作编码...........");
 			break;
 		}
-		
+
 	}
 
 	public static void start() {
