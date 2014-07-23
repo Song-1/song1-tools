@@ -176,7 +176,7 @@ public class StartMain {
 			String bucket = inputStr("请输入阿里云BUCKET:::");
 			String key = inputStr("请输入阿里云文件路径:::");
 			boolean validateFlag = OSSUploadUtil.modifyTheFileStuffix(bucket, key, true, false);
-			if(validateFlag){
+			if (validateFlag) {
 				validateFlag = isDoIt("已经处理完阿里云文件,是否检验数据库数据是否匹配(Y/N):::");
 				if (validateFlag) {
 					String baseUrl = inputStr("请输入服务器获取书籍列表URL:::");
