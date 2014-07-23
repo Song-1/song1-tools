@@ -24,10 +24,10 @@ public class TestAliyun {
 			
 //			String key = "test/状元听书/";
 			String bucket = "testupload2";
-			String key = "E:/享CD/风格/古典/Jean-yves Thibaudet";
-			String newKey = "book/网络/";
-			OSSUploadUtil.deleteKey(MusicConstants.BUKET_NAME, key);
-//			List<OSSObjectSummary> list =  OSSUploadUtil.listObject(MusicConstants.BUKET_NAME, key);
+			String key = "test/状元听书";
+//			String newKey = "book/网络/";
+			//OSSUploadUtil.modifyTheFileStuffix(bucket, key);
+//			List<OSSObjectSummary> list = 
 //			if(list != null){
 //				for (OSSObjectSummary osb : list) {
 //					System.out.println(osb.getKey());

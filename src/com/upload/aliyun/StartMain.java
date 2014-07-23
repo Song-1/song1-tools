@@ -13,6 +13,7 @@ import java.util.TreeMap;
 
 import com.aliyun.openservices.oss.model.OSSObjectSummary;
 import com.tools.song1.aliyun.OSSUploadUtil;
+import com.upload.aliyun.runnable.book.BookUtil;
 import com.upload.aliyun.runnable.enjoy.EnjoyFileEachUtil;
 import com.upload.aliyun.runnable.music.GetMusicTypeFromExcel;
 import com.upload.aliyun.util.FileDoUtil;
@@ -44,6 +45,14 @@ public class StartMain {
 			put(3, "删除文件");
 			put(4, "查看文件");
 			put(5, "返回");
+		}
+	};
+	private static final Map<Integer, String> BOOK_MENU_MAP = new HashMap<Integer, String>() {
+		private static final long serialVersionUID = 3832481997454745090L;
+		{
+			put(1, "上传书籍和书单数据");
+			put(2, "给书籍的文件加上MP3后缀");
+			put(3, "返回");
 		}
 	};
 
@@ -110,8 +119,19 @@ public class StartMain {
 			musicDoStart();
 			break;
 		case 2:
-			System.out.println("开始上传状元听书的数据...........");
-			bookDoStart();
+			while (true) {
+				System.out.println("=============== 请选择状元听书操作=================");
+				for (Map.Entry<Integer, String> entry : BOOK_MENU_MAP.entrySet()) {
+					System.out.println(" 【" + entry.getKey().intValue() + "】 " + entry.getValue());
+				}
+				int doIndex = convertInputStr("请输入你要选择的操作的编号:::");
+				if (3 == doIndex) {
+					break;
+				} else {
+					bookDoStart(doIndex);
+				}
+			}
+
 			break;
 		case 3:
 			System.out.println("开始上传享CD的数据...........");
@@ -139,15 +159,55 @@ public class StartMain {
 
 	}
 
-	public static void bookDoStart() {
-		try {
-			MusicConstants.DO_TYPE = "book";
-			eachFiles();
-			doFile();
-		} catch (Exception e) {
-			e.printStackTrace();
+	public static void bookDoStart(int index) {
+		switch (index) {
+		case 1:
+			System.out.println("开始上传状元听书的数据...........");
+			try {
+				MusicConstants.DO_TYPE = "book";
+				eachFiles();
+				doFile();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			break;
+		case 2:
+			System.out.println("开始   给书籍的文件加上MP3后缀  .........");
+			String bucket = inputStr("请输入阿里云BUCKET:::");
+			String key = inputStr("请输入阿里云文件路径:::");
+			boolean validateFlag = OSSUploadUtil.modifyTheFileStuffix(bucket, key, true, false);
+			if(validateFlag){
+				validateFlag = isDoIt("已经处理完阿里云文件,是否检验数据库数据是否匹配(Y/N):::");
+				if (validateFlag) {
+					String baseUrl = inputStr("请输入服务器获取书籍列表URL:::");
+					BookUtil.start(bucket, baseUrl);
+				}
+				validateFlag = isDoIt("已经处理完阿里云文件,是否删除之前没有后缀的数据(Y/N):::");
+				if (validateFlag) {
+					OSSUploadUtil.modifyTheFileStuffix(bucket, key, false, true);
+				}
+			}
+			break;
+
+		default:
+			break;
 		}
+
 	}
+
+	private static boolean isDoIt(String str) {
+		String validateFlagStr = inputStr(str);
+		boolean validateFlag = true;
+		while (!"y".equalsIgnoreCase(validateFlagStr)) {
+			if ("n".equalsIgnoreCase(validateFlagStr)) {
+				validateFlag = false;
+				break;
+			}
+			validateFlagStr = inputStr(str);
+		}
+		return validateFlag;
+	}
+
 	public static void musicDoStart() {
 		try {
 			MusicConstants.DO_TYPE = "music";
@@ -240,7 +300,7 @@ public class StartMain {
 					if (i > 0) {
 						key4 = new String(key4.substring(0, i + 1));
 					}
-					index = "-".equals(index)?index : new String(index.substring(0, index.length() - 1));
+					index = "-".equals(index) ? index : new String(index.substring(0, index.length() - 1));
 				} else {
 					key4 += inputStr + "/";
 					index += "-";

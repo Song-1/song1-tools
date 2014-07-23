@@ -427,8 +427,12 @@ public class OSSUploadUtil {
 	 */
 	public static void copyObject(String sourceBucketName, String sourceKey, String destinationBucketName, String destinationKey) {
 		if (client != null) {
-			CopyObjectResult result = client.copyObject(sourceBucketName, sourceKey, destinationBucketName, destinationKey);
-			FileDoUtil.outLog("[File Copy]Etag:::" + result.getETag());
+			boolean falg = isObjectExist(destinationBucketName, destinationKey);
+			if(!falg){
+				CopyObjectResult result = client.copyObject(sourceBucketName, sourceKey, destinationBucketName, destinationKey);
+				FileDoUtil.outLog("[File Copy]Etag:::" + result.getETag());
+			}
+			FileDoUtil.outLog("[File Copy]目标文件已存在" );
 		}
 	}
 	/**
@@ -523,6 +527,68 @@ public class OSSUploadUtil {
 		// objectListing.getObjectSummaries();
 		// ossslist.addAll(objectSummaries);
 		return ossslist;
+	}
+	/**
+	 * 阿里云服务器显示文件
+	 * 
+	 * @param sourceBucketName
+	 * @param sourceKey
+	 * @param destinationBucketName
+	 * @param destinationKey
+	 */
+	public static boolean modifyTheFileStuffix(String bucketName, String prefix,boolean isCopy,boolean isDelete) {
+		if(StringUtil.isEmptyString(bucketName)){
+			System.out.println("阿里云BUCKET不能为空!");
+			return false;
+		}else if(StringUtil.isEmptyString(prefix)){
+			System.out.println("阿里云文件路径不能为空!");
+			return false;
+		}
+		ListObjectsRequest listObjectsRequest = new ListObjectsRequest(bucketName);
+		List<String> listPrefixeslist = listAliyunFloder(bucketName, prefix, true);
+		if(listPrefixeslist == null){
+			listPrefixeslist = new ArrayList<String>();
+			listPrefixeslist.add(prefix);
+		}
+		ObjectListing objectListing = null;
+		listObjectsRequest.setDelimiter("/");
+		listObjectsRequest.setMaxKeys(1000);
+		String nextMarker = "";
+		Iterator<String> iterator = listPrefixeslist.iterator();
+		for (; iterator.hasNext();) {
+			String commonPrefixe = iterator.next();
+			do {
+				// 设置参数
+				listObjectsRequest.setMarker(nextMarker);
+				listObjectsRequest.setPrefix(commonPrefixe);
+				objectListing = aliyunConnect(listObjectsRequest);
+				nextMarker = objectListing.getNextMarker();
+				List<OSSObjectSummary> objectSummaries = objectListing.getObjectSummaries();
+				if(objectSummaries != null){
+					for (OSSObjectSummary osb : objectSummaries) {
+						String key = osb.getKey();
+						if(StringUtil.isEmptyString(key)){
+							continue;
+						}else if (key.endsWith("/")){
+							continue;
+						}
+						int index = key.lastIndexOf(".");
+						if(index < 0){
+							if(isCopy){
+								String targtKey = key + ".mp3";
+								System.out.println("原始key:::"+key);
+								System.out.println("修改key:::"+targtKey);
+								copyObject(bucketName, key, bucketName, targtKey);
+							}
+							if(isDelete){
+								deleteObject(bucketName, key);
+							}
+						}
+					}
+				}
+			} while (objectListing.isTruncated());
+		}
+		return true;
 	}
 
 	static List<String> prefixes = new ArrayList<String>();
