@@ -444,9 +444,22 @@ public class OSSUploadUtil {
 	 * @param destinationKey
 	 */
 	public static void deleteObject(String sourceBucketName, String sourceKey) {
-		if (client != null) {
-			System.out.println("delete...........");
-			client.deleteObject(sourceBucketName, sourceKey);
+		try {
+			if (client != null) {
+				System.out.println("delete..........."+sourceKey);
+				client.deleteObject(sourceBucketName, sourceKey);
+			}else{
+				OSSUploadUtil.init();
+				deleteObject(sourceBucketName, sourceKey);
+			}
+			
+		} catch (Exception e) {
+			try {
+				Thread.sleep(5000);
+			} catch (Exception e2) {
+				// TODO: handle exception
+			}
+			deleteObject(sourceBucketName, sourceKey);
 		}
 	}
 	
