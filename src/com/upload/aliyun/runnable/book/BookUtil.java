@@ -11,8 +11,10 @@ import org.apache.http.client.ClientProtocolException;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.tools.song1.aliyun.OSSUploadUtil;
 import com.tools.song1.data.api.BaseResultBean;
 import com.tools.song1.data.api.PageDataModel;
+import com.upload.aliyun.util.FileDoUtil;
 import com.upload.aliyun.util.HttpClientUtil;
 import com.upload.aliyun.util.StringUtil;
 
@@ -71,12 +73,11 @@ public class BookUtil {
 								if (i > 0) {
 									key = new String(key.substring(0, i));
 								}
-								System.out.println(key);
-//								boolean flag = OSSUploadUtil.isObjectExist(bucket, key);
-//								if (!flag) {
-//									FileDoUtil.outLog(key + " [ 阿里云不存在此文件 ]");
-//								}
-//								System.out.println(key + " [ 阿里云存在此文件 ]");
+								boolean flag = OSSUploadUtil.isObjectExist(bucket, key);
+								if (!flag) {
+									FileDoUtil.outLog(key + " [ 阿里云不存在此文件 ]");
+								}
+								System.out.println(key + " [ 阿里云存在此文件 ]");
 							}
 						}
 					}
@@ -86,6 +87,40 @@ public class BookUtil {
 			e.printStackTrace();
 		}
 	}
+	
+	public static boolean updateBookDataURLStuffixForDB(String baseURL){
+		if(StringUtil.isEmptyString(baseURL)){
+			System.out.println("服务器更新数据书籍URL的API地址不能为空!");
+			return false;
+		}
+		String stuffix = ".mp3";
+		try{
+			String url = baseURL + "?stuffix=" + stuffix;
+			String content = HttpClientUtil.doGet(url);
+			Gson gson = new Gson();
+			Type type = new TypeToken<BaseResultBean<String>>(){}.getType();
+			BaseResultBean<String> bean = gson.fromJson(content,type);
+			if (bean != null) {
+				if("1000".equals(bean.getStatus())){
+					if ("success".equals(bean.getData())) {
+						return true;
+					}else{
+						System.out.println(bean.getData());
+						return false;
+					}
+				}else{
+					System.out.println(bean.getMessage());
+					return false;
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return false;
+		
+		
+		
+	}
 
 	public static PageDataModel<BookResponseDataModel> doData(String content) {
 		if (!StringUtil.isEmptyString(content)) {
@@ -93,9 +128,13 @@ public class BookUtil {
 			Type type = new TypeToken<BaseResultBean<PageDataModel<BookResponseDataModel>>>(){}.getType();
 			BaseResultBean<PageDataModel<BookResponseDataModel>> bean  = gson.fromJson(content,type);
 			if (bean != null) {
-				PageDataModel<BookResponseDataModel> pageDate = bean.getData();
-				if (pageDate != null) {
-					return pageDate;
+				if("1000".equals(bean.getStatus())){
+					PageDataModel<BookResponseDataModel> pageDate = bean.getData();
+					if (pageDate != null) {
+						return pageDate;
+					}
+				}else{
+					System.out.println(bean.getMessage());
 				}
 			}
 		}
