@@ -1,6 +1,12 @@
-package com.upload.aliyun.runnable.book;
+package com.tools.song1.data.api;
 
-public class BaseResultBean {
+/**
+ * API接口返回数据基本格式封装对象
+ * @author Administrator
+ *
+ * @param <T>
+ */
+public class BaseResultBean<T> {
 	/**
 	 * 返回码,具体设置参考返回码说明
 	 */
@@ -12,8 +18,7 @@ public class BaseResultBean {
 	/**
 	 * 返回的数据
 	 */
-	private PageDataModel<BookResponseDataModel> data;
-	
+	private T data;
 
 	public String getStatus() {
 		return status;
@@ -31,11 +36,11 @@ public class BaseResultBean {
 		this.message = message;
 	}
 
-	public PageDataModel<BookResponseDataModel> getData() {
+	public T getData() {
 		return data;
 	}
 
-	public void setData(PageDataModel<BookResponseDataModel> data) {
+	public void setData(T data) {
 		this.data = data;
 	}
 

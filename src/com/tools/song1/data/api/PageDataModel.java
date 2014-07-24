@@ -1,7 +1,13 @@
-package com.upload.aliyun.runnable.book;
+package com.tools.song1.data.api;
 
 import java.util.List;
 
+/**
+ * API返回分页数据对象
+ * @author Administrator
+ *
+ * @param <T>
+ */
 public class PageDataModel<T> {
 	/**
 	 * 总记录数
@@ -26,36 +32,45 @@ public class PageDataModel<T> {
 	 * 所有对象
 	 */
 	private List<T> listPageObject;
+
 	public int getRecordCount() {
 		return recordCount;
 	}
+
 	public void setRecordCount(int recordCount) {
 		this.recordCount = recordCount;
 	}
+
 	public int getOffSet() {
 		return offSet;
 	}
+
 	public void setOffSet(int offSet) {
 		this.offSet = offSet;
 	}
+
 	public int getPageSize() {
 		return pageSize;
 	}
+
 	public void setPageSize(int pageSize) {
 		this.pageSize = pageSize;
 	}
+
 	public int getPageNum() {
 		return pageNum;
 	}
+
 	public void setPageNum(int pageNum) {
 		this.pageNum = pageNum;
 	}
+
 	public List<T> getListPageObject() {
 		return listPageObject;
 	}
+
 	public void setListPageObject(List<T> listPageObject) {
 		this.listPageObject = listPageObject;
 	}
-	
-}
 
+}

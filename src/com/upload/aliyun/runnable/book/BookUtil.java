@@ -4,13 +4,15 @@
 package com.upload.aliyun.runnable.book;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.List;
 
 import org.apache.http.client.ClientProtocolException;
 
 import com.google.gson.Gson;
-import com.tools.song1.aliyun.OSSUploadUtil;
-import com.upload.aliyun.util.FileDoUtil;
+import com.google.gson.reflect.TypeToken;
+import com.tools.song1.data.api.BaseResultBean;
+import com.tools.song1.data.api.PageDataModel;
 import com.upload.aliyun.util.HttpClientUtil;
 import com.upload.aliyun.util.StringUtil;
 
@@ -69,11 +71,12 @@ public class BookUtil {
 								if (i > 0) {
 									key = new String(key.substring(0, i));
 								}
-								boolean flag = OSSUploadUtil.isObjectExist(bucket, key);
-								if (!flag) {
-									FileDoUtil.outLog(key + " [ 阿里云不存在此文件 ]");
-								}
-								System.out.println(key + " [ 阿里云存在此文件 ]");
+								System.out.println(key);
+//								boolean flag = OSSUploadUtil.isObjectExist(bucket, key);
+//								if (!flag) {
+//									FileDoUtil.outLog(key + " [ 阿里云不存在此文件 ]");
+//								}
+//								System.out.println(key + " [ 阿里云存在此文件 ]");
 							}
 						}
 					}
@@ -86,9 +89,9 @@ public class BookUtil {
 
 	public static PageDataModel<BookResponseDataModel> doData(String content) {
 		if (!StringUtil.isEmptyString(content)) {
-			BaseResultBean bean = new BaseResultBean();
 			Gson gson = new Gson();
-			bean = gson.fromJson(content, BaseResultBean.class);
+			Type type = new TypeToken<BaseResultBean<PageDataModel<BookResponseDataModel>>>(){}.getType();
+			BaseResultBean<PageDataModel<BookResponseDataModel>> bean  = gson.fromJson(content,type);
 			if (bean != null) {
 				PageDataModel<BookResponseDataModel> pageDate = bean.getData();
 				if (pageDate != null) {
