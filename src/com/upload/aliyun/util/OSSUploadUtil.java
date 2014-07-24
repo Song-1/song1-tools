@@ -395,23 +395,22 @@ public class OSSUploadUtil {
 	 * @return ObjectListing
 	 * @throws
 	 */
-
 	private static ObjectListing aliyunConnect(ListObjectsRequest listObjectsRequest) {
-		int CONNECT_COUNT = 0;
-		ObjectListing objectListing = null;
-		while (objectListing == null && CONNECT_COUNT < 100) {
-			try {
-				Thread.sleep(10000); // 线程沉睡10秒
-				FileDoUtil.outLog("阿里云第" + (++CONNECT_COUNT) + "次连接");
-				objectListing = client.listObjects(listObjectsRequest);
-				if (objectListing != null) {
-					break;
+		try {
+				if (client == null) {
+					OSSUploadUtil.init();
 				}
+				return client.listObjects(listObjectsRequest);
 			} catch (Exception e) {
-				FileDoUtil.outLog("阿里云第" + (++CONNECT_COUNT) + "次连接错误：" + e.getMessage());
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				} // 线程沉睡5秒
+				aliyunConnect(listObjectsRequest);
+				FileDoUtil.outLog("阿里云连接错误：" + e.getMessage());
 			}
-		}
-		return objectListing;
+		return null;
 	}
 
 	/**

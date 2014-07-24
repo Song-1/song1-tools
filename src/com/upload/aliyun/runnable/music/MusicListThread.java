@@ -44,9 +44,7 @@ public class MusicListThread implements Runnable {
 	@Override
 	public void run() {
 		saveBook();
-		if (saveSongList()) {
-			saveBook();
-		}
+		saveSongList();
 	}
 
 	public void saveBook() {
