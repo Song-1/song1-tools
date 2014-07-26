@@ -168,4 +168,35 @@ public class MusicConstants {
 			return Integer.parseInt(value);
 		}
 	}
+	
+	private static Map<String,String> FILE_STUFFIX_IMAGE_MAPPING = new HashMap<String,String>(){
+		private static final long serialVersionUID = -4255850737776740070L;
+		{
+			put(".mp3", "/images/icon_mp3.png");
+			put(".wav", "/images/icon_wma.png");
+			put(".jpg", "/images/icon_jpeg.png");
+			put(".png", "/images/icon_jpeg.png");
+			put(".jpeg", "/images/icon_jpeg.png");
+			put(".bmp", "/images/icon_jpeg.png");
+			put(".gif", "/images/icon_jpeg.png");
+			put(".txt", "/images/icon_txt.png");
+		}
+	};
+	
+	public static String getIconByStuffix(String stuffix){
+		String result = "";
+		if(StringUtil.isEmptyString(stuffix)){
+			result = "/images/folder.png";
+			return result;
+		}
+		stuffix = stuffix.trim();
+		if(!stuffix.startsWith(".")){
+			stuffix  = "."+stuffix;
+		}
+		result = FILE_STUFFIX_IMAGE_MAPPING.get(stuffix);
+		if(StringUtil.isEmptyString(result)){
+			result = "/images/icon_3gpp.png";
+		}
+		return result;
+	}
 }

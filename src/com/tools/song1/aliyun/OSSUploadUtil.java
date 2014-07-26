@@ -21,6 +21,7 @@ import com.aliyun.openservices.ClientConfiguration;
 import com.aliyun.openservices.ClientException;
 import com.aliyun.openservices.oss.OSSClient;
 import com.aliyun.openservices.oss.OSSException;
+import com.aliyun.openservices.oss.model.Bucket;
 import com.aliyun.openservices.oss.model.CompleteMultipartUploadRequest;
 import com.aliyun.openservices.oss.model.CopyObjectResult;
 import com.aliyun.openservices.oss.model.InitiateMultipartUploadRequest;
@@ -67,6 +68,35 @@ public class OSSUploadUtil {
 		return url.toString();
 	}
 
+	/**
+	 * 获取所有的bucket
+	 * @return
+	 */
+	public static List<Bucket> listAllBucket(){
+		if(client != null){
+			List<Bucket> buckets = client.listBuckets();
+			return buckets;
+		}
+		return null;
+	}
+	
+	/**
+	 * 获取所有的bucket
+	 * @return
+	 */
+	public static List<String> listAllBucketName(){
+		if(client != null){
+			List<Bucket> buckets = client.listBuckets();
+			if(buckets != null){
+				List<String> names = new ArrayList<String>();
+				for (Bucket bucket : buckets) {
+					names.add(bucket.getName());
+				}
+				return names;
+			}
+		}
+		return null;
+	}
 	/**
 	 * 单个小文件上传
 	 * 
@@ -669,9 +699,11 @@ public class OSSUploadUtil {
 	public static void listAliyunFloder(String bucketName, String rootFloder, List<String> floderList,List<OSSObjectSummary> fileList) {
 		if (StringUtil.isEmptyString(bucketName)) {
 			return;
-		} else if (StringUtil.isEmptyString(rootFloder)) {
+		} else if (rootFloder == null) {
 			return;
 		}
+		bucketName = bucketName.trim();
+		rootFloder = rootFloder.trim();
 		floderList = floderList == null?new ArrayList<String>() :floderList;
 		fileList = fileList == null?new ArrayList<OSSObjectSummary>() :fileList;
 		ListObjectsRequest listObjectsRequest = new ListObjectsRequest(bucketName);
