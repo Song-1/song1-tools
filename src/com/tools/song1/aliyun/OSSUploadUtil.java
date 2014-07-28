@@ -45,9 +45,10 @@ import com.upload.aliyun.util.FileDoUtil;
 import com.upload.aliyun.util.StringUtil;
 
 public class OSSUploadUtil {
-	public static OSSClient client = null;
-	private static final long PART_SIZE = 1 * 512 * 1024L; // 每个Part的大小 521kb
+	private  static OSSClient client = null;
+	private static final long PART_SIZE = 10 * 1024 * 1024L; // 每个Part的大小 521kb
 	private static final int CONCURRENCIES = 10; // 上传Part的并发线程数。
+	public static String ossBasePath = null;
 
 	/**
 	 * init
@@ -55,6 +56,11 @@ public class OSSUploadUtil {
 	public static void init() {
 		ClientConfiguration config = new ClientConfiguration();
 		client = new OSSClient(MusicConstants.PROTOCOL + MusicConstants.ALIYUN_IMAGE_HOST, MusicConstants.ALIYUN_ACCESSKEYID, MusicConstants.ALIYUN_ACCESSKEYSECRET, config);
+	}
+	
+	public static OSSClient getOSSClient(){
+		ClientConfiguration config = new ClientConfiguration();
+		return new OSSClient(MusicConstants.PROTOCOL + MusicConstants.ALIYUN_IMAGE_HOST, MusicConstants.ALIYUN_ACCESSKEYID, MusicConstants.ALIYUN_ACCESSKEYSECRET, config);
 	}
 
 	public static String generateAliyunURL(String bucket, String key, long expirationTimes) {
@@ -77,20 +83,35 @@ public class OSSUploadUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static String uploadObject(String bucket, String key, File uploadFile) throws IOException {
+	public static String uploadObject(String bucket, String key, File uploadFile){
 		String suffix = key.substring(key.lastIndexOf(".") + 1);
-		FileInputStream fin = new FileInputStream(uploadFile);
-		// 创建上传Object的Metadata
 		ObjectMetadata meta = new ObjectMetadata();
-		meta.setContentLength(uploadFile.length());
-		String contentType = (String) MusicConstants.contentTypeMap.get(suffix);
-		if (contentType == null) {
-			contentType = (String) MusicConstants.contentTypeMap.get("stream");
+		FileInputStream fin = null;
+		try {
+			fin = new FileInputStream(uploadFile);
+			// 创建上传Object的Metadata
+			meta.setContentLength(uploadFile.length());
+			String contentType = (String) MusicConstants.contentTypeMap.get(suffix);
+			if (contentType == null) {
+				contentType = (String) MusicConstants.contentTypeMap.get("stream");
+			}
+			meta.setContentType(contentType);
+			ClientConfiguration config = new ClientConfiguration();
+			OSSClient client1 = new OSSClient(MusicConstants.PROTOCOL + MusicConstants.ALIYUN_IMAGE_HOST, MusicConstants.ALIYUN_ACCESSKEYID, MusicConstants.ALIYUN_ACCESSKEYSECRET, config);
+			PutObjectResult result = client1.putObject(bucket, key, fin, meta);
+			return result.getETag();
+		} catch (FileNotFoundException e) {
+			FileDoUtil.outLog("文件不存在:" + uploadFile);
+			e.printStackTrace();
+		}finally{
+			try {
+				fin.close();
+			} catch (IOException e) {
+				FileDoUtil.outLog("fin 关闭异常");
+				e.printStackTrace();
+			}
 		}
-		meta.setContentType(contentType);
-		PutObjectResult result = client.putObject(bucket, key, fin, meta);
-		fin.close();
-		return result.getETag();
+		return null;
 	}
 
 	/**
@@ -118,71 +139,152 @@ public class OSSUploadUtil {
 		return result.getETag();
 	}
 
+	
+	/**
+	 * @throws Exception 
+	 * 
+	 * @Title: uploadDir 上传某个目录下的所有文件
+	 * @param bucketName
+	 *  @param sourcePrefix   本地目录下的所有文件
+	 * @param dirPrefix    阿里云的目录前缀
+	 * void    
+	 * @throws
+	 */
+	public static void uploadDir(String bucketName, String sourcePrefix, String dirPrefix) {
+		ossBasePath = sourcePrefix;
+		
+		File filedir = new File(sourcePrefix);
+		if (!filedir.exists() || !filedir.canRead()) {
+			System.out.println(sourcePrefix + "目录不存在或者不可读");
+		} else if (!filedir.isDirectory()) {
+				String key = dirPrefix+ filedir.getAbsolutePath().replace("",ossBasePath);
+				uploadBigFile(bucketName, key, filedir);
+		}else{
+			File[] files = filedir.listFiles();
+			for (File file : files) {
+				uploadFile(bucketName, sourcePrefix, dirPrefix,file.getAbsolutePath());
+			}
+		}
+	}
+	public static void  uploadFile(String bucketName, String sourcePrefix, String dirPrefix,String filestr) {
+		File filedir = new File(filestr);
+		if (!filedir.exists() || !filedir.canRead()) {
+			System.out.println(sourcePrefix + "目录不存在或者不可读");
+		} else if (!filedir.isDirectory()) {
+			try {
+				String absolutePath = filedir.getAbsolutePath();
+				if (ossBasePath.contains("/")) {
+					ossBasePath = ossBasePath.replace("/", File.separator);
+				}
+				String key = dirPrefix+ absolutePath.replace(ossBasePath,"");
+				key = key.replace(File.separator, "/");
+				uploadBigFile(bucketName, key, filedir);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}else{
+			File[] files = filedir.listFiles();
+			for (File file : files) {
+				uploadFile(bucketName, sourcePrefix, dirPrefix,file.getAbsolutePath());
+			}
+		}
+	}
 	// 通过Multipart的方式上传一个大文件
 	// 要上传文件的大小必须大于一个Part允许的最小大小，即5MB。
-	public static void uploadBigFile(String bucketName, String key, File uploadFile) throws Exception {
+	public static void uploadBigFile(String bucketName, String key, File uploadFile){
+		if (isObjectExist(bucketName, key)) {
+			FileDoUtil.outLog("文件已经存在:" + key);
+			return;
+		}
 		long size = uploadFile.length();
 		int partCount = calPartCount(size);
+		System.out.println("正在上传中..."+key);
 		if (partCount <= 1) {
 			FileDoUtil.outLog("[INFO]上传文件的大小小于一个Part的字节数：" + PART_SIZE + ",使用单文件上传");
+			long startTime = System.currentTimeMillis();
 			uploadObject(bucketName, key, uploadFile);
+			long endtTime = System.currentTimeMillis();
+			long times = (endtTime - startTime) / 1000L;
+			System.out.println(" size :: " + size + "byte"+ "  times ::: " + times + "秒;速度是： " + size / (endtTime - startTime)  + "kb/秒");
 		} else {
-			String uploadId = "";
-			boolean isBreakPointUploadFlag = false;
-			List<PartSummary> partSummaryList = new ArrayList<PartSummary>();
-			ListMultipartUploadsRequest listMultipartUploadsRequest = new ListMultipartUploadsRequest(bucketName);
-			// 获取Bucket内所有上传事件
-			MultipartUploadListing listing = client.listMultipartUploads(listMultipartUploadsRequest);
-			// 遍历所有上传事件
-			for (MultipartUpload multipartUpload : listing.getMultipartUploads()) {
-				FileDoUtil.outLog("Key: " + multipartUpload.getKey() + " UploadId: " + multipartUpload.getUploadId());
-				if (key.equals(multipartUpload.getKey())) {
-					isBreakPointUploadFlag = true;
-					uploadId = multipartUpload.getUploadId();
-					ListPartsRequest listPartsRequest = new ListPartsRequest(bucketName, multipartUpload.getKey(), uploadId);
-					// 获取上传的所有Part信息
-					PartListing partListing = client.listParts(listPartsRequest);
-					partSummaryList = partListing.getParts();
-					break;
-				}
+			upload(bucketName, key, uploadFile,partCount);
+		}
+	}
+
+	private static void upload(String bucketName, String key, File uploadFile,int partCount){
+		String uploadId = "";
+		boolean isBreakPointUploadFlag = false;
+		List<PartSummary> partSummaryList = new ArrayList<PartSummary>();
+		ListMultipartUploadsRequest listMultipartUploadsRequest = new ListMultipartUploadsRequest(bucketName);
+		// 获取Bucket内所有上传事件
+		MultipartUploadListing listing =  getOSSClient().listMultipartUploads(listMultipartUploadsRequest);
+		// 遍历所有上传事件
+		for (MultipartUpload multipartUpload : listing.getMultipartUploads()) {
+			if (key.equals(multipartUpload.getKey())) {
+				isBreakPointUploadFlag = true;
+				uploadId = multipartUpload.getUploadId();
+				FileDoUtil.outLog("有断点Key: " + multipartUpload.getKey() + " UploadId: " + multipartUpload.getUploadId());
+				ListPartsRequest listPartsRequest = new ListPartsRequest(bucketName, multipartUpload.getKey(), uploadId);
+				// 获取上传的所有Part信息
+				PartListing partListing = client.listParts(listPartsRequest);
+				partSummaryList = partListing.getParts();
+				break;
 			}
-			if (!isBreakPointUploadFlag) {
-				uploadId = initMultipartUpload(client, bucketName, key);
-			}
-			ExecutorService pool = Executors.newFixedThreadPool(CONCURRENCIES);
-			List<PartETag> eTags = Collections.synchronizedList(new ArrayList<PartETag>());
-			new Thread(new SystemOutUploadFileThread(partCount, eTags)).start();
-			partUpload: for (int i = 0; i < partCount; i++) {
-				int partNumber = i + 1;
-				long start = PART_SIZE * i;
-				long curPartSize = PART_SIZE < size - start ? PART_SIZE : size - start;
-				if (isBreakPointUploadFlag) {
-					for (PartSummary part : partSummaryList) {
-						System.out.print("PartNumber: " + part.getPartNumber() + " ETag: " + part.getETag());
-						FileDoUtil.outLog("    size : " + part.getSize());
-						if (partNumber == part.getPartNumber()) {
-							if (curPartSize != part.getSize()) {
-								start += part.getSize();
-							} else {
-								eTags.add(new PartETag(partNumber, part.getETag()));
-								continue partUpload;
-							}
+		}
+		if (!isBreakPointUploadFlag) {
+			uploadId = initMultipartUpload(client, bucketName, key);
+		}
+		ExecutorService pool = Executors.newFixedThreadPool(CONCURRENCIES);
+		List<PartETag> eTags = Collections.synchronizedList(new ArrayList<PartETag>());
+		new Thread(new SystemOutUploadFileThread(partCount, eTags)).start();
+		partUpload: for (int i = 0; i < partCount; i++) {
+			int partNumber = i + 1;
+			long start = PART_SIZE * i;
+			long size = uploadFile.length();
+			long curPartSize = PART_SIZE < size  - start ? PART_SIZE : size - start;
+			if (isBreakPointUploadFlag) {
+				for (PartSummary part : partSummaryList) {
+					FileDoUtil.outLog("etagsPartNumber: " + part.getPartNumber() + " ETag: " + part.getETag() + "    size : " + part.getSize());
+					if (partNumber == part.getPartNumber()) {
+						if (curPartSize != part.getSize()) {
+							start += part.getSize();
+						} else {
+							eTags.add(new PartETag(partNumber, part.getETag()));
+							continue partUpload;
 						}
 					}
 				}
-				pool.execute(new UploadPartThread(client, bucketName, key, new FileInputStream(uploadFile), uploadId, partNumber, PART_SIZE * i, curPartSize, eTags));
 			}
-
-			pool.shutdown();
-			while (!pool.isTerminated()) {
-				pool.awaitTermination(5, TimeUnit.SECONDS);
+			
+			ClientConfiguration config = new ClientConfiguration();
+			OSSClient client1 = new OSSClient(MusicConstants.PROTOCOL + MusicConstants.ALIYUN_IMAGE_HOST, MusicConstants.ALIYUN_ACCESSKEYID, MusicConstants.ALIYUN_ACCESSKEYSECRET, config);
+			FileInputStream uploadFile2 = null;
+			try {
+				uploadFile2 = new FileInputStream(uploadFile);
+			} catch (FileNotFoundException e) {
+				FileDoUtil.outLog("文件不存在:" + uploadFile);
+				e.printStackTrace();
 			}
-			if (eTags.size() != partCount) {
-				throw new IllegalStateException("Multipart上传失败，有Part未上传成功。");
-			}
-			FileDoUtil.outLog("over");
-			completeMultipartUpload(client, bucketName, key, uploadId, eTags);
+			UploadPartThread command = new UploadPartThread(client1, bucketName, key, uploadFile2, uploadId, partNumber, PART_SIZE * i, curPartSize, eTags);
+			pool.execute(command);
 		}
+
+		System.out.println("before pool shutdown");
+		pool.shutdown();
+		System.out.println("after pool shutdown :" + pool.isTerminated());
+		while (!pool.isTerminated()) {
+			try {
+				pool.awaitTermination(5, TimeUnit.SECONDS);
+			} catch (InterruptedException e) {
+				FileDoUtil.outLog("InterruptedException 异常");
+				e.printStackTrace();
+			}
+		}
+		if (eTags.size() != partCount) {
+			FileDoUtil.outLog("Multipart上传失败，有Part未上传成功。");
+		}
+		FileDoUtil.outLog("文件上传完毕:" + key);
+		completeMultipartUpload(client, bucketName, key, uploadId, eTags);
 	}
 
 	// 根据文件的大小和每个Part的大小计算需要划分的Part个数。
@@ -264,16 +366,19 @@ public class OSSUploadUtil {
 				UploadPartResult uploadPartResult = client.uploadPart(uploadPartRequest);
 				long endtTime = System.currentTimeMillis();
 				long times = (endtTime - startTime) / 1000L;
-				FileDoUtil.outLog("part :: " + partId + " size :: " + size + "  times ::: " + times);
+				System.out.println("part :: " + partId + " size :: " + size + "byte"+ "  times ::: " + times + "秒" +";速度是： " + size / (endtTime - startTime)  + "kb/秒");
 				eTags.add(uploadPartResult.getPartETag());
 
 			} catch (Exception e) {
+				FileDoUtil.outLog(e.getMessage());
+				FileDoUtil.outLog("UploadPartThread上传错误");
 				e.printStackTrace();
 			} finally {
 				if (in != null)
 					try {
 						in.close();
 					} catch (Exception e) {
+						FileDoUtil.outLog(e.getMessage());
 					}
 			}
 		}
@@ -293,6 +398,9 @@ public class OSSUploadUtil {
 		SystemOutUploadFileThread(int partCount, List<PartETag> eTags) {
 			this.eTags = eTags;
 			this.partCount = partCount;
+		}
+		SystemOutUploadFileThread() {
+			
 		}
 
 		@Override
@@ -396,7 +504,6 @@ public class OSSUploadUtil {
 		int CONNECT_COUNT = 0;
 		ObjectListing objectListing = null;
 		try {
-			FileDoUtil.outLog("阿里云第" + (++CONNECT_COUNT) + "次连接");
 			objectListing = client.listObjects(listObjectsRequest);
 		} catch (Exception e) {
 			FileDoUtil.outLog("阿里云第" + (++CONNECT_COUNT) + "次连接错误：" + e.getMessage());
@@ -457,7 +564,6 @@ public class OSSUploadUtil {
 			try {
 				Thread.sleep(5000);
 			} catch (Exception e2) {
-				// TODO: handle exception
 			}
 			deleteObject(sourceBucketName, sourceKey);
 		}

@@ -59,8 +59,15 @@ public class FileDoUtil {
 	 * @return
 	 */
 	public static String getBasePath() {
-		String path = FileDoUtil.class.getResource("/").toString();
-		path = path.replace("file:/", "");
+		String path = null;
+		try {
+			path = FileDoUtil.class.getResource("/").toString();
+			path = path.replace("file:/", "");
+		} catch (Exception e) {
+			File directory = new File("");//设定为当前文件夹
+			path = directory.getAbsolutePath();
+			System.out.println("FileDoUtil.class.getResource(\"/\")方法出错了");
+		}
 		return path;
 	}
 
@@ -133,7 +140,19 @@ public class FileDoUtil {
 	
 	////// test
 	public static void main(String[] args) {
+		System.out.println(getBasePath());
+		File directory = new File("");//设定为当前文件夹
+		String absolutePath = directory.getAbsolutePath();
 		
+		File dir = new File(".");//设定为当前文件夹
+		String absoluteP = dir.getAbsolutePath();
+		absoluteP = absoluteP.replace(File.separator, "/");
+		try{
+		    System.out.println(directory.getCanonicalPath());//获取标准的路径
+		    System.out.println(absolutePath);//获取绝对路径
+		    System.out.println(absoluteP);//获取绝对路径
+		    System.out.println(FileDoUtil.class.getResource("/").toString());//获取绝对路径
+		}catch(Exception e){}
 	}
 
 	

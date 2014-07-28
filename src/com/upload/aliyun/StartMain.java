@@ -44,7 +44,8 @@ public class StartMain {
 			put(2, "移动文件");
 			put(3, "删除文件");
 			put(4, "查看文件");
-			put(5, "返回");
+			put(5, "上传文件");
+			put(0, "返回");
 		}
 	};
 	private static final Map<Integer, String> BOOK_MENU_MAP = new HashMap<Integer, String>() {
@@ -144,7 +145,7 @@ public class StartMain {
 					System.out.println(" 【" + entry.getKey().intValue() + "】 " + entry.getValue());
 				}
 				int doIndex = convertInputStr("请输入你要选择的操作的编号:::");
-				if (5 == doIndex) {
+				if (0 == doIndex) {
 					break;
 				} else {
 					aliyunDoStart(doIndex);
@@ -315,7 +316,16 @@ public class StartMain {
 				}
 			}
 			break;
-
+		case 5:
+			String ubucket = inputStr("请输入上传文件所属BUCKET:");
+			String ukey = inputStr("请输入上传文件在OSS阿里云的路径前缀:");
+			String sourcePrefix = inputStr("请输入本地文件路径:");
+			ubucket = replaceSeparator(ubucket, false);
+			ukey = replaceSeparator(ukey, false);
+			sourcePrefix = replaceSeparator(sourcePrefix, false);
+			OSSUploadUtil.uploadDir(ubucket, sourcePrefix, ukey);
+			System.out.println("上传成功:" + sourcePrefix);
+			break;
 		default:
 			System.out.println("没有此功能操作,请输入正确的功能操作编码...........");
 			break;
@@ -323,6 +333,18 @@ public class StartMain {
 
 	}
 
+	public static String replaceSeparator(String str,boolean isLastSeparator) {
+		if (str.contains(File.separator)) {
+			str = str.replace(File.separator, "/");
+		}
+		if (isLastSeparator && !str.endsWith("/")) {
+			str = str + "/";
+		}else if (!isLastSeparator && str.endsWith("/")) {
+			str = str.substring(0, str.length()-1);
+		}
+		return str;
+	}
+	
 	public static void start() {
 		try {
 
