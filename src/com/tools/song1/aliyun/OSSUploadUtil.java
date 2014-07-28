@@ -459,10 +459,15 @@ public class OSSUploadUtil {
 		if (client != null) {
 			boolean falg = isObjectExist(destinationBucketName, destinationKey);
 			if(!falg){
+				FileDoUtil.outLog(sourceBucketName);
+				FileDoUtil.outLog(sourceKey);
+				FileDoUtil.outLog(destinationBucketName);
+				FileDoUtil.outLog(destinationKey);
 				CopyObjectResult result = client.copyObject(sourceBucketName, sourceKey, destinationBucketName, destinationKey);
 				FileDoUtil.outLog("[File Copy]Etag:::" + result.getETag());
+			}else{
+				FileDoUtil.outLog("[File Copy]目标文件已存在" );
 			}
-			FileDoUtil.outLog("[File Copy]目标文件已存在" );
 		}
 	}
 	/**
@@ -474,8 +479,14 @@ public class OSSUploadUtil {
 	 * @param destinationKey
 	 */
 	public static void deleteObject(String sourceBucketName, String sourceKey) {
+		if(StringUtil.isEmptyString(sourceBucketName)){
+			return;
+		}else if(sourceKey == null){
+			return;
+		}
 		if (client != null) {
 			System.out.println("delete...........");
+			sourceBucketName = sourceBucketName.trim();
 			client.deleteObject(sourceBucketName, sourceKey);
 		}
 	}
@@ -665,9 +676,10 @@ public class OSSUploadUtil {
 	public static List<String> listAliyunFloder(String bucketName, String rootFloder, boolean isViewAll) {
 		if (StringUtil.isEmptyString(bucketName)) {
 			return null;
-		} else if (StringUtil.isEmptyString(rootFloder)) {
+		} else if (rootFloder == null) {
 			return null;
 		}
+		bucketName = bucketName.trim();
 		List<String> commonPrefixeslist = new CopyOnWriteArrayList<String>();
 		ListObjectsRequest listObjectsRequest = new ListObjectsRequest(bucketName);
 		// 设置参数
@@ -730,21 +742,25 @@ public class OSSUploadUtil {
 	}
 
 
-	public static void modifyAliyunFloderName(String bucketName, String prefix, String newBucketName, String newKey) {
+	public static boolean modifyAliyunFloderName(String bucketName, String prefix, String newBucketName, String newKey) {
 		System.out.println(" 开始     复制文件............................");
 		if (StringUtil.isEmptyString(bucketName)) {
 			System.out.println("复制文件所属BUCKET为空!");
-			return;
+			return false;
 		} else if (StringUtil.isEmptyString(prefix)) {
 			System.out.println("复制文件路径为空!");
-			return;
+			return false;
 		} else if (StringUtil.isEmptyString(newBucketName)) {
 			System.out.println("复制到文件所属BUCKET为空!");
-			return;
+			return false;
 		} else if (StringUtil.isEmptyString(newKey)) {
 			System.out.println("复制到文件路径为空!");
-			return;
+			return false;
 		}
+		bucketName = bucketName.trim(); 
+		prefix= prefix.trim();
+		newBucketName = newBucketName.trim();
+		newKey = newKey.trim();
 		List<String> aliyunFloders = listAliyunFloder(bucketName, prefix, true);
 		if (aliyunFloders == null || aliyunFloders.isEmpty()) {
 			aliyunFloders = new ArrayList<String>();
@@ -781,6 +797,8 @@ public class OSSUploadUtil {
 								FileDoUtil.outLog(newFloders + " 文件不存在    进行复制.................");
 								copyObject(bucketName, key, newBucketName, newFloders);
 								FileDoUtil.outLog(newFloders + " 文件复制    完成.................");
+							}else{
+								FileDoUtil.outLog(newFloders + " 文件存在    不进行复制.................");
 							}
 						}
 					}
@@ -788,6 +806,7 @@ public class OSSUploadUtil {
 			} while (objectListing.isTruncated());
 		}
 		System.out.println(" 结束    复制文件............................");
+		return true;
 	}
 
 	/**
@@ -820,5 +839,10 @@ public class OSSUploadUtil {
 			return true;
 		}
 		return false;
+	}
+	
+	
+	public static void modifyObjectSummaryName(String bucket ,String key ,String newKey){
+		
 	}
 }

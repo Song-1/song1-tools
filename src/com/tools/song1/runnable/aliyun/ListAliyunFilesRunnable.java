@@ -57,7 +57,6 @@ public class ListAliyunFilesRunnable extends BaseRunnable {
 			TableItem tableItem1 = new TableItem(table, SWT.NONE);
 			tableItem1.setImage(SWTResourceManager.getImage(AliyunMainView.class, "/images/folder.png"));
 			tableItem1.setText("返回上级");
-			System.out.println("返回上级::::"+key);
 			tableItem1.setData(key);
 		}
 		for (String string : list) {
