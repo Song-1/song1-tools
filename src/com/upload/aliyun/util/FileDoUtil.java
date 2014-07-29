@@ -16,7 +16,11 @@ import org.apache.commons.io.FileUtils;
 public class FileDoUtil {
 	
 	
-	
+	/**
+	 * 判断文件夹下是否有文件夹
+	 * @param file
+	 * @return
+	 */
 	public static boolean hasFloderInTheFloderFile(File file){
 		if(file == null){
 			return false;
@@ -63,7 +67,34 @@ public class FileDoUtil {
 		path = path.replace("file:/", "");
 		return path;
 	}
+	
+	/**
+	 * 创建文件的目录路径并创建文件.<br>
+	 * @param file
+	 */
+	public static void mkDirs(File file){
+		if (file != null && !file.exists()) {
+			String path = file.getAbsolutePath();
+			int index = path.lastIndexOf(File.separator);
+			String dirsPath = new String(path.substring(0, index));
+			File filedirs = new File(dirsPath);
+			if (!filedirs.exists()) {
+				filedirs.mkdirs();
+			}
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
+	/**
+	 * 
+	 * @param path
+	 * @param content
+	 * @param isAdditionalWrite
+	 */
 	public static void outFile(String path, String content, boolean isAdditionalWrite) {
 		File file = new File(path);
 		try {

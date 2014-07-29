@@ -24,6 +24,7 @@ import com.aliyun.openservices.oss.OSSException;
 import com.aliyun.openservices.oss.model.Bucket;
 import com.aliyun.openservices.oss.model.CompleteMultipartUploadRequest;
 import com.aliyun.openservices.oss.model.CopyObjectResult;
+import com.aliyun.openservices.oss.model.GetObjectRequest;
 import com.aliyun.openservices.oss.model.InitiateMultipartUploadRequest;
 import com.aliyun.openservices.oss.model.InitiateMultipartUploadResult;
 import com.aliyun.openservices.oss.model.ListMultipartUploadsRequest;
@@ -844,5 +845,44 @@ public class OSSUploadUtil {
 	
 	public static void modifyObjectSummaryName(String bucket ,String key ,String newKey){
 		
+	}
+	
+	/**
+	 * 判断阿里云服务器指定bucket下面是否存在此key值的文件 .<br>
+	 * 
+	 * @param bucket
+	 * @param key
+	 * @return
+	 */
+	public static boolean isExistObjectForTheKey(String bucket, String key) {
+		boolean flag = true;
+		try {
+			client.getObject(bucket, key);
+		} catch (OSSException e) {
+			String errorCode = e.getErrorCode();
+			if("NoSuchKey".equalsIgnoreCase(errorCode)){
+				flag = false;
+				FileDoUtil.outLog("isExistObjectForTheKey::[bucket="+bucket+";key="+key+"]"+e.getMessage());
+			}
+			e.printStackTrace();
+		} catch (ClientException e) {
+			flag = false;
+			e.printStackTrace();
+		}
+		return flag;
+	}
+	
+	public static void downLoadFile(String bucket,String key){
+		boolean flag = isExistObjectForTheKey(bucket, key);
+		System.out.println(flag);
+		if(client != null && flag){
+			GetObjectRequest getObjectRequest = new GetObjectRequest(bucket, key);
+			File file = new File("D:/java/aliyun"+key);
+			FileDoUtil.mkDirs(file);
+			if(file.exists()){
+				// 下载Object到文件
+				client.getObject(getObjectRequest, file);
+			}
+		}
 	}
 }
