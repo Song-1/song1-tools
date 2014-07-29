@@ -11,7 +11,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.wb.swt.SWTResourceManager;
 
-import com.test.TestDialog;
 import com.tools.song1.util.LayoutUtil;
 
 public class ErrorDialog extends Dialog {
@@ -53,7 +52,7 @@ public class ErrorDialog extends Dialog {
 		btnNewButton.setText("确  定");
 
 		Label lblNewLabel = formToolkit.createLabel(shell, "New Label", SWT.NONE);
-		lblNewLabel.setImage(SWTResourceManager.getImage(TestDialog.class, "/images/log_error2.png"));
+		lblNewLabel.setImage(SWTResourceManager.getImage(ErrorDialog.class, "/images/log_error2.png"));
 		lblNewLabel.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
 		lblNewLabel.setBounds(38, 38, 21, 17);
 

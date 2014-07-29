@@ -110,69 +110,7 @@ public class NetWorkUtil {
 		return responseContent;
 	}
 
-	/**
-	 * 发送HTTP请求
-	 * @param reqUrl
-	 * @param parameters
-	 * @param recvEncoding
-	 * @param method
-	 * @return
-	 */
-	public static String doHttpRequest(String reqUrl, Map<String, String> parameters, String recvEncoding,RequestMethod method) {
-		HttpURLConnection conn = null;
-		String responseContent = null;
-		OutputStream out = null;
-		try {
-			if(parameters == null){
-				parameters = new HashMap<String, String>();
-			}
-			StringBuffer params = new StringBuffer();
-			for (Map.Entry<String, String> element : parameters.entrySet()) {
-				params.append(element.getKey());
-				params.append("=");
-				String value = element.getValue();
-				if(value != null){
-					params.append(URLEncoder.encode(element.getValue(), recvEncoding));
-				}
-				params.append("&");
-			}
-
-			if (params.length() > 0) {
-				params = params.deleteCharAt(params.length() - 1);
-			}
-			URL url = new URL(reqUrl);
-			conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod(method.getValue());
-			conn.setConnectTimeout(TIME_OUT);// （单位：毫秒）jdk
-			// 1.5换成这个,连接超时
-			conn.setReadTimeout(TIME_OUT);// （单位：毫秒）jdk 1.5换成这个,读操作超时
-			conn.setDoOutput(true);
-			byte[] b = params.toString().getBytes();
-			out = conn.getOutputStream();
-			out.write(b, 0, b.length);
-			out.flush();
-			out.close();
-			// ///
-			return getPostResponse(conn, recvEncoding);
-		} catch (IOException e) {
-			e.printStackTrace();
-			//doPost(reqUrl, parameters, recvEncoding);
-		} finally {
-			if (out != null) {
-				try {
-					out.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				} finally {
-					out = null;
-				}
-			}
-			if (conn != null) {
-				conn.disconnect();
-			}
-		}
-		return responseContent;
-	}
+	
 	/**
 	 * 获取post提交表单数据服务器返回的数据
 	 * 
