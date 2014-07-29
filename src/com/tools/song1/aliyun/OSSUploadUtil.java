@@ -23,6 +23,7 @@ import com.aliyun.openservices.oss.OSSClient;
 import com.aliyun.openservices.oss.OSSException;
 import com.aliyun.openservices.oss.model.CompleteMultipartUploadRequest;
 import com.aliyun.openservices.oss.model.CopyObjectResult;
+import com.aliyun.openservices.oss.model.GetObjectRequest;
 import com.aliyun.openservices.oss.model.InitiateMultipartUploadRequest;
 import com.aliyun.openservices.oss.model.InitiateMultipartUploadResult;
 import com.aliyun.openservices.oss.model.ListMultipartUploadsRequest;
@@ -30,6 +31,7 @@ import com.aliyun.openservices.oss.model.ListObjectsRequest;
 import com.aliyun.openservices.oss.model.ListPartsRequest;
 import com.aliyun.openservices.oss.model.MultipartUpload;
 import com.aliyun.openservices.oss.model.MultipartUploadListing;
+import com.aliyun.openservices.oss.model.OSSObject;
 import com.aliyun.openservices.oss.model.OSSObjectSummary;
 import com.aliyun.openservices.oss.model.ObjectListing;
 import com.aliyun.openservices.oss.model.ObjectMetadata;
@@ -456,9 +458,18 @@ public class OSSUploadUtil {
 		if (key == null || "".equals(key.trim())) {
 			return false;
 		}
-		int index = key.lastIndexOf("/") + 1;
-		String filePath = new String(key.substring(0, index - 1));
-		String name = new String(key.substring(index));
+		int index = key.lastIndexOf("/") ;
+		String filePath = null;
+		String name = null;
+		if(index > 0){
+			filePath =  new String(key.substring(0, index));
+			name = new String(key.substring(index+1));
+		}else{
+			filePath = key;
+			name = key;
+		}
+		
+		
 		ListObjectsRequest listObjectsRequest = new ListObjectsRequest(bucket);
 		// 设置参数
 		listObjectsRequest.setDelimiter("/");
@@ -907,5 +918,44 @@ public class OSSUploadUtil {
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * 判断阿里云服务器指定bucket下面是否存在此key值的文件 .<br>
+	 * 
+	 * @param bucket
+	 * @param key
+	 * @return
+	 */
+	public static boolean isExistObjectForTheKey(String bucket, String key) {
+		boolean flag = true;
+		try {
+			client.getObject(bucket, key);
+		} catch (OSSException e) {
+			String errorCode = e.getErrorCode();
+			if("NoSuchKey".equalsIgnoreCase(errorCode)){
+				flag = false;
+				FileDoUtil.outLog("isExistObjectForTheKey::[bucket="+bucket+";key="+key+"]"+e.getMessage());
+			}
+			e.printStackTrace();
+		} catch (ClientException e) {
+			flag = false;
+			e.printStackTrace();
+		}
+		return flag;
+	}
+	
+	public static void downLoadFile(String bucket,String key){
+		boolean flag = isExistObjectForTheKey(bucket, key);
+		System.out.println(flag);
+		if(client != null && flag){
+			GetObjectRequest getObjectRequest = new GetObjectRequest(bucket, key);
+			File file = new File("D:/java/aliyun"+key);
+			FileDoUtil.mkDirs(file);
+			if(file.exists()){
+				// 下载Object到文件
+				client.getObject(getObjectRequest, file);
+			}
+		}
 	}
 }

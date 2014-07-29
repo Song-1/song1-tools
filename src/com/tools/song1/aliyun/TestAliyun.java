@@ -23,8 +23,9 @@ public class TestAliyun {
 			//JavascriptUtil.init();
 			
 //			String key = "test/状元听书/";
-			String bucket = "testupload2";
-			String key = "test/状元听书";
+			String bucket = "cherrytime";
+			String key = "icon/熬夜/怀旧的/女声/李翊君.jpg";
+			OSSUploadUtil.downLoadFile(bucket, key);
 //			String newKey = "book/网络/";
 			//OSSUploadUtil.modifyTheFileStuffix(bucket, key);
 //			List<OSSObjectSummary> list = 

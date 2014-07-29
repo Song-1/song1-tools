@@ -70,19 +70,29 @@ public class FileDoUtil {
 		}
 		return path;
 	}
+	
+	public static void mkDirs(File file){
+		if (file != null && !file.exists()) {
+			String path = file.getAbsolutePath();
+			System.out.println(path);
+			int index = path.lastIndexOf(File.separator);
+			String dirsPath = new String(path.substring(0, index));
+			File filedirs = new File(dirsPath);
+			if (!filedirs.exists()) {
+				filedirs.mkdirs();
+			}
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 	public static void outFile(String path, String content, boolean isAdditionalWrite) {
 		File file = new File(path);
 		try {
-			if (!file.exists()) {
-				int index = path.lastIndexOf("/");
-				String dirsPath = new String(path.substring(0, index));
-				File filedirs = new File(dirsPath);
-				if (!filedirs.exists()) {
-					filedirs.mkdirs();
-				}
-				file.createNewFile();
-			}
+			mkDirs(file);
 			if (file.exists()) {
 				if (isAdditionalWrite) {
 					content = "\r\n" + content;
