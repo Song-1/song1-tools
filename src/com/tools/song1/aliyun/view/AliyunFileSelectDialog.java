@@ -22,7 +22,7 @@ import org.eclipse.wb.swt.SWTResourceManager;
 
 import com.tools.song1.aliyun.OSSUploadUtil;
 import com.tools.song1.util.LayoutUtil;
-import com.upload.aliyun.util.StringUtil;
+import com.tools.song1.util.StringUtil;
 
 public class AliyunFileSelectDialog extends Dialog {
 

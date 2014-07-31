@@ -3,20 +3,17 @@
  */
 package com.upload.aliyun.runnable.book;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
-
-import org.apache.http.client.ClientProtocolException;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tools.song1.aliyun.OSSUploadUtil;
 import com.tools.song1.data.api.BaseResultBean;
 import com.tools.song1.data.api.PageDataModel;
-import com.upload.aliyun.util.FileDoUtil;
-import com.upload.aliyun.util.HttpClientUtil;
-import com.upload.aliyun.util.StringUtil;
+import com.tools.song1.util.FileDoUtil;
+import com.tools.song1.util.HttpClientUtil;
+import com.tools.song1.util.StringUtil;
 
 /**
  * @author Administrator

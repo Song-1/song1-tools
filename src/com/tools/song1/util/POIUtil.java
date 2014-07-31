@@ -7,12 +7,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.omg.CORBA.BooleanHolder;
 
 /**
@@ -36,13 +37,20 @@ public abstract class POIUtil {
 			return;
 		}
 		if (file.exists()) {
+			Workbook hssfWorkbook = null ;
 			FileInputStream fIn = null;
 			try {
-				fIn = new FileInputStream(file);
-				HSSFWorkbook hssfWorkbook = new HSSFWorkbook(fIn);
+				try{
+					fIn = new FileInputStream(file);
+				    hssfWorkbook = new XSSFWorkbook(fIn);
+				}catch(Exception e){
+					e.printStackTrace();
+					fIn = new FileInputStream(file);
+					hssfWorkbook = new HSSFWorkbook(fIn);
+				}
 				int sheetCount = hssfWorkbook.getNumberOfSheets();
 				for (int i = 0; i < sheetCount; i++) {
-					HSSFSheet sheet = hssfWorkbook.getSheetAt(i);
+					Sheet sheet = hssfWorkbook.getSheetAt(i);
 					doSheet(sheet);
 				}
 
@@ -69,7 +77,7 @@ public abstract class POIUtil {
 	 * 处理工作簿
 	 * @param sheet
 	 */
-	public void doSheet(HSSFSheet sheet) {
+	public void doSheet(Sheet sheet) {
 		if (sheet == null) {
 			return;
 		}
@@ -77,7 +85,7 @@ public abstract class POIUtil {
 		clearValues();
 		int rows = sheet.getPhysicalNumberOfRows();
 		for (int rowIndex = getRowStartIndex(); rowIndex < rows; rowIndex++) {
-			HSSFRow row = sheet.getRow(rowIndex);
+			Row row = sheet.getRow(rowIndex);
 			if(row ==null){
 				continue;
 			}
@@ -109,7 +117,7 @@ public abstract class POIUtil {
 	 * @param cellIndex
 	 * @param row
 	 */
-	public abstract void doTheCell(int rowIndex, int cellIndex, HSSFRow row);
+	public abstract void doTheCell(int rowIndex, int cellIndex, Row row);
 
 	/**
 	 * 返回开始行
@@ -130,7 +138,7 @@ public abstract class POIUtil {
 	/**
 	 * 
 	 */
-	public abstract void initValue(HSSFSheet sheet);
+	public abstract void initValue(Sheet sheet);
 
 	/**
 	 * 将单元格的值赋给数据对象
@@ -146,7 +154,7 @@ public abstract class POIUtil {
 	 * @param sheet
 	 * @return
 	 */
-	public static CopyOnWriteArrayList<CellRangeAddress> getMergedRegions(HSSFSheet sheet) {
+	public static CopyOnWriteArrayList<CellRangeAddress> getMergedRegions(Sheet sheet) {
 		CopyOnWriteArrayList<CellRangeAddress> cellRangeAddressList = new CopyOnWriteArrayList<CellRangeAddress>();
 		int sheetMergeCount = sheet.getNumMergedRegions();
 		for (int i = 0; i < sheetMergeCount; i++) {
@@ -169,15 +177,15 @@ public abstract class POIUtil {
 		String value = null;
 		switch (cell.getCellType()) {
 
-		case HSSFCell.CELL_TYPE_FORMULA:
+		case Cell.CELL_TYPE_FORMULA:
 			value = cell.getCellFormula();
 			break;
 
-		case HSSFCell.CELL_TYPE_NUMERIC:
+		case Cell.CELL_TYPE_NUMERIC:
 			value = "" + cell.getNumericCellValue();
 			break;
 
-		case HSSFCell.CELL_TYPE_STRING:
+		case Cell.CELL_TYPE_STRING:
 			value = cell.getStringCellValue();
 			break;
 

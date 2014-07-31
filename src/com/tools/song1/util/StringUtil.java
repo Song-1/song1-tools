@@ -4,6 +4,7 @@
 package com.tools.song1.util;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -50,6 +51,18 @@ public class StringUtil {
 		}
 		str = str.replace("%2F", "/");
 		str = str.replace("%3A", ":");
+		return str;
+	}
+	public static String decodeURL(String str) {
+		if (str == null) {
+			return "";
+		}
+		String theDefenc = "UTF-8";
+		try {
+			str = URLDecoder.decode(str, theDefenc);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 		return str;
 	}
 

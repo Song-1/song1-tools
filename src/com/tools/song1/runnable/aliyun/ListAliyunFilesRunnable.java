@@ -16,8 +16,8 @@ import com.tools.song1.aliyun.view.AliyunMainView;
 import com.tools.song1.runnable.BaseRunnable;
 import com.tools.song1.service.AliyunService;
 import com.tools.song1.service.impl.AliyunServiceImpl;
+import com.tools.song1.util.StringUtil;
 import com.upload.aliyun.MusicConstants;
-import com.upload.aliyun.util.StringUtil;
 
 /**
  * @author Administrator

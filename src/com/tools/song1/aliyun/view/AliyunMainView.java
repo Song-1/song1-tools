@@ -30,11 +30,11 @@ import org.eclipse.wb.swt.SWTResourceManager;
 
 import com.tools.song1.aliyun.OSSUploadUtil;
 import com.tools.song1.runnable.aliyun.ListAliyunFilesRunnable;
+import com.tools.song1.util.FileDoUtil;
+import com.tools.song1.util.JavascriptUtil;
 import com.tools.song1.util.LayoutUtil;
+import com.tools.song1.util.StringUtil;
 import com.upload.aliyun.MusicConstants;
-import com.upload.aliyun.util.FileDoUtil;
-import com.upload.aliyun.util.JavascriptUtil;
-import com.upload.aliyun.util.StringUtil;
 
 public class AliyunMainView {
 

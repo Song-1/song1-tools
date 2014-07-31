@@ -32,10 +32,10 @@ import com.aliyun.openservices.oss.model.PartListing;
 import com.aliyun.openservices.oss.model.PartSummary;
 import com.aliyun.openservices.oss.model.UploadPartRequest;
 import com.aliyun.openservices.oss.model.UploadPartResult;
+import com.tools.song1.util.FileDoUtil;
+import com.tools.song1.util.StringUtil;
 import com.upload.aliyun.EtagComparator;
 import com.upload.aliyun.MusicConstants;
-import com.upload.aliyun.util.FileDoUtil;
-import com.upload.aliyun.util.StringUtil;
 
 /**
  * @author Administrator

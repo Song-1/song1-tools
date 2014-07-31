@@ -7,6 +7,8 @@ import java.util.Map;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.ShellAdapter;
+import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Dialog;
@@ -22,10 +24,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import com.tools.song1.aliyun.UploadFiles;
-import com.upload.aliyun.util.FileDoUtil;
-import com.upload.aliyun.util.StringUtil;
-import org.eclipse.swt.events.ShellAdapter;
-import org.eclipse.swt.events.ShellEvent;
+import com.tools.song1.util.FileDoUtil;
+import com.tools.song1.util.StringUtil;
 
 public class UploadFilesDialog extends Dialog {
 
