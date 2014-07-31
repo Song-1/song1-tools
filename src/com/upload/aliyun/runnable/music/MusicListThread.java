@@ -15,7 +15,6 @@ import com.tools.song1.util.FileDoUtil;
 import com.tools.song1.util.ImageFileUtil;
 import com.tools.song1.util.JavascriptUtil;
 import com.tools.song1.util.NetWorkUtil;
-import com.tools.song1.util.OSSUploadUtil;
 import com.tools.song1.util.StringUtil;
 import com.upload.aliyun.MusicConstants;
 
@@ -85,13 +84,13 @@ public class MusicListThread implements Runnable {
 	 */
 	public void saveData(String name, String key, File file) {
 		key = MusicConstants.SERVER_PATH_ROOT + key;
-		boolean flag = OSSUploadUtil.isObjectExist(MusicConstants.BUKET_NAME, key);
+		//boolean flag = OSSUploadUtil.isObjectExist(MusicConstants.BUKET_NAME, key);
 		String url = MusicConstants.getUrl(key);
 		String img = "";
-		if (!flag) {
-			FileDoUtil.outLog("[ " + StringUtil.getFormateDate() + " ]" + file.getAbsolutePath() + "   服务器此文件不存在");
-			return;
-		}
+//		if (!flag) {
+//			FileDoUtil.outLog("[ " + StringUtil.getFormateDate() + " ]" + file.getAbsolutePath() + "   服务器此文件不存在");
+//			return;
+//		}
 		if (ImageFileUtil.isImageFile(key)) {
 			imgUrl = url;
 			return;

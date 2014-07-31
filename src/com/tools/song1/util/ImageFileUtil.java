@@ -10,8 +10,8 @@ import org.jaudiotagger.tag.id3.AbstractID3v2Frame;
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
 import org.jaudiotagger.tag.id3.framebody.FrameBodyAPIC;
 
+import com.tools.song1.aliyun.OSSUploadUtil;
 import com.upload.aliyun.MusicConstants;
-import com.upload.aliyun.runnable.enjoy.EnjoyThread;
 
 /**
  * @author Administrator

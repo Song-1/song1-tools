@@ -59,6 +59,15 @@ public class OSSUploadUtil {
 		client = new OSSClient(MusicConstants.PROTOCOL + MusicConstants.ALIYUN_IMAGE_HOST, MusicConstants.ALIYUN_ACCESSKEYID, MusicConstants.ALIYUN_ACCESSKEYSECRET, config);
 	}
 
+	/**
+	 * get  OSSClient
+	 */
+	public static OSSClient getOSSClient() {
+		ClientConfiguration config = new ClientConfiguration();
+		OSSClient client = new OSSClient(MusicConstants.PROTOCOL + MusicConstants.ALIYUN_IMAGE_HOST, MusicConstants.ALIYUN_ACCESSKEYID, MusicConstants.ALIYUN_ACCESSKEYSECRET, config);
+		return client;
+	}
+
 	public static String generateAliyunURL(String bucket, String key, long expirationTimes) {
 		long times = new Date().getTime();
 		FileDoUtil.outLog(times + "");
@@ -71,24 +80,26 @@ public class OSSUploadUtil {
 
 	/**
 	 * 获取所有的bucket
+	 * 
 	 * @return
 	 */
-	public static List<Bucket> listAllBucket(){
-		if(client != null){
+	public static List<Bucket> listAllBucket() {
+		if (client != null) {
 			List<Bucket> buckets = client.listBuckets();
 			return buckets;
 		}
 		return null;
 	}
-	
+
 	/**
 	 * 获取所有的bucket
+	 * 
 	 * @return
 	 */
-	public static List<String> listAllBucketName(){
-		if(client != null){
+	public static List<String> listAllBucketName() {
+		if (client != null) {
 			List<Bucket> buckets = client.listBuckets();
-			if(buckets != null){
+			if (buckets != null) {
 				List<String> names = new ArrayList<String>();
 				for (Bucket bucket : buckets) {
 					names.add(bucket.getName());
@@ -98,6 +109,7 @@ public class OSSUploadUtil {
 		}
 		return null;
 	}
+
 	/**
 	 * 单个小文件上传
 	 * 
@@ -459,18 +471,19 @@ public class OSSUploadUtil {
 	public static void copyObject(String sourceBucketName, String sourceKey, String destinationBucketName, String destinationKey) {
 		if (client != null) {
 			boolean falg = isObjectExist(destinationBucketName, destinationKey);
-			if(!falg){
+			if (!falg) {
 				FileDoUtil.outLog(sourceBucketName);
 				FileDoUtil.outLog(sourceKey);
 				FileDoUtil.outLog(destinationBucketName);
 				FileDoUtil.outLog(destinationKey);
 				CopyObjectResult result = client.copyObject(sourceBucketName, sourceKey, destinationBucketName, destinationKey);
 				FileDoUtil.outLog("[File Copy]Etag:::" + result.getETag());
-			}else{
-				FileDoUtil.outLog("[File Copy]目标文件已存在" );
+			} else {
+				FileDoUtil.outLog("[File Copy]目标文件已存在");
 			}
 		}
 	}
+
 	/**
 	 * 阿里云服务器资源复制
 	 * 
@@ -480,9 +493,9 @@ public class OSSUploadUtil {
 	 * @param destinationKey
 	 */
 	public static void deleteObject(String sourceBucketName, String sourceKey) {
-		if(StringUtil.isEmptyString(sourceBucketName)){
+		if (StringUtil.isEmptyString(sourceBucketName)) {
 			return;
-		}else if(sourceKey == null){
+		} else if (sourceKey == null) {
 			return;
 		}
 		if (client != null) {
@@ -491,12 +504,12 @@ public class OSSUploadUtil {
 			client.deleteObject(sourceBucketName, sourceKey);
 		}
 	}
-	
+
 	public static void deleteKey(String sourceBucketName, String sourceKey) {
 		if (StringUtil.isEmptyString(sourceBucketName)) {
-			return ;
+			return;
 		} else if (StringUtil.isEmptyString(sourceKey)) {
-			return ;
+			return;
 		}
 		List<String> list = new ArrayList<String>();
 		List<OSSObjectSummary> fileList = new ArrayList<OSSObjectSummary>();
@@ -570,6 +583,7 @@ public class OSSUploadUtil {
 		// ossslist.addAll(objectSummaries);
 		return ossslist;
 	}
+
 	/**
 	 * 阿里云服务器显示文件
 	 * 
@@ -578,17 +592,17 @@ public class OSSUploadUtil {
 	 * @param destinationBucketName
 	 * @param destinationKey
 	 */
-	public static boolean modifyTheFileStuffix(String bucketName, String prefix,boolean isCopy,boolean isDelete) {
-		if(StringUtil.isEmptyString(bucketName)){
+	public static boolean modifyTheFileStuffix(String bucketName, String prefix, boolean isCopy, boolean isDelete) {
+		if (StringUtil.isEmptyString(bucketName)) {
 			System.out.println("阿里云BUCKET不能为空!");
 			return false;
-		}else if(StringUtil.isEmptyString(prefix)){
+		} else if (StringUtil.isEmptyString(prefix)) {
 			System.out.println("阿里云文件路径不能为空!");
 			return false;
 		}
 		ListObjectsRequest listObjectsRequest = new ListObjectsRequest(bucketName);
 		List<String> listPrefixeslist = listAliyunFloder(bucketName, prefix, true);
-		if(listPrefixeslist == null){
+		if (listPrefixeslist == null) {
 			listPrefixeslist = new ArrayList<String>();
 			listPrefixeslist.add(prefix);
 		}
@@ -606,23 +620,23 @@ public class OSSUploadUtil {
 				objectListing = aliyunConnect(listObjectsRequest);
 				nextMarker = objectListing.getNextMarker();
 				List<OSSObjectSummary> objectSummaries = objectListing.getObjectSummaries();
-				if(objectSummaries != null){
+				if (objectSummaries != null) {
 					for (OSSObjectSummary osb : objectSummaries) {
 						String key = osb.getKey();
-						if(StringUtil.isEmptyString(key)){
+						if (StringUtil.isEmptyString(key)) {
 							continue;
-						}else if (key.endsWith("/")){
+						} else if (key.endsWith("/")) {
 							continue;
 						}
 						int index = key.lastIndexOf(".");
-						if(index < 0){
-							if(isCopy){
+						if (index < 0) {
+							if (isCopy) {
 								String targtKey = key + ".mp3";
-								System.out.println("原始key:::"+key);
-								System.out.println("修改key:::"+targtKey);
+								System.out.println("原始key:::" + key);
+								System.out.println("修改key:::" + targtKey);
 								copyObject(bucketName, key, bucketName, targtKey);
 							}
-							if(isDelete){
+							if (isDelete) {
 								deleteObject(bucketName, key);
 							}
 						}
@@ -708,8 +722,8 @@ public class OSSUploadUtil {
 		}
 		return commonPrefixeslist;
 	}
-	
-	public static void listAliyunFloder(String bucketName, String rootFloder, List<String> floderList,List<OSSObjectSummary> fileList) {
+
+	public static void listAliyunFloder(String bucketName, String rootFloder, List<String> floderList, List<OSSObjectSummary> fileList) {
 		if (StringUtil.isEmptyString(bucketName)) {
 			return;
 		} else if (rootFloder == null) {
@@ -717,8 +731,8 @@ public class OSSUploadUtil {
 		}
 		bucketName = bucketName.trim();
 		rootFloder = rootFloder.trim();
-		floderList = floderList == null?new ArrayList<String>() :floderList;
-		fileList = fileList == null?new ArrayList<OSSObjectSummary>() :fileList;
+		floderList = floderList == null ? new ArrayList<String>() : floderList;
+		fileList = fileList == null ? new ArrayList<OSSObjectSummary>() : fileList;
 		ListObjectsRequest listObjectsRequest = new ListObjectsRequest(bucketName);
 		// 设置参数
 		listObjectsRequest.setDelimiter("/");
@@ -739,9 +753,8 @@ public class OSSUploadUtil {
 				fileList.addAll(objectList);
 			}
 		} while (objectListing.isTruncated());
-		
-	}
 
+	}
 
 	public static boolean modifyAliyunFloderName(String bucketName, String prefix, String newBucketName, String newKey) {
 		System.out.println(" 开始     复制文件............................");
@@ -758,8 +771,8 @@ public class OSSUploadUtil {
 			System.out.println("复制到文件路径为空!");
 			return false;
 		}
-		bucketName = bucketName.trim(); 
-		prefix= prefix.trim();
+		bucketName = bucketName.trim();
+		prefix = prefix.trim();
 		newBucketName = newBucketName.trim();
 		newKey = newKey.trim();
 		List<String> aliyunFloders = listAliyunFloder(bucketName, prefix, true);
@@ -798,7 +811,7 @@ public class OSSUploadUtil {
 								FileDoUtil.outLog(newFloders + " 文件不存在    进行复制.................");
 								copyObject(bucketName, key, newBucketName, newFloders);
 								FileDoUtil.outLog(newFloders + " 文件复制    完成.................");
-							}else{
+							} else {
 								FileDoUtil.outLog(newFloders + " 文件存在    不进行复制.................");
 							}
 						}
@@ -841,12 +854,11 @@ public class OSSUploadUtil {
 		}
 		return false;
 	}
-	
-	
-	public static void modifyObjectSummaryName(String bucket ,String key ,String newKey){
-		
+
+	public static void modifyObjectSummaryName(String bucket, String key, String newKey) {
+
 	}
-	
+
 	/**
 	 * 判断阿里云服务器指定bucket下面是否存在此key值的文件 .<br>
 	 * 
@@ -860,9 +872,9 @@ public class OSSUploadUtil {
 			client.getObject(bucket, key);
 		} catch (OSSException e) {
 			String errorCode = e.getErrorCode();
-			if("NoSuchKey".equalsIgnoreCase(errorCode)){
+			if ("NoSuchKey".equalsIgnoreCase(errorCode)) {
 				flag = false;
-				FileDoUtil.outLog("isExistObjectForTheKey::[bucket="+bucket+";key="+key+"]"+e.getMessage());
+				FileDoUtil.outLog("isExistObjectForTheKey::[bucket=" + bucket + ";key=" + key + "]" + e.getMessage());
 				return flag;
 			}
 			e.printStackTrace();
@@ -872,18 +884,36 @@ public class OSSUploadUtil {
 		}
 		return flag;
 	}
-	
-	public static void downLoadFile(String bucket,String key){
+
+	public static void downLoadFile(String bucket, String key) {
 		boolean flag = isExistObjectForTheKey(bucket, key);
 		System.out.println(flag);
-		if(client != null && flag){
+		if (client != null && flag) {
 			GetObjectRequest getObjectRequest = new GetObjectRequest(bucket, key);
-			File file = new File("D:/java/aliyun"+key);
+			File file = new File("D:/java/aliyun" + key);
 			FileDoUtil.mkDirs(file);
-			if(file.exists()){
+			if (file.exists()) {
 				// 下载Object到文件
 				client.getObject(getObjectRequest, file);
 			}
 		}
+	}
+
+	public static void putObject(String bucketName, String key) throws Exception {
+		File file = FileDoUtil.findFile("config/upload.properties");
+		if(file.exists()){
+			FileInputStream in = new FileInputStream(file);
+			 // 初始化OSSClient
+		    OSSClient client = getOSSClient();
+		    // 创建上传Object的Metadata
+		    ObjectMetadata meta = new ObjectMetadata();
+		    // 必须设置ContentLength
+		    meta.setContentLength(0);
+		    // 上传Object.
+		    PutObjectResult result = client.putObject(bucketName, key, in, meta);
+		    // 打印ETag
+		    System.out.println(result.getETag());
+		}
+	   
 	}
 }

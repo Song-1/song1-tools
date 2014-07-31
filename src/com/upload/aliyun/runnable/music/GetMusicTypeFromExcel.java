@@ -7,8 +7,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.omg.CORBA.BooleanHolder;
@@ -35,13 +34,13 @@ public class GetMusicTypeFromExcel  extends POIUtil {
 	}
 	private int isTheSameRow = -1;
 	private MusicTypeDataInfo model = null;
-	public void doTheCell(int rowIndex, int cellIndex, HSSFRow row) {
+	public void doTheCell(int rowIndex, int cellIndex,Row row) {
 		if(isTheSameRow != rowIndex){
 			bookList.add(model);
 			model = new MusicTypeDataInfo();
 			isTheSameRow = rowIndex;
 		}
-		HSSFCell cell = row.getCell(cellIndex);
+		Cell cell = row.getCell(cellIndex);
 		String value = getCellValue(cell);
 		if(cellIndex == 0 && value != null){
 			enverionmentTime = value;
@@ -73,11 +72,6 @@ public class GetMusicTypeFromExcel  extends POIUtil {
 			}
 		}
 		return str;
-	}
-	@Override
-	public void doTheCell(int rowIndex, int cellIndex, Row row) {
-		// TODO Auto-generated method stub
-		
 	}
 	@Override
 	public void clearValues() {

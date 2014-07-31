@@ -37,6 +37,11 @@ public class ListAliyunFilesRunnable extends BaseRunnable {
 
 	@Override
 	public void doRun() {
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		AliyunService service = new AliyunServiceImpl();
 		List<String> list = new ArrayList<String>();
 		List<OSSObjectSummary> fileList = new ArrayList<OSSObjectSummary>();

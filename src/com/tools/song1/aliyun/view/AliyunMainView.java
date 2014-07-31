@@ -160,8 +160,8 @@ public class AliyunMainView {
 		tableColumn.setText("文件名称");
 		TableItem tableItem = new TableItem(table, SWT.NONE);
 		tableItem.setFont(SWTResourceManager.getFont("思源黑体 CN Bold", 10, SWT.NORMAL));
-		tableItem.setImage(SWTResourceManager.getImage(AliyunMainView.class, "/images/folder.png"));
-		tableItem.setText("  sgsdfg  ");
+		tableItem.setImage(SWTResourceManager.getImage(AliyunMainView.class, "/images/loading.gif"));
+		tableItem.setText("    正在加载        ");
 		
 		Label label_3 = new Label(composite_1, SWT.SEPARATOR | SWT.HORIZONTAL);
 		label_3.setBounds(0, 492, 772, 2);

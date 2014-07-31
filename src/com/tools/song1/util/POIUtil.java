@@ -44,7 +44,7 @@ public abstract class POIUtil {
 					fIn = new FileInputStream(file);
 				    hssfWorkbook = new XSSFWorkbook(fIn);
 				}catch(Exception e){
-					e.printStackTrace();
+					//e.printStackTrace();
 					fIn = new FileInputStream(file);
 					hssfWorkbook = new HSSFWorkbook(fIn);
 				}

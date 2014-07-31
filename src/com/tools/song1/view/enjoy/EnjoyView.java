@@ -7,9 +7,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 
+import com.tools.song1.aliyun.OSSUploadUtil;
 import com.tools.song1.util.JavascriptUtil;
 import com.tools.song1.util.MyPrintStream;
-import com.tools.song1.util.OSSUploadUtil;
 import com.tools.song1.util.SystemPropertiesUtil;
 import com.upload.aliyun.MusicConstants;
 

@@ -24,9 +24,9 @@ public class TestAliyun {
 			
 //			String key = "test/状元听书/";
 			String bucket = "testupload2";
-			String key = "test/状元听书";
+			String key = "test状元听书1111/";
 //			String newKey = "book/网络/";
-			//OSSUploadUtil.modifyTheFileStuffix(bucket, key);
+			OSSUploadUtil.putObject(bucket, key);
 //			List<OSSObjectSummary> list = 
 //			if(list != null){
 //				for (OSSObjectSummary osb : list) {
