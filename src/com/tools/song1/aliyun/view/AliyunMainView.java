@@ -238,16 +238,31 @@ public class AliyunMainView {
 		btnNewButton_2.setImage(SWTResourceManager.getImage(AliyunMainView.class, "/images/up.png"));
 		btnNewButton_2.setBounds(0, 0, 120, 39);
 		
-//		Button btnNewButton = new Button(composite_1, SWT.NONE);
-//		btnNewButton.addSelectionListener(new SelectionAdapter() {
-//			@Override
-//			public void widgetSelected(SelectionEvent e) {
-//			}
-//		});
-//		btnNewButton.setImage(SWTResourceManager.getImage(AliyunMainView.class, "/images/upload.png"));
-//		btnNewButton.setBounds(232, 0, 120, 39);
-//		formToolkit.adapt(btnNewButton, true, true);
-//		btnNewButton.setText("文件上传");
+		Button btnNewButton = new Button(composite_1, SWT.NONE);
+		btnNewButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Map<String,String> params = new HashMap<String, String>();
+				String bucket = lblNewLabel.getText();
+				String key = lblNewLabel_4.getText();
+				if(StringUtil.isEmptyString(bucket)){
+					new ErrorDialog(shell, SWT.NONE).open("阿里云BUCKET不能为空");
+				}else if(StringUtil.isEmptyString(key)){
+					new ErrorDialog(shell, SWT.NONE).open("当前目录不能为空");
+				}else {
+					if("根目录".equals(key)){key = "";}
+					params.put("bucket", bucket);
+					params.put("key", key);
+					UploadFilesDialog uploadFilesDialog = new UploadFilesDialog(shell, SWT.NONE);
+					uploadFilesDialog.setParentParamMap(params);
+					uploadFilesDialog.open();
+				}
+			}
+		});
+		btnNewButton.setImage(SWTResourceManager.getImage(AliyunMainView.class, "/images/upload.png"));
+		btnNewButton.setBounds(232, 0, 120, 39);
+		formToolkit.adapt(btnNewButton, true, true);
+		btnNewButton.setText("文件上传");
 		init();
 
 	}
@@ -458,12 +473,11 @@ public class AliyunMainView {
 	private void refresh(){
 		String key = lblNewLabel_4.getText();
 		if("根目录".equals(key)){
-			new ErrorDialog(shell, SWT.NONE).open("当前目录已经是根目录");
-		}else if(!StringUtil.isEmptyString(key)){
-			String bucket = lblNewLabel.getText().trim();
-			if (key != null && !StringUtil.isEmptyString(bucket)) {
-				newListAliyunFilesRunnable(bucket, key);
-			}
+			key = "";
+		}
+		String bucket = lblNewLabel.getText().trim();
+		if (key != null && !StringUtil.isEmptyString(bucket)) {
+			newListAliyunFilesRunnable(bucket, key);
 		}
 	}
 }

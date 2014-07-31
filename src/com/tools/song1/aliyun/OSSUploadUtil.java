@@ -863,6 +863,7 @@ public class OSSUploadUtil {
 			if("NoSuchKey".equalsIgnoreCase(errorCode)){
 				flag = false;
 				FileDoUtil.outLog("isExistObjectForTheKey::[bucket="+bucket+";key="+key+"]"+e.getMessage());
+				return flag;
 			}
 			e.printStackTrace();
 		} catch (ClientException e) {
