@@ -1,6 +1,5 @@
 package com.tools.song1.aliyun.view;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,8 +9,6 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -30,7 +27,6 @@ import org.eclipse.wb.swt.SWTResourceManager;
 
 import com.tools.song1.aliyun.OSSUploadUtil;
 import com.tools.song1.runnable.aliyun.ListAliyunFilesRunnable;
-import com.tools.song1.util.FileDoUtil;
 import com.tools.song1.util.JavascriptUtil;
 import com.tools.song1.util.LayoutUtil;
 import com.tools.song1.util.StringUtil;
@@ -84,7 +80,7 @@ public class AliyunMainView {
 			}
 		}
 	}
-
+	private Composite composite;
 	/**
 	 * Create contents of the window.
 	 */
@@ -95,7 +91,7 @@ public class AliyunMainView {
 		shell.setText("阿里云文件处理器");
 		shell.setLayout(null);
 
-		Composite composite = new Composite(shell, SWT.NONE);
+		composite = new Composite(shell, SWT.NONE);
 		composite.setLocation(10, 40);
 		composite.setSize(191, 505);
 //		composite.setBounds(10, 40, 191, 505);
@@ -125,7 +121,7 @@ public class AliyunMainView {
 //		trtmNewTreeitem_1.setImage(SWTResourceManager.getImage(AliyunMainView.class, "/images/bucket4.png"));
 //		trtmNewTreeitem_1.setText("New TreeItem");
 		
-		composite_1 = new Composite(shell, SWT.NONE);
+		composite_1 = new Composite(shell, SWT.BORDER);
 		composite_1.setBounds(210, 51, 775, 499);
 		composite_2 = new Composite(composite_1, SWT.NONE);
 
@@ -158,10 +154,6 @@ public class AliyunMainView {
 		TableColumn tableColumn = new TableColumn(table, SWT.CENTER);
 		tableColumn.setWidth(666);
 		tableColumn.setText("文件名称");
-		TableItem tableItem = new TableItem(table, SWT.NONE);
-		tableItem.setFont(SWTResourceManager.getFont("思源黑体 CN Bold", 10, SWT.NORMAL));
-		tableItem.setImage(SWTResourceManager.getImage(AliyunMainView.class, "/images/loading.gif"));
-		tableItem.setText("    正在加载        ");
 		
 		Label label_3 = new Label(composite_1, SWT.SEPARATOR | SWT.HORIZONTAL);
 		label_3.setBounds(0, 492, 772, 2);
@@ -287,21 +279,7 @@ public class AliyunMainView {
 		}
 	}
 
-	public void loadingImage() {
-		composite_2.setVisible(true);
-		ImageViewer ic = new ImageViewer(composite_2);
-		ImageLoader loader = new ImageLoader();
-		File file = FileDoUtil.findFile("images/loading.gif");
-		ImageData[] imageDatas = loader.load(file.getAbsolutePath());
-		if (imageDatas.length == 0)
-			return;
-		else if (imageDatas.length == 1) {
-			ic.setImage(imageDatas[0]);
-		} else {
-			ic.setImages(imageDatas, loader.repeatCount);
-		}
-		ic.pack();
-	}
+	
 
 	/**
 	 * 新建表格的右键菜单
@@ -466,8 +444,11 @@ public class AliyunMainView {
 		text.update();
 		lblNewLabel_4.setText(keyStr);
 		lblNewLabel_4.update();
-		ListAliyunFilesRunnable listAliyunFilesRunnable = new ListAliyunFilesRunnable(table, bucket, key);
-		Display.getCurrent().syncExec(listAliyunFilesRunnable);
+		DataLoadingDialog d = new DataLoadingDialog(shell,SWT.NONE);
+		ListAliyunFilesRunnable listAliyunFilesRunnable = new ListAliyunFilesRunnable(table, bucket, key,d);
+		new Thread(listAliyunFilesRunnable).start();
+		d.open();
+		//Display.getCurrent().syncExec(listAliyunFilesRunnable);
 	}
 	
 	private void refresh(){
