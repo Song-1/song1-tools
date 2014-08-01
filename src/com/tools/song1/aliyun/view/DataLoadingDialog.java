@@ -64,12 +64,12 @@ public class DataLoadingDialog extends Dialog {
 	private void createContents() {
 		shell = new Shell(getParent(), SWT.NO_TRIM);
 		shell.setAlpha(200);
-		shell.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
+		shell.setBackground(SWTResourceManager.getColor(255, 255, 255));
 		shell.setImage(null);
 		shell.setSize(158, 32);
 		
 		Composite composite = formToolkit.createComposite(shell, SWT.NONE);
-		composite.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
+		composite.setBackground(SWTResourceManager.getColor(255, 255, 255));
 		composite.setBounds(0, 0, 32, 32);
 		formToolkit.paintBordersFor(composite);
 		ImageViewer ic = new ImageViewer(composite);
@@ -87,7 +87,7 @@ public class DataLoadingDialog extends Dialog {
 		
 		Label lblNewLabel = formToolkit.createLabel(shell, "正在加载.......", SWT.NONE);
 		lblNewLabel.setFont(SWTResourceManager.getFont("思源黑体 CN Bold", 11, SWT.NORMAL));
-		lblNewLabel.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
+		lblNewLabel.setBackground(SWTResourceManager.getColor(255, 255, 255));
 		lblNewLabel.setBounds(43, 5, 104, 20);
 		
 

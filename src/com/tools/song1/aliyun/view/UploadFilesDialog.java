@@ -25,6 +25,7 @@ import org.eclipse.wb.swt.SWTResourceManager;
 
 import com.tools.song1.aliyun.UploadFiles;
 import com.tools.song1.util.FileDoUtil;
+import com.tools.song1.util.LayoutUtil;
 import com.tools.song1.util.StringUtil;
 
 public class UploadFilesDialog extends Dialog {
@@ -71,6 +72,7 @@ public class UploadFilesDialog extends Dialog {
 		createContents();
 		shell.open();
 		shell.layout();
+		LayoutUtil.centerShell(getParent(), shell);
 		Display display = getParent().getDisplay();
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
