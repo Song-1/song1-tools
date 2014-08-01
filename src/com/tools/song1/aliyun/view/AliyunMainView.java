@@ -9,7 +9,6 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -20,6 +19,8 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -121,7 +122,7 @@ public class AliyunMainView {
 //		trtmNewTreeitem_1.setImage(SWTResourceManager.getImage(AliyunMainView.class, "/images/bucket4.png"));
 //		trtmNewTreeitem_1.setText("New TreeItem");
 		
-		composite_1 = new Composite(shell, SWT.BORDER);
+		composite_1 = new Composite(shell, SWT.NONE);
 		composite_1.setBounds(210, 51, 775, 499);
 		composite_2 = new Composite(composite_1, SWT.NONE);
 
@@ -149,7 +150,6 @@ public class AliyunMainView {
 
 		table.setBounds(0, 80, 772, 372);
 		table.setHeaderVisible(true);
-		table.setLinesVisible(true);
 
 		TableColumn tableColumn = new TableColumn(table, SWT.CENTER);
 		tableColumn.setWidth(666);
@@ -168,43 +168,22 @@ public class AliyunMainView {
 		lblNewLabel_4 = formToolkit.createLabel(composite_1, "New Label", SWT.NONE);
 		lblNewLabel_4.setFont(SWTResourceManager.getFont("思源黑体 CN Bold", 10, SWT.NORMAL));
 		lblNewLabel_4.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
-		lblNewLabel_4.setBounds(116, 53, 634, 20);
-		
-		Label lblNewLabel_3 = formToolkit.createLabel(composite_1, "当前文件夹：", SWT.NONE);
-		lblNewLabel_3.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
-		lblNewLabel_3.setFont(SWTResourceManager.getFont("思源黑体 CN Bold", 10, SWT.NORMAL));
-		lblNewLabel_3.setBounds(32, 53, 78, 20);
+		lblNewLabel_4.setBounds(25, 55, 634, 20);
 		
 		Label lblNewLabel_2 = formToolkit.createLabel(composite_1, "", SWT.NONE);
 		lblNewLabel_2.setImage(SWTResourceManager.getImage(AliyunMainView.class, "/images/folder.png"));
 		lblNewLabel_2.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
-		lblNewLabel_2.setBounds(10, 51, 26, 23);
+		lblNewLabel_2.setBounds(5, 56, 16, 16);
 		
 		Label label_4 = new Label(composite_1, SWT.SEPARATOR | SWT.HORIZONTAL);
 		label_4.setBounds(0, 45, 772, 2);
 		formToolkit.adapt(label_4, true, true);
 		
-//		Button btnNewButton = new Button(composite_1, SWT.NONE);
-//		btnNewButton.setLocation(232, 0);
-//		btnNewButton.setSize(132, 39);
-//		btnNewButton.setImage(SWTResourceManager.getImage(AliyunMainView.class, "/images/new.png"));
-//		formToolkit.adapt(btnNewButton, true, true);
-//		btnNewButton.setText("新建文件夹");
+		ToolBar toolBar = new ToolBar(composite_1, SWT.FLAT | SWT.RIGHT);
+		toolBar.setBounds(0, 0, 605, 45);
 		
-		Button btnNewButton_1 = new Button(composite_1, SWT.NONE);
-		btnNewButton_1.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				refresh();
-			}
-		});
-		btnNewButton_1.setBounds(126, 0, 100, 39);
-		btnNewButton_1.setImage(SWTResourceManager.getImage(AliyunMainView.class, "/images/refresh_bucket.png"));
-		formToolkit.adapt(btnNewButton_1, true, true);
-		btnNewButton_1.setText("刷新");
-		
-		Button btnNewButton_2 = formToolkit.createButton(composite_1, "返回上级", SWT.NONE);
-		btnNewButton_2.addSelectionListener(new SelectionAdapter() {
+		ToolItem tltmNewItem = new ToolItem(toolBar, SWT.NONE);
+		tltmNewItem.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				String key = lblNewLabel_4.getText();
@@ -227,11 +206,21 @@ public class AliyunMainView {
 				}
 			}
 		});
-		btnNewButton_2.setImage(SWTResourceManager.getImage(AliyunMainView.class, "/images/up.png"));
-		btnNewButton_2.setBounds(0, 0, 120, 39);
+		tltmNewItem.setImage(SWTResourceManager.getImage(AliyunMainView.class, "/images/up.png"));
+		tltmNewItem.setToolTipText("返回上级");
 		
-		Button btnNewButton = new Button(composite_1, SWT.NONE);
-		btnNewButton.addSelectionListener(new SelectionAdapter() {
+		ToolItem tltmNewItem_1 = new ToolItem(toolBar, SWT.NONE);
+		tltmNewItem_1.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				refresh();
+			}
+		});
+		tltmNewItem_1.setToolTipText("刷新");
+		tltmNewItem_1.setImage(SWTResourceManager.getImage(AliyunMainView.class, "/images/refresh_bucket.png"));
+		
+		ToolItem tltmNewItem_2 = new ToolItem(toolBar, SWT.NONE);
+		tltmNewItem_2.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Map<String,String> params = new HashMap<String, String>();
@@ -251,10 +240,10 @@ public class AliyunMainView {
 				}
 			}
 		});
-		btnNewButton.setImage(SWTResourceManager.getImage(AliyunMainView.class, "/images/upload.png"));
-		btnNewButton.setBounds(232, 0, 120, 39);
-		formToolkit.adapt(btnNewButton, true, true);
-		btnNewButton.setText("文件上传");
+		tltmNewItem_2.setToolTipText("上传文件");
+		tltmNewItem_2.setImage(SWTResourceManager.getImage(AliyunMainView.class, "/images/upload.png"));
+		
+		
 		init();
 
 	}
