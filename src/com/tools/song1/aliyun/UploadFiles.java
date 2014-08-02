@@ -46,7 +46,7 @@ public class UploadFiles {
 
 	private ProgressBar progressBar;
 	private static final long PART_SIZE = 1 * 512 * 1024L; // 每个Part的大小 521kb
-	private static final int CONCURRENCIES = 10; // 上传Part的并发线程数。
+	private static final int CONCURRENCIES = 1; // 上传Part的并发线程数。
 	private int partCount = 0;
 	private List<PartETag> eTags;
 	private String bucket;
@@ -59,11 +59,23 @@ public class UploadFiles {
 	public void setProgressBar(ProgressBar progressBar) {
 		this.progressBar = progressBar;
 	}
-	
-	private OSSClient getClient(){
+
+	private OSSClient getClient() {
 		ClientConfiguration config = new ClientConfiguration();
 		OSSClient client = new OSSClient(MusicConstants.PROTOCOL + MusicConstants.ALIYUN_IMAGE_HOST, MusicConstants.ALIYUN_ACCESSKEYID, MusicConstants.ALIYUN_ACCESSKEYSECRET, config);
 		return client;
+	}
+
+	public void uploadFile(String bucketName, String key, File uploadFile) {
+		bucketName = bucketName.trim();
+		long startT = System.currentTimeMillis();
+		try {
+			OSSUploadUtil.putObject(bucketName, key, uploadFile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		long endT = System.currentTimeMillis();
+		System.out.println("文件上传花费时间:::: " + (endT - startT) / 1000 + " s");
 	}
 
 	// 通过Multipart的方式上传一个大文件
@@ -79,10 +91,11 @@ public class UploadFiles {
 		bucketName = bucketName.trim();
 		bucket = bucketName;
 		this.key = key;
-		if(OSSUploadUtil.isExistObjectForTheKey(bucketName, key)){
+		if (OSSUploadUtil.isExistObjectForTheKey(bucketName, key)) {
 			FileDoUtil.outLog("[上传文件失败] 阿里云已经存在此文件");
-			return ;
+			return;
 		}
+		long startT = System.currentTimeMillis();
 		long size = uploadFile.length();
 		partCount = calPartCount(size);
 		String uploadId = "";
@@ -107,10 +120,9 @@ public class UploadFiles {
 		if (!isBreakPointUploadFlag) {
 			uploadId = initMultipartUpload(bucketName, key);
 		}
-		ExecutorService pool = Executors.newFixedThreadPool(CONCURRENCIES);
+//		ExecutorService pool = Executors.newFixedThreadPool(CONCURRENCIES);
 		eTags = Collections.synchronizedList(new ArrayList<PartETag>());
 		new Thread(new SystemOutUploadFileThread()).start();
-		long startT = System.currentTimeMillis();
 		partUpload: for (int i = 0; i < partCount; i++) {
 			int partNumber = i + 1;
 			long start = PART_SIZE * i;
@@ -129,17 +141,34 @@ public class UploadFiles {
 					}
 				}
 			}
-			pool.execute(new UploadPartThread(new FileInputStream(uploadFile), uploadId, partNumber, PART_SIZE * i, curPartSize));
-		}
-		long endT = System.currentTimeMillis();
-		System.out.println("启动线程时间:::: "+(endT - startT));
-		pool.shutdown();
-		while (!pool.isTerminated()) {
-			pool.awaitTermination(5, TimeUnit.SECONDS);
+			FileInputStream in = new FileInputStream(uploadFile);
+			in.skip(PART_SIZE * i);
+			UploadPartRequest uploadPartRequest = new UploadPartRequest();
+			uploadPartRequest.setBucketName(bucket);
+			uploadPartRequest.setKey(key);
+			uploadPartRequest.setUploadId(uploadId);
+			uploadPartRequest.setInputStream(in);
+			uploadPartRequest.setPartSize(curPartSize);
+			uploadPartRequest.setPartNumber(partNumber);
+			long startTime = System.currentTimeMillis();
+			UploadPartResult uploadPartResult = getClient().uploadPart(uploadPartRequest);
+			long endtTime = System.currentTimeMillis();
+			long times = (endtTime - startTime) / 1000L;
+			times = times == 0 ? 1 : times;
+			curPartSize = curPartSize / 1024;
+			FileDoUtil.outLog("part :: " + partNumber + " size :: " + curPartSize + "  times ::: " + times + " speed:::" + (curPartSize / times) + "kb/s");
+			eTags.add(uploadPartResult.getPartETag());
+//			pool.execute(new UploadPartThread(new FileInputStream(uploadFile), uploadId, partNumber, PART_SIZE * i, curPartSize));
 		}
 
+//		pool.shutdown();
+//		while (!pool.isTerminated()) {
+//			pool.awaitTermination(5, TimeUnit.SECONDS);
+//		}
 		FileDoUtil.outLog("over");
-		completeMultipartUpload( bucketName, key, uploadId, eTags);
+		completeMultipartUpload(bucketName, key, uploadId, eTags);
+		long endT = System.currentTimeMillis();
+		System.out.println("文件上传花费时间:::: " + (endT - startT) / 1000 + " s");
 	}
 
 	/**
@@ -181,7 +210,9 @@ public class UploadFiles {
 				UploadPartResult uploadPartResult = getClient().uploadPart(uploadPartRequest);
 				long endtTime = System.currentTimeMillis();
 				long times = (endtTime - startTime) / 1000L;
-				FileDoUtil.outLog("part :: " + partId + " size :: " + size + "  times ::: " + times + " speed:::" + (size / times ) + "kb/s");
+				times = times == 0 ? 1 : times;
+				size = size / 1024;
+				FileDoUtil.outLog("part :: " + partId + " size :: " + size + "  times ::: " + times + " speed:::" + (size / times) + "kb/s");
 				eTags.add(uploadPartResult.getPartETag());
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -204,7 +235,7 @@ public class UploadFiles {
 			int outStr = -1;
 			while (eTags.size() != partCount) {
 				int value = (eTags.size() * 100) / partCount;
-				if(value == 0){
+				if (value == 0) {
 					value = 1;
 				}
 				final int p = value;
@@ -235,7 +266,6 @@ public class UploadFiles {
 		}
 	}
 
-
 	// 根据文件的大小和每个Part的大小计算需要划分的Part个数。
 	private int calPartCount(long size) {
 		int partCount = (int) (size / PART_SIZE);
@@ -246,7 +276,7 @@ public class UploadFiles {
 	}
 
 	// 初始化一个Multi-part upload请求。
-	private String initMultipartUpload( String bucketName, String key) throws OSSException, ClientException {
+	private String initMultipartUpload(String bucketName, String key) throws OSSException, ClientException {
 		InitiateMultipartUploadRequest initUploadRequest = new InitiateMultipartUploadRequest(bucketName, key);
 		InitiateMultipartUploadResult initResult = getClient().initiateMultipartUpload(initUploadRequest);
 		String uploadId = initResult.getUploadId();
@@ -254,7 +284,7 @@ public class UploadFiles {
 	}
 
 	// 完成一个multi-part请求。
-	private void completeMultipartUpload( String bucketName, String key, String uploadId, List<PartETag> eTags) throws OSSException, ClientException {
+	private void completeMultipartUpload(String bucketName, String key, String uploadId, List<PartETag> eTags) throws OSSException, ClientException {
 		// 为part按partnumber排序
 		Collections.sort(eTags, new EtagComparator());
 		CompleteMultipartUploadRequest completeMultipartUploadRequest = new CompleteMultipartUploadRequest(bucketName, key, uploadId, eTags);

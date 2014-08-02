@@ -25,11 +25,7 @@ public class LayoutUtil {
 	public static void centerShell(Composite parent, Shell shell) {
 		Rectangle displayBounds = parent.getBounds();
 		Rectangle shellBounds = shell.getBounds();
-		System.out.println(displayBounds.x);
-		System.out.println(displayBounds.width);
-		System.out.println(shellBounds.width);
 		int x = displayBounds.x + (displayBounds.width / 2) - (shellBounds.width / 2) ;
-		System.out.println(x);
 		int y = displayBounds.y + (displayBounds.height / 2) - (shellBounds.height / 2);
 		shell.setLocation(x, y);
 	}

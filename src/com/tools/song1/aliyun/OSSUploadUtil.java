@@ -899,8 +899,10 @@ public class OSSUploadUtil {
 		}
 	}
 
-	public static void putObject(String bucketName, String key) throws Exception {
-		File file = FileDoUtil.findFile("config/upload.properties");
+	public static void putObject(String bucketName, String key,File file) throws Exception {
+		if(file == null){
+			file = FileDoUtil.findFile("config/upload.properties");
+		}
 		if(file.exists()){
 			FileInputStream in = new FileInputStream(file);
 			 // 初始化OSSClient
@@ -908,7 +910,7 @@ public class OSSUploadUtil {
 		    // 创建上传Object的Metadata
 		    ObjectMetadata meta = new ObjectMetadata();
 		    // 必须设置ContentLength
-		    meta.setContentLength(0);
+		    meta.setContentLength(file.length());
 		    // 上传Object.
 		    PutObjectResult result = client.putObject(bucketName, key, in, meta);
 		    // 打印ETag

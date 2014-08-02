@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.wb.swt.SWTResourceManager;
 
+import com.aliyun.openservices.ClientException;
 import com.tools.song1.aliyun.UploadFiles;
 import com.tools.song1.util.FileDoUtil;
 import com.tools.song1.util.LayoutUtil;
@@ -139,7 +140,8 @@ public class UploadFilesDialog extends Dialog {
 				String filePath = text_1.getText();
 				// Display.getDefault().syncExec(new UploadFilesRunnable(bucket,
 				// key, filePath));
-				new Thread(new UploadFilesRunnable(bucket, key, filePath)).start();
+				UploadFilesRunnable r = new UploadFilesRunnable(bucket, key, filePath);
+				new Thread(r).start();
 			}
 		});
 		btnNewButton_1.setFont(SWTResourceManager.getFont("思源黑体 CN Bold", 11, SWT.NORMAL));
@@ -362,8 +364,10 @@ public class UploadFilesDialog extends Dialog {
 				}
 			});
 		}
+
 		private int FILE_COUNT = 1;
 		private int count = 1;
+
 		private void eachFiles(File file, boolean isCount) {
 			if (file != null && file.exists()) {
 				if (file.isDirectory()) {
@@ -387,27 +391,51 @@ public class UploadFilesDialog extends Dialog {
 						key = baseKey + key;
 						key = key.replace(File.separator, "/");
 						outLogToText(key);
-						try {
-							UploadFiles uploadFiles = new UploadFiles();
-							uploadFiles.setProgressBar(progressBar_1);
-							uploadFiles.uploadBigFile(bucket, key, file);
-							System.out.println(count);
-							final int value =( count * 100 / FILE_COUNT) ;
-							Display.getDefault().syncExec(new Runnable() {
-								@Override
-								public void run() {
-									progressBar.setSelection(value);
-									progressBar.update();
-								}
-							});
-							// OSSUploadUtil.uploadBigFile(bucket, key, file);
-						} catch (Exception e) {
-							// FileDoUtil.outLog("");
-							outLogToText("[上传文件失败] 文件:" + file.getAbsolutePath());
-							e.printStackTrace();
-						}
+						upload(key, file, 0);
+
+						final int value = (count * 100 / FILE_COUNT);
+						Display.getDefault().syncExec(new Runnable() {
+							@Override
+							public void run() {
+								progressBar.setSelection(value);
+								progressBar.update();
+							}
+						});
 					}
 				}
+			}
+		}
+
+		private void upload(String key, File file, int counts) {
+			counts++;
+			try {
+				UploadFiles uploadFiles = new UploadFiles();
+				Display.getDefault().syncExec(new Runnable() {
+					@Override
+					public void run() {
+						progressBar_1.setSelection(1);
+						progressBar_1.update();
+					}
+				});
+				uploadFiles.setProgressBar(progressBar_1);
+				uploadFiles.uploadBigFile(bucket, key, file);
+				System.out.println(count);
+				// OSSUploadUtil.uploadBigFile(bucket, key, file);
+			} catch (ClientException e) {
+				outLogToText("[网络连接失败][上传文件失败] 文件:" + file.getAbsolutePath());
+				try {
+					Thread.sleep(10000);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+				outLogToText("第" + counts + " 次 重连上传 ");
+				if (counts < 10) {
+					upload(key, file, counts);
+				}
+			} catch (Exception e) {
+				// FileDoUtil.outLog("");
+				outLogToText("[上传文件失败] 文件:" + file.getAbsolutePath());
+				e.printStackTrace();
 			}
 		}
 
