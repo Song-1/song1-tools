@@ -60,7 +60,7 @@ public class OSSUploadUtil {
 	}
 
 	/**
-	 * get  OSSClient
+	 * get OSSClient
 	 */
 	public static OSSClient getOSSClient() {
 		ClientConfiguration config = new ClientConfiguration();
@@ -869,7 +869,7 @@ public class OSSUploadUtil {
 	public static boolean isExistObjectForTheKey(String bucket, String key) {
 		boolean flag = true;
 		try {
-			client.getObject(bucket, key);
+			getOSSClient().getObject(bucket, key);
 		} catch (OSSException e) {
 			String errorCode = e.getErrorCode();
 			if ("NoSuchKey".equalsIgnoreCase(errorCode)) {
@@ -879,8 +879,8 @@ public class OSSUploadUtil {
 			}
 			e.printStackTrace();
 		} catch (ClientException e) {
-			flag = false;
 			e.printStackTrace();
+			return isExistObjectForTheKey(bucket, key);
 		}
 		return flag;
 	}
@@ -899,23 +899,36 @@ public class OSSUploadUtil {
 		}
 	}
 
-	public static void putObject(String bucketName, String key,File file) throws Exception {
-		if(file == null){
-			file = FileDoUtil.findFile("config/upload.properties");
+	public static void putObject(String bucketName, String key, File file) {
+		if(StringUtil.isEmptyString(bucketName)){
+			FileDoUtil.outLog("[putObject 失败] bucket为空");
+			return ;
+		}else if(key == null){
+			FileDoUtil.outLog("[putObject 失败] key=null");
+			return ;
 		}
-		if(file.exists()){
-			FileInputStream in = new FileInputStream(file);
-			 // 初始化OSSClient
-		    OSSClient client = getOSSClient();
-		    // 创建上传Object的Metadata
-		    ObjectMetadata meta = new ObjectMetadata();
-		    // 必须设置ContentLength
-		    meta.setContentLength(file.length());
-		    // 上传Object.
-		    PutObjectResult result = client.putObject(bucketName, key, in, meta);
-		    // 打印ETag
-		    System.out.println(result.getETag());
+		bucketName = bucketName.trim();
+		try {
+			if (file == null) {
+				file = FileDoUtil.findFile("config/upload.properties");
+			}
+			if (file.exists()) {
+				FileInputStream in = new FileInputStream(file);
+				// 初始化OSSClient
+				OSSClient client = getOSSClient();
+				// 创建上传Object的Metadata
+				ObjectMetadata meta = new ObjectMetadata();
+				// 必须设置ContentLength
+				meta.setContentLength(file.length());
+				// 上传Object.
+				PutObjectResult result = client.putObject(bucketName, key, in, meta);
+				// 打印ETag
+				System.out.println(result.getETag());
+				in.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-	   
+
 	}
 }

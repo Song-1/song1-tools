@@ -28,6 +28,7 @@ import com.tools.song1.aliyun.UploadFiles;
 import com.tools.song1.util.FileDoUtil;
 import com.tools.song1.util.LayoutUtil;
 import com.tools.song1.util.StringUtil;
+import org.eclipse.swt.widgets.Scale;
 
 public class UploadFilesDialog extends Dialog {
 
@@ -43,6 +44,7 @@ public class UploadFilesDialog extends Dialog {
 	private ProgressBar progressBar;
 	private ProgressBar progressBar_1;
 	private Button btnNewButton_1;
+	private Text txtNewText;
 
 	/**
 	 * Create the dialog.
@@ -74,6 +76,7 @@ public class UploadFilesDialog extends Dialog {
 		shell.open();
 		shell.layout();
 		LayoutUtil.centerShell(getParent(), shell);
+		
 		Display display = getParent().getDisplay();
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
@@ -94,11 +97,11 @@ public class UploadFilesDialog extends Dialog {
 				shell.getParent().setEnabled(true);
 			}
 		});
-		shell.setSize(722, 524);
+		shell.setSize(722,600);
 		shell.setText("文件上传");
 
 		Composite composite_1 = new Composite(shell, SWT.NONE);
-		composite_1.setBounds(0, 10, 706, 476);
+		composite_1.setBounds(0, 80, 706, 476);
 
 		Composite composite = new Composite(composite_1, SWT.NONE);
 		composite.setLocation(5, 260);
@@ -119,7 +122,7 @@ public class UploadFilesDialog extends Dialog {
 		Label label_1 = new Label(composite, SWT.NONE);
 		label_1.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
 		label_1.setBounds(0, 38, 61, 17);
-		formToolkit.adapt(label_1, true, true);
+		//formToolkit.adapt(label_1, true, true);
 		label_1.setText("文件进度：");
 
 		Composite composite_2 = new Composite(composite_1, SWT.NONE);
@@ -163,7 +166,7 @@ public class UploadFilesDialog extends Dialog {
 		btnRadioButton.setFont(SWTResourceManager.getFont("思源黑体 CN Bold", 10, SWT.NORMAL));
 		btnRadioButton.setBounds(77, 20, 97, 17);
 		btnRadioButton.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
-		formToolkit.adapt(btnRadioButton, true, true);
+		//formToolkit.adapt(btnRadioButton, true, true);
 		btnRadioButton.setText("单文件上传");
 
 		Label lblNewLabel_5 = formToolkit.createLabel(group, "上传方式：", SWT.NONE);
@@ -175,7 +178,7 @@ public class UploadFilesDialog extends Dialog {
 		btnRadioButton_1.setFont(SWTResourceManager.getFont("思源黑体 CN Bold", 10, SWT.NORMAL));
 		btnRadioButton_1.setBounds(183, 20, 97, 17);
 		btnRadioButton_1.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
-		formToolkit.adapt(btnRadioButton_1, true, true);
+		//formToolkit.adapt(btnRadioButton_1, true, true);
 		btnRadioButton_1.setText("按文件夹上传");
 
 		text_1 = new Text(group, SWT.BORDER | SWT.READ_ONLY);
@@ -232,6 +235,20 @@ public class UploadFilesDialog extends Dialog {
 
 		text_3 = new Text(group_1, SWT.BORDER | SWT.READ_ONLY);
 		text_3.setBounds(77, 52, 490, 23);
+		
+		Composite composite_4 = formToolkit.createComposite(shell, SWT.NONE);
+		composite_4.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
+		composite_4.setBounds(0, 10, 696, 64);
+		formToolkit.paintBordersFor(composite_4);
+		
+		Label lblNewLabel_6 = formToolkit.createLabel(composite_4, "遍历文件开始的位置：", SWT.NONE);
+		lblNewLabel_6.setFont(SWTResourceManager.getFont("思源黑体 CN Bold", 10, SWT.NORMAL));
+		lblNewLabel_6.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
+		lblNewLabel_6.setBounds(10, 10, 129, 17);
+		
+		txtNewText = formToolkit.createText(composite_4, "New Text", SWT.NONE);
+		txtNewText.setText("0");
+		txtNewText.setBounds(139, 9, 258, 23);
 		init();
 	}
 
@@ -334,6 +351,7 @@ public class UploadFilesDialog extends Dialog {
 		private String bucket;
 		private String baseKey;
 		private String baseFilePath;
+		private int START = 0;
 
 		public UploadFilesRunnable(String bucket, String baseKey, String baseFilePath) {
 			this.bucket = bucket;
@@ -346,6 +364,12 @@ public class UploadFilesDialog extends Dialog {
 			Display.getDefault().syncExec(new Runnable() {
 				@Override
 				public void run() {
+					String str = txtNewText.getText();
+					if(StringUtil.isEmptyString(str)){
+						START = 0;
+					}else{
+						START = Integer.parseInt(str);
+					}
 					text.setText("");
 					text.update();
 					btnNewButton.setEnabled(false);
@@ -382,6 +406,10 @@ public class UploadFilesDialog extends Dialog {
 						FILE_COUNT++;
 					} else {
 						count++;
+						if(START > count && START <  FILE_COUNT){
+							printProgress(count, FILE_COUNT);
+							return;
+						}
 						String key = file.getAbsolutePath();
 						if (key.equals(baseFilePath)) {
 							key = file.getName();
@@ -392,18 +420,21 @@ public class UploadFilesDialog extends Dialog {
 						key = key.replace(File.separator, "/");
 						outLogToText(key);
 						upload(key, file, 0);
-
-						final int value = (count * 100 / FILE_COUNT);
-						Display.getDefault().syncExec(new Runnable() {
-							@Override
-							public void run() {
-								progressBar.setSelection(value);
-								progressBar.update();
-							}
-						});
+						printProgress(count, FILE_COUNT);
 					}
 				}
 			}
+		}
+		
+		private void printProgress(int currentNUmbers,int countNumbers){
+			final int value = (currentNUmbers * 100 / countNumbers);
+			Display.getDefault().syncExec(new Runnable() {
+				@Override
+				public void run() {
+					progressBar.setSelection(value);
+					progressBar.update();
+				}
+			});
 		}
 
 		private void upload(String key, File file, int counts) {

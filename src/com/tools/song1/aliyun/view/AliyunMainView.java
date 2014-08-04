@@ -219,6 +219,24 @@ public class AliyunMainView {
 		tltmNewItem_1.setToolTipText("刷新");
 		tltmNewItem_1.setImage(SWTResourceManager.getImage(AliyunMainView.class, "/images/refresh_bucket.png"));
 		
+		ToolItem tltmNewItem_3 = new ToolItem(toolBar, SWT.NONE);
+		tltmNewItem_3.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Map<String,Object> params = new HashMap<String, Object>();
+				String bucket = lblNewLabel.getText();
+				String key = (String)lblNewLabel_4.getData();
+				params.put("bucket", bucket);
+				params.put("key", key);
+				NewFolderDialog newFloder = new NewFolderDialog(shell,SWT.NONE);
+				newFloder.setParams(params);
+				newFloder.open();
+				refresh();
+			}
+		});
+		tltmNewItem_3.setImage(SWTResourceManager.getImage(AliyunMainView.class, "/images/new.png"));
+		tltmNewItem_3.setToolTipText("新建文件夹");
+		
 		ToolItem tltmNewItem_2 = new ToolItem(toolBar, SWT.NONE);
 		tltmNewItem_2.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -432,6 +450,7 @@ public class AliyunMainView {
 		text.setText("正在加载文件:::[bucket="+bucket.trim()+";key="+keyStr+"]");
 		text.update();
 		lblNewLabel_4.setText(keyStr);
+		lblNewLabel_4.setData(key);
 		lblNewLabel_4.update();
 		DataLoadingDialog d = new DataLoadingDialog(shell,SWT.NONE);
 		ListAliyunFilesRunnable listAliyunFilesRunnable = new ListAliyunFilesRunnable(table, bucket, key,d);

@@ -92,7 +92,7 @@ public class UploadFiles {
 		bucket = bucketName;
 		this.key = key;
 		if (OSSUploadUtil.isExistObjectForTheKey(bucketName, key)) {
-			FileDoUtil.outLog("[上传文件失败] 阿里云已经存在此文件");
+			FileDoUtil.outLog("["+key+"] 阿里云已经存在此文件");
 			return;
 		}
 		long startT = System.currentTimeMillis();
@@ -106,7 +106,7 @@ public class UploadFiles {
 		MultipartUploadListing listing = getClient().listMultipartUploads(listMultipartUploadsRequest);
 		// 遍历所有上传事件
 		for (MultipartUpload multipartUpload : listing.getMultipartUploads()) {
-			FileDoUtil.outLog("Key: " + multipartUpload.getKey() + " UploadId: " + multipartUpload.getUploadId());
+			//FileDoUtil.outLog("Key: " + multipartUpload.getKey() + " UploadId: " + multipartUpload.getUploadId());
 			if (key.equals(multipartUpload.getKey())) {
 				isBreakPointUploadFlag = true;
 				uploadId = multipartUpload.getUploadId();
