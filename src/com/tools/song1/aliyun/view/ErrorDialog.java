@@ -44,7 +44,7 @@ public class ErrorDialog extends Dialog {
 	}
 
 	private void createContents(String str) {
-		shell = new Shell(getParent(), SWT.SHELL_TRIM);
+		shell = new Shell(getParent(), SWT.CLOSE | SWT.TITLE);
 		shell.addShellListener(new ShellAdapter() {
 			@Override
 			public void shellClosed(ShellEvent e) {

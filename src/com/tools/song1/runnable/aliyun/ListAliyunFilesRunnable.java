@@ -30,6 +30,7 @@ public class ListAliyunFilesRunnable extends BaseRunnable {
 	private String bucketName;
 	private String key;
 	private DataLoadingDialog dialog;
+	private static final String parrten = "yyyy-MM-dd hh:mm:ss";
 	
 	public ListAliyunFilesRunnable(Table table,String bucketName, String key,DataLoadingDialog dialog){
 		this.table = table;
@@ -109,8 +110,11 @@ public class ListAliyunFilesRunnable extends BaseRunnable {
 					if (i > 0) {
 						stuffix = new String(osName.substring(i ));
 					}
+					
 					tableItem.setImage(SWTResourceManager.getImage(AliyunMainView.class, MusicConstants.getIconByStuffix(stuffix)));
-					tableItem.setText(osName);
+					tableItem.setText(0,osName);
+					tableItem.setText(1,StringUtil.getFileSize(os.getSize()));
+					tableItem.setText(2,StringUtil.getFormateDate(os.getLastModified(), parrten));
 				}
 				
 			}
@@ -119,3 +123,4 @@ public class ListAliyunFilesRunnable extends BaseRunnable {
 	}
 	
 }
+

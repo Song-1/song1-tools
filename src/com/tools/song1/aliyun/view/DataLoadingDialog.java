@@ -42,7 +42,7 @@ public class DataLoadingDialog extends Dialog {
 	 * @return the result
 	 */
 	public Object open() {
-		getParent().setEnabled(false);
+		//getParent().setEnabled(false);
 		createContents();
 		shell.open();
 		shell.layout();

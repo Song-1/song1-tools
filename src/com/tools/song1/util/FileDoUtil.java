@@ -9,8 +9,6 @@ import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 
-import com.tools.song1.view.LogComposite;
-
 /**
  * @author Administrator
  *
@@ -49,7 +47,7 @@ public class FileDoUtil {
 	public static File findFile(String fileRelativePath) {
 		String path = getBasePath();
 		path += fileRelativePath;
-		FileDoUtil.outLog("[FILE_PATH]:::" + path);
+	//	FileDoUtil.outLog("[FILE_PATH]:::" + path);
 		// /
 		File file = new File(path);
 		if (file.exists()) {
@@ -98,6 +96,9 @@ public class FileDoUtil {
 	 * @param isAdditionalWrite
 	 */
 	public static void outFile(String path, String content, boolean isAdditionalWrite) {
+		if(StringUtil.isEmptyString(content)){
+			return;
+		}
 		File file = new File(path);
 		try {
 			if (!file.exists()) {
@@ -135,8 +136,16 @@ public class FileDoUtil {
 		String date = StringUtil.getFormateDate("yyyy-MM-dd");
 		String path = getBasePath() + "log/log_" + date + ".txt";
 //		System.out.println("日志路径："+path);
+		content = StringUtil.getFormateDate("yyyy-MM-dd hh:mm:ss:SSS")+" ::[INFO]:: "+content;
 		System.out.println("日志内容："+content);
-		LogComposite.LOG_LIST.add("日志内容："+content);
+		outFile(path, content, true);
+	}
+	
+	public static void errorLog(String content){
+		String date = StringUtil.getFormateDate("yyyy-MM-dd");
+		String path = getBasePath() + "log/error.log." + date + ".txt";
+		content = StringUtil.getFormateDate("yyyy-MM-dd hh:mm:ss:SSS")+" ::[ERROR]:: "+content;
+		System.out.println("日志内容："+content);
 		outFile(path, content, true);
 	}
 	
@@ -149,6 +158,7 @@ public class FileDoUtil {
 		String date = StringUtil.getFormateDate("yyyy-MM-dd");
 		String path = getBasePath() + "log/debugLog_" + date + ".txt";
 //		FileDoUtil.outLog(path);
+		content = StringUtil.getFormateDate("yyyy-MM-dd hh:mm:ss:SSS")+" ::[DEBUG]:: "+content;
 		System.out.println("日志内容："+content);
 		outFile(path, content, true);
 	}

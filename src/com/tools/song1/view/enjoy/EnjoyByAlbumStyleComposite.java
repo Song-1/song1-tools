@@ -95,8 +95,8 @@ public class EnjoyByAlbumStyleComposite extends Composite {
 		Button btnNewButton_2 = new Button(this, SWT.NONE);
 		btnNewButton_2.setFont(SWTResourceManager.getFont("微软雅黑", 11, SWT.NORMAL));
 		FormData fd_btnNewButton_2 = new FormData();
+		fd_btnNewButton_2.bottom = new FormAttachment(group, 55, SWT.BOTTOM);
 		fd_btnNewButton_2.top = new FormAttachment(group, 17);
-		fd_btnNewButton_2.bottom = new FormAttachment(100, -28);
 		fd_btnNewButton_2.left = new FormAttachment(0, 596);
 		fd_btnNewButton_2.right = new FormAttachment(100, -10);
 		btnNewButton_2.setLayoutData(fd_btnNewButton_2);

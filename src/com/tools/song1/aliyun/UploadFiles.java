@@ -9,9 +9,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ProgressBar;
@@ -129,8 +126,6 @@ public class UploadFiles {
 			long curPartSize = PART_SIZE < size - start ? PART_SIZE : size - start;
 			if (isBreakPointUploadFlag) {
 				for (PartSummary part : partSummaryList) {
-					System.out.print("PartNumber: " + part.getPartNumber() + " ETag: " + part.getETag());
-					FileDoUtil.outLog("    size : " + part.getSize());
 					if (partNumber == part.getPartNumber()) {
 						if (curPartSize != part.getSize()) {
 							start += part.getSize();

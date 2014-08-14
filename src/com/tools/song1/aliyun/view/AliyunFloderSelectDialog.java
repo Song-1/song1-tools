@@ -51,8 +51,8 @@ public class AliyunFloderSelectDialog extends Dialog {
 		createContents();
 		shell.open();
 		shell.layout();
+		LayoutUtil.centerShell(getParent(), shell);
 		Display display = getParent().getDisplay();
-		LayoutUtil.centerShell(display, shell);
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
@@ -137,6 +137,8 @@ public class AliyunFloderSelectDialog extends Dialog {
 					if(item != null){
 						String key = (String)item.getData();
 						String bucket = combo.getText().trim();
+						System.out.println("bucket:::" + bucket);
+						System.out.println("key:::" + key);
 						result.put("bucket", bucket);
 						result.put("key", key);
 					}

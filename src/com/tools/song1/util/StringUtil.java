@@ -4,6 +4,8 @@
 package com.tools.song1.util;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
@@ -93,6 +95,18 @@ public class StringUtil {
 		String str = formate.format(date);
 		return str;
 	}
+	
+	public static String getFormateDate(Date date,String parrten) {
+		if(date == null){
+			return "";
+		}
+		if (isEmptyString(parrten)) {
+			return getFormateDate();
+		}
+		SimpleDateFormat formate = new SimpleDateFormat(parrten);
+		String str = formate.format(date);
+		return str;
+	}
 
 	/**
 	 * 判断字符串是否为空,str == null or "" return true.<br>
@@ -124,6 +138,28 @@ public class StringUtil {
 		Pattern p = Pattern.compile(reg);
 		Matcher m = p.matcher(str);
 		return m.find();
+	}
+	
+	public static String getFileSize(long size){
+		if(size <= 0){
+			return size + "";
+		}else if(size < 1024L){
+			return size + "b";
+		}else if(size < 1048576L){
+			return sub(size, 1024L)+"KB";
+		}else if(size < 1073741824L){
+			return sub(size, 1048576L)+"MB";
+		}else if(size >= 1073741824L){
+			return sub(size, 1073741824L)+"GB";
+		}else{
+			return size + "";
+		}
+	}
+	
+	public static double sub(long size,long l){
+		double d = (double)size / l;
+		BigDecimal b = new BigDecimal(d);
+		return b.setScale(2, RoundingMode.HALF_UP).doubleValue();
 	}
 
 	// /// test

@@ -186,7 +186,7 @@ public class MusicConstants {
 	public static String getIconByStuffix(String stuffix){
 		String result = "";
 		if(StringUtil.isEmptyString(stuffix)){
-			result = "/images/folder.png";
+			result = "/images/icon_3gpp.png";
 			return result;
 		}
 		stuffix = stuffix.trim();

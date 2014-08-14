@@ -1,6 +1,8 @@
 package com.tools.song1.view;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -12,16 +14,18 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.wb.swt.SWTResourceManager;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
+
+import com.tools.song1.aliyun.OSSUploadUtil;
+import com.tools.song1.util.JavascriptUtil;
+import com.tools.song1.view.aliyun.AliyunMainComposite;
+import com.upload.aliyun.MusicConstants;
 
 public class MainViewTest {
 
 	protected Shell shell;
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
-	private Text txtNewText;
+	private Composite composite_1;
+	private Label lblNewLabel;
 
 	/**
 	 * Launch the application.
@@ -29,6 +33,13 @@ public class MainViewTest {
 	 */
 	public static void main(String[] args) {
 		try {
+			System.out.println(".............加载配置文件并初始化...................");
+			// /// 加载配置文件
+			MusicConstants.loadConfig();
+			OSSUploadUtil.init();
+			JavascriptUtil.init();
+			System.out.println("................初始化 完成...................");
+			//
 			MainViewTest window = new MainViewTest();
 			window.open();
 		} catch (Exception e) {
@@ -57,7 +68,7 @@ public class MainViewTest {
 	protected void createContents() {
 		shell = new Shell();
 		shell.setImage(SWTResourceManager.getImage(MainViewTest.class, "/images/song1.png"));
-		shell.setSize(1000, 600);
+		shell.setSize(1000, 650);
 		shell.setText("SWT Application");
 		shell.setLayout(new FormLayout());
 		
@@ -71,19 +82,45 @@ public class MainViewTest {
 		mntmNewSubmenu.setMenu(menu_1);
 		
 		MenuItem mntmNewItem = new MenuItem(menu_1, SWT.NONE);
+		mntmNewItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				lblNewLabel.setText("阿里云文件操作");
+				lblNewLabel.update();
+				AliyunMainComposite aliyun = new AliyunMainComposite(composite_1, SWT.NONE);
+				FormData fd_composite_1 = new FormData();
+				fd_composite_1.bottom = new FormAttachment(100,0);
+				fd_composite_1.top = new FormAttachment(0, 0);
+				fd_composite_1.left = new FormAttachment(0, 0);
+				fd_composite_1.right = new FormAttachment(100, 0);
+				aliyun.setLayoutData(fd_composite_1);
+				formToolkit.paintBordersFor(aliyun);
+			}
+		});
 		mntmNewItem.setImage(SWTResourceManager.getImage(MainViewTest.class, "/images/tray.png"));
 		mntmNewItem.setText("阿里云文件操作");
 		
 		MenuItem mntmNewItem_1 = new MenuItem(menu_1, SWT.NONE);
-		mntmNewItem_1.setText("樱桃时光");
-		
-		MenuItem mntmNewItem_2 = new MenuItem(menu_1, SWT.NONE);
-		mntmNewItem_2.setText("状元听书");
-		
-		MenuItem mntmNewItem_3 = new MenuItem(menu_1, SWT.NONE);
-		mntmNewItem_3.setText("享CD");
+		mntmNewItem_1.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+//				TestMainComposite test = new TestMainComposite(composite_1, SWT.NONE);
+//				test.setl
+				MainComposite main = new MainComposite(composite_1, SWT.NONE);
+				main.setLayout(new FormLayout());
+			}
+		});
+		mntmNewItem_1.setText("音乐1号");
 		
 		MenuItem mntmNewItem_4 = new MenuItem(menu_1, SWT.NONE);
+		mntmNewItem_4.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Display d = shell.getDisplay();
+				shell.dispose();
+				d.dispose();
+			}
+		});
 		mntmNewItem_4.setText("退出");
 		
 		Composite composite = new Composite(shell, SWT.NONE);
@@ -95,7 +132,7 @@ public class MainViewTest {
 		fd_composite.left = new FormAttachment(0);
 		composite.setLayoutData(fd_composite);
 		
-		Label lblNewLabel = formToolkit.createLabel(composite, "New Label", SWT.NONE);
+		lblNewLabel = formToolkit.createLabel(composite, "New Label", SWT.NONE);
 		lblNewLabel.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
 		lblNewLabel.setFont(SWTResourceManager.getFont("思源黑体 CN Bold", 12, SWT.NORMAL));
 		FormData fd_lblNewLabel = new FormData();
@@ -115,50 +152,16 @@ public class MainViewTest {
 		label.setLayoutData(fd_label);
 		formToolkit.adapt(label, true, true);
 		
-		Composite composite_1 = formToolkit.createComposite(composite, SWT.NONE);
+		composite_1 = formToolkit.createComposite(composite, SWT.NONE);
 		composite_1.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
+		composite_1.setLayout(null);
 		FormData fd_composite_1 = new FormData();
-		fd_composite_1.bottom = new FormAttachment(100,-10);
+		fd_composite_1.bottom = new FormAttachment(100,0);
 		fd_composite_1.top = new FormAttachment(label, 5);
-		fd_composite_1.left = new FormAttachment(0, 10);
-		fd_composite_1.right = new FormAttachment(100,-10);
+		fd_composite_1.left = new FormAttachment(0, 0);
+		fd_composite_1.right = new FormAttachment(100, 0);
 		composite_1.setLayoutData(fd_composite_1);
 		formToolkit.paintBordersFor(composite_1);
-		
-		Label lblNewLabel_1 = formToolkit.createLabel(composite_1, "New Label", SWT.NONE);
-		lblNewLabel_1.setBounds(10, 10, 143, 17);
-		
-		txtNewText = formToolkit.createText(composite_1, "New Text", SWT.NONE);
-		txtNewText.setBounds(172, 10, 676, 23);
-		
-		TabFolder tabFolder = new TabFolder(composite_1, SWT.NONE);
-		tabFolder.setBounds(10, 48, 944, 422);
-		formToolkit.adapt(tabFolder);
-		formToolkit.paintBordersFor(tabFolder);
-		
-		TabItem tbtmNewItem = new TabItem(tabFolder, SWT.NONE);
-		tbtmNewItem.setImage(SWTResourceManager.getImage(MainViewTest.class, "/images/folder.png"));
-		tbtmNewItem.setText("New Item");
-		
-		Composite composite_2 = new Composite(tabFolder, SWT.NONE);
-		tbtmNewItem.setControl(composite_2);
-		formToolkit.paintBordersFor(composite_2);
-		
-		TabItem tbtmNewItem_1 = new TabItem(tabFolder, SWT.NONE);
-		tbtmNewItem_1.setImage(SWTResourceManager.getImage(MainViewTest.class, "/images/folder.png"));
-		tbtmNewItem_1.setText("New Item");
-		
-		Composite composite_3 = new Composite(tabFolder, SWT.NONE);
-		tbtmNewItem_1.setControl(composite_3);
-		formToolkit.paintBordersFor(composite_3);
-		
-		TabItem tbtmNewItem_2 = new TabItem(tabFolder, SWT.NONE);
-		tbtmNewItem_2.setText("New Item");
-		
-		Composite composite_4 = new Composite(tabFolder, SWT.NONE);
-		tbtmNewItem_2.setControl(composite_4);
-		formToolkit.paintBordersFor(composite_4);
-		
 		
 
 	}
