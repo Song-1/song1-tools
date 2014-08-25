@@ -12,6 +12,7 @@ import java.util.Map;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ProgressBar;
 
+import com.tools.song1.aliyun.OSSUploadUtil;
 import com.tools.song1.util.ImageFileUtil;
 import com.tools.song1.util.StringUtil;
 import com.upload.aliyun.MusicConstants;
@@ -179,11 +180,11 @@ public class EnjoyFileEachUtil {
 						key = EnjoyThread.ALIYUN_SERVER_PATH_ROOT + key;
 					}
 					if(isMatchTheStuffix(file.getAbsolutePath(),ALBUM_SONG_STUFFIXS)){
-//						boolean flag = OSSUploadUtil.isObjectExist(MusicConstants.BUKET_NAME, key);
-//						if(flag){
-//							data.addSongs(file);
-//						}
-						data.addSongs(key,file);
+						boolean flag = OSSUploadUtil.isObjectExist(MusicConstants.BUKET_NAME, key);
+						if(flag){
+							data.addSongs(key,file);
+						}
+//						data.addSongs(key,file);
 					}else if(ImageFileUtil.isImageFile(file.getAbsolutePath())){
 						data.addImages(file);
 					}else{
