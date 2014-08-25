@@ -121,11 +121,11 @@ public class EnjoyFileEachUtil {
 						key = MusicConstants.SERVER_PATH_ROOT + key;
 					}
 					if(isMatchTheStuffix(file.getAbsolutePath(),ALBUM_SONG_STUFFIXS)){
-//						boolean flag = OSSUploadUtil.isObjectExist(MusicConstants.BUKET_NAME, key);
-//						if(flag){
-//							data.addSongs(file);
-//						}
-						data.addSongs(key,file);
+						boolean flag = OSSUploadUtil.isObjectExist(MusicConstants.BUKET_NAME, key);
+						if(flag){
+							data.addSongs(key,file);
+						}
+//						data.addSongs(key,file);
 					}else if(ImageFileUtil.isImageFile(file.getAbsolutePath())){
 						data.addImages(file);
 					}else{
