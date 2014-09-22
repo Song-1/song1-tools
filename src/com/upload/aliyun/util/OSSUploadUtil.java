@@ -368,7 +368,9 @@ public class OSSUploadUtil {
 		String NextMarker = "";
 		while (true) {
 			listObjectsRequest.setMarker(NextMarker);
-			objectListing = aliyunConnect(listObjectsRequest);
+			while (objectListing == null) {
+				objectListing = aliyunConnect(listObjectsRequest);
+			}
 			NextMarker = objectListing.getNextMarker();
 			// 遍历所有Object
 			for (OSSObjectSummary objectSummary : objectListing.getObjectSummaries()) {
@@ -400,7 +402,16 @@ public class OSSUploadUtil {
 				if (client == null) {
 					OSSUploadUtil.init();
 				}
-				return client.listObjects(listObjectsRequest);
+				ObjectListing listObjects = client.listObjects(listObjectsRequest);
+				if (listObjects == null) {
+					try {
+						Thread.sleep(5000);
+					} catch (InterruptedException e1) {
+						e1.printStackTrace();
+					} // 线程沉睡5秒
+					aliyunConnect(listObjectsRequest);
+				}
+				return listObjects;
 			} catch (Exception e) {
 				try {
 					Thread.sleep(5000);

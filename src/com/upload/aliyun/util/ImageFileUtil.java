@@ -84,8 +84,16 @@ public class ImageFileUtil {
 		if (imageByte != null) {
 			try {
 				String filename = mp3filepath.replace(".mp3", ".jpg");
-				filename = filename.replace(MusicConstants.BASE_FILE_PATH + File.separator, "");
+				String basepath = MusicConstants.BASE_FILE_PATH ;
+				if (MusicConstants.BASE_FILE_PATH.endsWith("/")) {
+					 basepath = MusicConstants.BASE_FILE_PATH.substring(0, MusicConstants.BASE_FILE_PATH.length() -1);
+					 basepath = basepath + File.separator;
+				}else if (!MusicConstants.BASE_FILE_PATH.endsWith(File.separator)) {
+					 basepath = MusicConstants.BASE_FILE_PATH + File.separator;
+				}
+				filename = filename.replace(basepath, "");
 				imageURL = filename.replace(File.separator, "/");
+				imageURL = MusicConstants.SERVER_PATH_ROOT + imageURL;
 				if (!OSSUploadUtil.isObjectExist(MusicConstants.BUKET_NAME, imageURL)) {
 					FileDoUtil.debugLog(MusicConstants.BUKET_NAME + " bucket 下面的 " + imageURL + "不存在，正在上传中...");
 					OSSUploadUtil.uploadImage(MusicConstants.BUKET_NAME, imageURL, imageByte);

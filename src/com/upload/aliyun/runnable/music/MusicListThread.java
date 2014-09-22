@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.farng.mp3.util.MP3Info;
 import org.farng.mp3.util.MP3Util;
@@ -87,7 +88,7 @@ public class MusicListThread implements Runnable {
 		String url = MusicConstants.getUrl(key);
 		String img = "";
 		if (!flag) {
-			FileDoUtil.outLog("[ " + StringUtil.getFormateDate() + " ]" + file.getAbsolutePath() + "   服务器此文件不存在");
+			FileDoUtil.outLog("[ " + StringUtil.getFormateDate() + " ]" + file.getAbsolutePath() + "   服务器此文件不存在 :" + key);
 			return;
 		}
 		if (ImageFileUtil.isImageFile(key)) {
@@ -103,6 +104,10 @@ public class MusicListThread implements Runnable {
 		FileDoUtil.outLog(name + "\t" + url + "\t" + key);
 		String rus = saveSongFile(name, url, img);
 		String bookId = JavascriptUtil.getSaveBookResponse(rus);
+		if (!bookId.matches("[0-9]+")) {
+			System.out.println("音乐保存出错");
+			return;
+		}
 		addBookId(bookId);
 	}
 
