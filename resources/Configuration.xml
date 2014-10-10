@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+		<!-- 
+		<typeAlias alias="MakesoundSyncRadioModel" type="com.songone.www.makesound.model.MakesoundSyncRadioModel" />
+		<typeAlias alias="RadioAudio" type="com.songone.www.makesound.model.RadioAudio" />
+		<typeAlias alias="RadioTag" type="com.songone.www.makesound.model.RadioTag" /> 
+		-->
+		<typeAlias alias="PageResultModel" type="com.songone.www.base.db.mybatis.PageResultModel" />
+		<typeAlias alias="Radio" type="com.songone.www.lizhi.json.model.Radio" />
+		<typeAlias alias="RadioAudio" type="com.songone.www.lizhi.json.model.RadioAudio" />
+		<typeAlias alias="UploadToAliyunDataModel" type="com.songone.www.lizhi.json.model.UploadToAliyunDataModel" />
+		<typeAlias alias="LocalFileDataInfo" type="com.songone.www.enjoycd.models.LocalFileDataInfo" />
+		<typeAlias alias="SyncEnjoyCDModel" type="com.songone.www.enjoycd.models.SyncEnjoyCDModel" />
+		<typeAlias alias="AliyunMappingFileModel" type="com.songone.www.aliyun.model.AliyunMappingFileModel" />
+		<typeAlias alias="Album" type="com.songone.www.enjoy.models.Album" />
+		<typeAlias alias="AlbumSong" type="com.songone.www.enjoy.models.AlbumSong" />
+		<typeAlias alias="Songs" type="com.songone.www.cherrytime.model.Songs" />
+		<typeAlias alias="SongList" type="com.songone.www.cherrytime.model.SongList" />
+		
+		
+	</typeAliases>
+
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="com.mysql.jdbc.Driver" />
+				<property name="url" value="jdbc:mysql://127.0.0.1:3306/music_tool" />
+				<property name="username" value="root" />
+				<property name="password" value="root" />
+			</dataSource>
+			<!-- <dataSource type="POOLED">
+				<property name="driver" value="com.mysql.jdbc.Driver" />
+				<property name="url" value="jdbc:mysql://112.124.44.10:3306/song_tool" />
+				<property name="username" value="songonetool" />
+				<property name="password" value="songonetool" />
+			</dataSource> -->
+		</environment>
+	</environments>
+
+	<mappers>
+		<!-- 
+		<mapper resource="com/songone/www/makesound/dao/mybatis/impl/MakesoundSyncRadioModel.xml" />
+		<mapper resource="com/songone/www/makesound/dao/mybatis/impl/RadioAudio.xml" />
+		<mapper resource="com/songone/www/makesound/dao/mybatis/impl/RadioTag.xml" /> 
+		-->
+		<mapper resource="com/songone/www/lizhi/json/dao/mybatis/maps/Radio.xml" />
+		<mapper resource="com/songone/www/lizhi/json/dao/mybatis/maps/RadioAudio.xml" />
+		<mapper resource="com/songone/www/lizhi/json/dao/mybatis/maps/UploadToAliyunDataModel.xml" />
+		<mapper resource="com/songone/www/enjoycd/dao/mybatis/maps/LocalFileDataInfo.xml" />
+		<mapper resource="com/songone/www/enjoycd/dao/mybatis/maps/SyncEnjoyCDModel.xml" />
+		<mapper resource="com/songone/www/aliyun/dao/mybatis/maps/AliyunMappingFileModel.xml" />
+		<mapper resource="com/songone/www/enjoy/dao/mybatis/maps/Album.xml" />
+		<mapper resource="com/songone/www/enjoy/dao/mybatis/maps/AlbumSong.xml" />
+		<mapper resource="com/songone/www/cherrytime/dao/mybatis/maps/Songs.xml" />
+		<mapper resource="com/songone/www/cherrytime/dao/mybatis/maps/SongList.xml" />
+	</mappers>
+</configuration>

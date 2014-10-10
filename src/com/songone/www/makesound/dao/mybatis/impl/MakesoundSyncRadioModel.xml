@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.songone.www.makesound.dao.mybatis.MakesoundSyncRadioModelDao">
+	<resultMap type="MakesoundSyncRadioModel" id="makesoundSyncRadioModel">
+		<id column="id" property="id" />
+		<result column="band" property="band" />
+		<result column="audio_counts" property="audios" />
+		<result column="program_list_id" property="programListId" />
+		<result column="program_counts" property="programCounts" />
+		<result column="program_list_name" property="programListName" />
+	</resultMap>
+	<insert id="add" parameterType="MakesoundSyncRadioModel"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into
+		tb_makesound_sync_radio
+		(band, audio_counts,
+		program_list_id,program_counts,program_list_name)
+		values
+		(#{band},
+		#{audios}, #{programListId},#{programCounts},#{programListName})
+	</insert>
+	<update id="update"  parameterType="MakesoundSyncRadioModel">
+		update tb_makesound_sync_radio radio
+		set 
+			radio.band = #{band},
+			radio.audio_counts = #{audios},
+			radio.program_list_id =#{programListId},
+			radio.program_counts = #{programCounts},
+			radio.program_list_name = #{programListName}
+		where radio.id = #{id}
+	</update>
+	<select id="selectByBand" parameterType="java.lang.String" resultMap="makesoundSyncRadioModel">
+		select * from tb_makesound_sync_radio radio where
+		radio.band = #{band}
+	</select>
+	<select id="selectForSyncAudio" parameterType="java.util.Map" resultMap="makesoundSyncRadioModel">
+		select * from tb_makesound_sync_radio radio where
+		radio.audio_counts != radio.program_counts limit #{start},#{pageSize}
+	</select>
+</mapper>

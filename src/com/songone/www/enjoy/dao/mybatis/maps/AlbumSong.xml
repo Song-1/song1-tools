@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.songone.www.enjoy.dao.mybatis.AlbumSongDao">
+	<insert id="add" parameterType="AlbumSong" useGeneratedKeys="true" keyProperty="id">
+		insert into tb_enjoycd_album_songs
+		(name,url,parentId,seat,state)
+		values
+		(#{name},#{url},#{parentId},#{seat},#{state})
+	</insert>
+	<update id="update" parameterType="AlbumSong">
+		update tb_enjoycd_album_songs albumsong
+		set albumsong.name=#{name},
+			albumsong.url=#{url},
+			albumsong.parentId=#{parentId},
+			albumsong.seat=#{seat},
+			albumsong.state=#{state}
+		where albumsong.id = #{id}
+	</update>
+	
+	<select id="queryModelById" parameterType="int" resultType="AlbumSong">
+		select albumsong.id,albumsong.name,albumsong.url,albumsong.parentId,albumsong.seat,albumsong.state
+		from tb_enjoycd_album_songs albumsong
+		where albumsong.id = #{id}
+	</select>
+	
+	<select id="queryModelByNameIndex" parameterType="AlbumSong" resultType="AlbumSong">
+		select albumsong.id,albumsong.name,albumsong.url,albumsong.parentId,albumsong.seat,albumsong.state
+		from tb_enjoycd_album_songs albumsong
+		where albumsong.parentId = #{parentId} and albumsong.name = #{name}
+	</select>
+	
+	
+</mapper>

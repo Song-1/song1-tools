@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.songone.www.cherrytime.dao.mybatis.SongsDao">
+	<insert id="add" parameterType="Songs" useGeneratedKeys="true" keyProperty="id">
+		insert into tb_cherrytime_list_songs
+		(name,parentId,singerName,url,coderate,timestate,img,state,lyric)
+		values
+		(#{name},#{parentId},#{singerName},#{url},#{coderate},#{timestate},#{img},#{state},#{lyric})
+	</insert>
+	<update id="update" parameterType="Songs">
+		update tb_cherrytime_list_songs song
+		set song.name = #{name},
+			song.parentId = #{parentId},
+			song.singerName = #{singerName},
+			song.url = #{url},
+			song.coderate = #{coderate},
+			song.timestate = #{timestate},
+			song.img = #{img},
+			song.state = #{state},
+			song.lyric = #{lyric}
+		where song.id = #{id}
+	</update>
+	
+	<select id="queryModelByNameIndex" parameterType="Songs" resultType="Songs">
+		select song.id,song.name,song.parentId,song.singerName,song.url,song.coderate,song.timestate,song.img,song.state,song.lyric
+		from tb_cherrytime_list_songs song
+		where song.name= #{name} and song.parentId= #{parentId}
+	</select>
+	
+	<select id="queryModelById" parameterType="int" resultType="Songs">
+		select song.id,song.name,song.parentId,song.singerName,song.url,song.coderate,song.timestate,song.img,song.state,song.lyric
+		from tb_cherrytime_list_songs song
+		where song.id = #{id}
+	</select>
+	
+	<!-- <select id="getCanSyncAlbumSongs" parameterType="int" resultType="int">
+		select count(song.id) from tb_enjoycd_album_songs song where song.state = 2 and song.parentId = #{albumId};
+	</select> -->
+	
+	
+</mapper>

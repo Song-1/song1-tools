@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.songone.www.aliyun.dao.mybatis.AliyunMappingFileModelDao">
+	<insert id="add" parameterType="AliyunMappingFileModel" useGeneratedKeys="true" keyProperty="id">
+		insert into tb_file_aliyun_mapping
+		(path,aliyunKey,uploadState,remark,dataType,suffix,foreignKeyId,syncFlag)
+		values
+		(#{path},#{aliyunKey},#{uploadState},#{remark},#{dataType},#{suffix},#{foreignKeyId},#{syncFlag})
+	</insert>
+	
+	<update id="update" parameterType="AliyunMappingFileModel">
+		update tb_file_aliyun_mapping aliyun
+		set aliyun.path=#{path},
+			aliyun.aliyunKey=#{aliyunKey},
+			aliyun.uploadState=#{uploadState},
+			aliyun.remark=#{remark},
+			aliyun.dataType=#{dataType},
+			aliyun.suffix=#{suffix},
+			aliyun.foreignKeyId=#{foreignKeyId},
+			aliyun.syncFlag = #{syncFlag}
+		where aliyun.id = #{id}
+	</update>
+	
+	<select id="queryModelByPath" parameterType="string" resultType="AliyunMappingFileModel">
+		select aliyun.id,aliyun.path,aliyun.aliyunKey,aliyun.uploadState,aliyun.remark,aliyun.dataType,aliyun.suffix,aliyun.foreignKeyId,aliyun.syncFlag
+		from tb_file_aliyun_mapping aliyun
+		where aliyun.path = #{path}
+	</select>
+	
+	<select id="queryModelForUpload" parameterType="int" resultType="AliyunMappingFileModel">
+		select aliyun.id,aliyun.path,aliyun.aliyunKey,aliyun.uploadState,aliyun.remark,aliyun.dataType,aliyun.suffix,aliyun.foreignKeyId,aliyun.syncFlag
+		from tb_file_aliyun_mapping aliyun
+		where aliyun.uploadState = #{state} and aliyun.syncFlag = 0
+		limit 0,100
+	</select>
+	
+	<select id="queryUploadFailForUpload" parameterType="int" resultType="AliyunMappingFileModel">
+		select aliyun.id,aliyun.path,aliyun.aliyunKey,aliyun.uploadState,aliyun.remark,aliyun.dataType,aliyun.suffix,aliyun.foreignKeyId,aliyun.syncFlag
+		from tb_file_aliyun_mapping aliyun
+		where aliyun.uploadState = 3 
+		limit 0,#{pageSize}
+	</select>
+	
+</mapper>

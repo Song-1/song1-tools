@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.songone.www.cherrytime.dao.mybatis.SongListDao">
+	<insert id="add" parameterType="SongList" useGeneratedKeys="true" keyProperty="id">
+		insert into tb_cherrytime_list
+		(name,styleName,environmentName,description,songs,img,icon,state,createUser,createDate)
+		values
+		(#{name},#{styleName},#{environmentName},#{description},#{songs},#{img},#{icon},#{state},#{createUser},#{createDate})
+	</insert>
+	<update id="update" parameterType="SongList">
+		update tb_cherrytime_list songList
+		set songList.name = #{name},
+			songList.styleName = #{styleName},
+			songList.environmentName = #{environmentName},
+			songList.description = #{description},
+			songList.songs = #{songs},
+			songList.img = #{img},
+			songList.icon = #{icon},
+			songList.state = #{state},
+			songList.createUser = #{createUser},
+			songList.createDate = #{createDate}
+		where songList.id = #{id}
+	</update>
+	
+	<select id="queryModelByNameIndex" parameterType="SongList" resultType="SongList">
+		select songList.id,songList.name,songList.styleName,songList.environmentName,songList.description,songList.songs,songList.img,
+			   songList.icon,songList.state,songList.createUser,songList.createDate
+		from tb_cherrytime_list songList
+		where songList.name = #{name} and songList.styleName = #{styleName} and songList.environmentName = #{environmentName}
+	</select>
+	
+	<select id="queryModelById" parameterType="int" resultType="SongList">
+		select songList.id,songList.name,songList.styleName,songList.environmentName,songList.description,songList.songs,songList.img,
+			   songList.icon,songList.state,songList.createUser,songList.createDate
+		from tb_cherrytime_list songList
+		where songList.id = #{id}
+	</select>
+	
+	<!-- <select id="getCanSyncAlbumSongs" parameterType="int" resultType="int">
+		select count(song.id) from tb_enjoycd_album_songs song where song.state = 2 and song.parentId = #{albumId};
+	</select> -->
+	
+	
+</mapper>

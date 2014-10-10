@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.songone.www.makesound.dao.mybatis.RadioAudioDao">
+	<resultMap type="RadioAudio" id="radioAudio">
+		<result column="band" property="band" />
+		<result column="url" property="url" />
+		<result column="cover" property="cover" />
+		<result column="duration" property="duration" />
+		<result column="create_time" property="createDate" />
+		<result column="coverKey" property="coverKey" />
+		<result column="sync_flag" property="sync_flag" />
+		<result column="id" property="audioId" />
+		<result column="radioName" property="radioName" />
+	</resultMap>
+	<insert id="add" parameterType="RadioAudio" useGeneratedKeys="true" keyProperty="id">
+		insert into
+		tb_radio_audio
+		(name, url, cover, duration, create_time, sync_flag, band,coverKey,radioName)
+		values
+		(#{name},#{url}, #{cover},#{duration},#{createDate},#{sync_flag},#{band},#{coverKey},#{radioName})
+	</insert>
+	<update id="update"  parameterType="RadioAudio">
+		update tb_radio_audio audio
+		set 
+			audio.sync_flag = #{sync_flag}
+		where audio.id = #{audioId}
+	</update>
+	<select id="queryModel" parameterType="java.util.Map" resultMap="radioAudio">
+		select * from tb_radio_audio audio where
+		audio.name = #{name} and audio.band = #{band}
+	</select>
+	<select id="queryModelByPage" parameterType="java.util.Map" resultMap="radioAudio">
+		select * from tb_radio_audio audio where
+		audio.sync_flag != 'Y' limit #{start},#{pageSize}
+	</select>
+</mapper>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.songone.www.enjoycd.dao.mybatis.SyncEnjoyCDModelDao">
+	<insert id="add" parameterType="SyncEnjoyCDModel" useGeneratedKeys="true" keyProperty="id">
+		insert into
+		t_enjoy_cd_sync_data
+		(parentId,name,url,seat,isAlbum,syncFlag,createDate,createUser,syncFail)
+		values
+		(#{parentId},#{name},#{url},#{seat},#{isAlbum},#{syncFlag},#{createDate},#{createUser},#{syncFail})
+	</insert>
+	<update id="update" parameterType="SyncEnjoyCDModel">
+		update t_enjoy_cd_sync_data enjoyData
+		set 
+			enjoyData.syncFlag=#{syncFlag},
+			enjoyData.syncFail = #{syncFail}
+		where enjoyData.id = #{id}
+	</update>
+	
+	<!--
+	enjoyData.parentId=#{parentId}, 
+	enjoyData.name-=#{name},
+	enjoyData.url=#{url},
+	enjoyData.seat=#{seat},
+	enjoyData.isAlbum=#{isAlbum},
+	enjoyData.createDate=#{createDate},
+	enjoyData.createUser=#{createUser}, 
+	-->
+	<select id="queryModelByNameAndAlbumFlag" parameterType="SyncEnjoyCDModel" resultType="SyncEnjoyCDModel">
+		SELECT enjoyData.id,enjoyData.parentId,enjoyData.name,enjoyData.url,enjoyData.seat,enjoyData.isAlbum,enjoyData.syncFlag,
+			   enjoyData.createDate, enjoyData.createUser,enjoyData.syncFail
+		from t_enjoy_cd_sync_data enjoyData 
+		where enjoyData.name =#{name} and enjoyData.isAlbum = #{isAlbum} and enjoyData.parentId = 0
+	</select>
+	
+	<select id="queryModelForSyncAlbum" parameterType="int" resultType="SyncEnjoyCDModel">
+		SELECT enjoyData.id,enjoyData.parentId,enjoyData.name,enjoyData.url,enjoyData.seat,enjoyData.isAlbum,enjoyData.syncFlag,
+			   enjoyData.createDate, enjoyData.createUser,enjoyData.syncFail
+		from t_enjoy_cd_sync_data enjoyData 
+		where enjoyData.isAlbum = 1 and enjoyData.syncFlag = 0
+		limit 0,#{pageSize}
+	</select>
+	
+	<select id="queryModelByAlbum" parameterType="int" resultType="SyncEnjoyCDModel">
+		SELECT enjoyData.id,enjoyData.parentId,enjoyData.name,enjoyData.url,enjoyData.seat,enjoyData.isAlbum,enjoyData.syncFlag,
+			   enjoyData.createDate, enjoyData.createUser,enjoyData.syncFail
+		from t_enjoy_cd_sync_data enjoyData 
+		where enjoyData.isAlbum = 0 and enjoyData.parentId=#{id}
+	</select>
+	
+</mapper>

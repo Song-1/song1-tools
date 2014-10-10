@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.songone.www.enjoycd.dao.mybatis.LocalFileDataInfoDao">
+	<insert id="add" parameterType="LocalFileDataInfo" useGeneratedKeys="true" keyProperty="id">
+		insert into
+		t_local_file_data_info
+		(filePath,parentId,createDate,createUser,fileType,infoData,isUpload,syncDataFlag,isBasePath,aliyunKey,uploadFail,syncFail)
+		values
+		(#{filePath},#{parentId},#{createDate},#{createUser},#{fileType},#{infoData},#{isUpload},#{syncDataFlag},#{isBasePath},#{aliyunKey},#{uploadFail},#{syncFail})
+	</insert>
+	
+	<update id="update" parameterType="LocalFileDataInfo">
+		update t_local_file_data_info file_data
+		set file_data.filePath=#{filePath},
+			file_data.parentId=#{parentId},
+			file_data.createDate=#{createDate},
+			file_data.createUser=#{createUser},
+			file_data.fileType=#{fileType},
+			file_data.infoData=#{infoData},
+			file_data.isUpload=#{isUpload},
+			file_data.syncDataFlag=#{syncDataFlag},
+			file_data.isBasePath=#{isBasePath},
+			file_data.aliyunKey=#{aliyunKey},
+			file_data.uploadFail=#{uploadFail},
+			file_data.syncFail = #{syncFail}
+		where file_data.id = #{id}
+	</update>
+	
+	<select id="queryModelCountsByParentId" parameterType="int" resultType="int">
+		select count(file_data.id)
+		from t_local_file_data_info file_data 
+		where file_data.parentId = #{parentId}
+	</select>
+	
+	<select id="queryModelByFilePath" parameterType="string" resultType="LocalFileDataInfo">
+		select file_data.id,file_data.filePath,file_data.parentId,file_data.createDate,file_data.createUser,file_data.fileType,file_data.infoData,file_data.isUpload,
+			   file_data.syncDataFlag,file_data.isBasePath,file_data.aliyunKey,file_data.uploadFail,file_data.syncFail
+		from t_local_file_data_info file_data 
+		where file_data.filePath = #{filePath}
+	</select>
+	
+	<select id="queryModelForUpload" parameterType="int" resultType="LocalFileDataInfo">
+		select file_data.id,file_data.filePath,file_data.parentId,file_data.createDate,file_data.createUser,file_data.fileType,file_data.infoData,file_data.isUpload,
+			   file_data.syncDataFlag,file_data.isBasePath,file_data.aliyunKey,file_data.uploadFail,file_data.syncFail
+		from t_local_file_data_info file_data
+		where file_data.isUpload = 0 and file_data.isBasePath = 0
+		limit 0,#{pageSize}
+	</select>
+	
+	<select id="queryModelForUploadVali" parameterType="int" resultType="LocalFileDataInfo">
+		select file_data.id,file_data.filePath,file_data.parentId,file_data.createDate,file_data.createUser,file_data.fileType,file_data.infoData,file_data.isUpload,
+			   file_data.syncDataFlag,file_data.isBasePath,file_data.aliyunKey,file_data.uploadFail,file_data.syncFail
+		from t_local_file_data_info file_data
+		where file_data.isUpload = 1 and file_data.uploadFail = 0 and file_data.isBasePath = 0
+		limit 0,#{pageSize}
+	</select>
+	
+	<select id="queryModelForSyncEnjoyCD" parameterType="int" resultType="LocalFileDataInfo">
+		select file_data.id,file_data.filePath,file_data.parentId,file_data.createDate,file_data.createUser,file_data.fileType,file_data.infoData,file_data.isUpload,
+			   file_data.syncDataFlag,file_data.isBasePath,file_data.aliyunKey,file_data.uploadFail,file_data.syncFail
+		from t_local_file_data_info file_data
+		where file_data.isUpload = 1 and file_data.syncDataFlag = 0 and file_data.isBasePath = 0 and file_data.fileType='enjoycd' and file_data.syncFail = 0 and file_data.uploadFail = 0
+		limit 0,#{pageSize}
+	</select>
+</mapper>

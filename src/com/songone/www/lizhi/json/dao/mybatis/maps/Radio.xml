@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.songone.www.lizhi.json.dao.mybatis.RadioDao">
+	<resultMap type="Radio" id="radio">
+		<result column="id" property="id" />
+		<result column="name" property="name" />
+		<result column="band" property="band" />
+		<result column="au_cnt" property="au_cnt" />
+		<result column="desc_text" property="desc" />
+		<result column="user_name" property="user_name" />
+		<result column="u_thumb" property="u_thumb" />
+		<result column="cover" property="cover" />
+		<result column="uid" property="uid" />
+		<result column="tagName" property="tagName" />
+		<result column="programListId" property="programListId" />
+		<result column="programCounts" property="programCounts" />
+		<result column="getSaveAudioFlag" property="getSaveAudioFlag" />
+		<result column="syncFlag" property="syncFlag" />
+	</resultMap>
+	<resultMap type="Radio" id="radioId">
+		<result column="id" property="id" />
+	</resultMap>
+	
+	<insert id="add" parameterType="Radio" >
+		insert into
+		t_lizhi_json_radio
+		( id,name,band, au_cnt,desc_text,user_name,u_thumb,cover,uid,tagName, programListId,programCounts,getSaveAudioFlag,syncFlag)
+		values
+		(#{id},#{name}, #{band},#{au_cnt},#{desc},#{user_name},#{u_thumb},#{cover},#{uid},#{tagName},#{programListId},#{programCounts},#{getSaveAudioFlag},#{syncFlag})
+	</insert>
+	
+	<select id="queryModelById" parameterType="long" resultMap="radio">
+		select radio.id,radio.name,radio.band, radio.au_cnt,radio.desc_text,radio.user_name,radio.u_thumb,radio.cover,radio.uid,radio.tagName, radio.programListId,radio.programCounts
+			,radio.syncFlag,radio.getSaveAudioFlag
+		from  t_lizhi_json_radio radio
+		where radio.id = #{id}
+	</select>
+	
+	<select id="queryCurrentMaxBand" resultType="java.lang.Integer">
+		select max(radio.band) as band from t_lizhi_json_radio radio 
+	</select>
+	
+	<select id="queryModelCounts" resultType="int">
+		select count(1) from t_lizhi_json_radio radio
+	</select>
+	
+	<select id="queryModelByPage" parameterType="PageResultModel" resultMap="radio">
+		select radio.id,radio.name,radio.band, radio.au_cnt,radio.desc_text,radio.user_name,radio.u_thumb,radio.cover,radio.uid,radio.tagName, radio.programListId,radio.programCounts
+			,radio.syncFlag,radio.getSaveAudioFlag
+		from  t_lizhi_json_radio radio
+		limit #{start},#{pageSize}
+	</select>
+	
+	<select id="queryModelByPageForAudioCounts" resultType="int">
+		select count(1) from t_lizhi_json_radio radio
+		where radio.au_cnt != (select count(1) from t_lizhi_json_audio audio where audio.band = radio.band)
+	</select>
+	
+	<select id="queryModelByPageForAudio" parameterType="PageResultModel" resultMap="radio">
+		select radio.id,radio.name,radio.band, radio.au_cnt,radio.desc_text,radio.user_name,radio.u_thumb,radio.cover,radio.uid,radio.tagname, radio.programlistid,radio.programcounts
+		from  t_lizhi_json_radio radio
+		where 
+			radio.au_cnt != (select count(1) from t_lizhi_json_audio audio where audio.band = radio.band)
+		limit #{start},#{pageSize}
+	</select>
+	
+	<select id="queryModelByPageForRadioAudioCounts" resultType="int">
+		select count(1) from t_lizhi_json_radio radio
+		where radio.getSaveAudioFlag = 0
+	</select>
+	
+	<select id="queryModelByPageForRadioAudio" parameterType="PageResultModel" resultMap="radio">
+		select radio.id,radio.name,radio.band, radio.au_cnt,radio.desc_text,radio.user_name,radio.u_thumb,radio.cover,radio.uid,radio.tagname, radio.programlistid,radio.programcounts
+			,radio.syncFlag,radio.getSaveAudioFlag
+		from  t_lizhi_json_radio_view_save_audio radio
+		limit #{start},#{pageSize}
+	</select>
+	
+	<update id="updateGetSaveAudioFlag" parameterType="Radio">
+		update t_lizhi_json_radio radio
+		set radio.getSaveAudioFlag = #{getSaveAudioFlag}
+		where radio.id = #{id}
+	</update>
+	
+	<update id="updateFlagAndAudios" parameterType="Radio">
+		update t_lizhi_json_radio radio
+		set radio.getSaveAudioFlag = #{getSaveAudioFlag},
+			radio.syncFlag = #{syncFlag},
+			radio.au_cnt = #{au_cnt}
+		where radio.id = #{id}
+	</update>
+	
+	<select id="queryModelByPageForSyncCounts" parameterType="boolean" resultType="int">
+		select count(1) from t_lizhi_json_radio radio
+		where radio.syncFlag = #{syncFlag}
+	</select>
+	
+	<select id="queryModelByPageForSync" parameterType="PageResultModel" resultMap="radio">
+		select radio.id,radio.name,radio.band, radio.au_cnt,radio.desc_text,radio.user_name,radio.u_thumb,radio.cover,radio.uid,radio.tagname, radio.programlistid,radio.programcounts
+			,radio.syncFlag,radio.getSaveAudioFlag
+		from  t_lizhi_json_radio_view_band_asc radio
+		limit #{start},#{pageSize}
+	</select>
+	
+	<select id="queryModelByPageForSyncAudio" parameterType="PageResultModel" resultMap="radio">
+		select radio.id,radio.name,radio.band, radio.au_cnt,radio.desc_text,radio.user_name,radio.u_thumb,radio.cover,radio.uid,radio.tagname, radio.programlistid,radio.programcounts
+			,radio.syncFlag,radio.getSaveAudioFlag
+		from  t_lizhi_json_radio_view_sync_true_asc radio
+		limit #{start},#{pageSize}
+	</select>
+	
+	<select id="queryModelIDByPage" parameterType="PageResultModel" resultMap="radioId">
+		select radio.id
+		from  t_lizhi_json_radio radio
+		where radio.getSaveAudioFlag = 0
+		limit #{start},#{pageSize}
+	</select>
+	
+	<select id="queryModelForSync" parameterType="int" resultMap="radio">
+		select radio.id,radio.name,radio.band, radio.au_cnt,radio.desc_text,radio.user_name,radio.u_thumb,radio.cover,radio.uid,radio.tagname, radio.programlistid,radio.programcounts
+			,radio.syncFlag,radio.getSaveAudioFlag
+		from  t_lizhi_json_radio radio
+		where radio.syncFlag = 0
+		order by radio.band
+		limit 0,#{listCounts}
+	</select>
+	
+</mapper>

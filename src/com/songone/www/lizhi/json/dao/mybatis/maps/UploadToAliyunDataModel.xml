@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.songone.www.lizhi.json.dao.mybatis.UploadToAliyunDataModelDao">
+	<resultMap type="UploadToAliyunDataModel" id="uploadToAliyunDataModel">
+		<result column="id" property="id" />
+		<result column="aliyunKey" property="aliyunKey" />
+		<result column="url" property="url" />
+		<result column="isUpload" property="isUpload" />
+		<result column="uploadFail" property="uploadFail" />
+	</resultMap>
+	<insert id="add" parameterType="UploadToAliyunDataModel" useGeneratedKeys="true" keyProperty="id">
+		insert into
+		t_lizhi_json_upload_to_aliyun
+		(url,aliyunKey,isUpload,uploadFail)
+		values
+		(#{url},#{aliyunKey}, #{isUpload},#{uploadFail})
+	</insert>
+	<update id="updateUploadFlag" parameterType="UploadToAliyunDataModel">
+		update t_lizhi_json_upload_to_aliyun to_aliyun
+		set to_aliyun.isUpload = #{isUpload},
+			to_aliyun.uploadFail = #{uploadFail}
+		where to_aliyun.id = #{id}
+	</update>
+	<select id="queryModelByKey" parameterType="String" resultMap="uploadToAliyunDataModel">
+		select to_aliyun.id,to_aliyun.url,to_aliyun.aliyunKey,to_aliyun.isUpload,to_aliyun.uploadFail
+		from  t_lizhi_json_upload_to_aliyun to_aliyun
+		where to_aliyun.aliyunKey = #{key}
+		union all
+		select aliyun_success.id,aliyun_success.url,aliyun_success.aliyunKey,aliyun_success.isUpload,aliyun_success.uploadFail
+		from  t_lizhi_json_upload_to_aliyun_success aliyun_success
+		where aliyun_success.aliyunKey = #{key}
+	</select>
+	
+	<select id="queryModelForUpload" parameterType="int" resultMap="uploadToAliyunDataModel">
+		select to_aliyun.id,to_aliyun.url,to_aliyun.aliyunKey,to_aliyun.isUpload,to_aliyun.uploadFail
+		from  t_lizhi_json_upload_to_aliyun to_aliyun
+		where to_aliyun.isUpload = 0
+		limit 0,#{pageSize}
+	</select>
+	<select id="queryModelFailForUpload" parameterType="int" resultType="uploadToAliyunDataModel">
+		select to_aliyun.id,to_aliyun.url,to_aliyun.aliyunKey,to_aliyun.isUpload,to_aliyun.uploadFail
+		from  t_lizhi_json_upload_to_aliyun to_aliyun
+		where to_aliyun.isUpload = 1 and to_aliyun.uploadFail = 1
+		limit 0,#{pageSize}
+	</select>
+	
+</mapper>

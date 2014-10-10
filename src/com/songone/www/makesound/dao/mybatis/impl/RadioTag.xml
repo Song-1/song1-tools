@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.songone.www.makesound.dao.mybatis.RadioTagDao">
+	<resultMap type="RadioTag" id="radioTag">
+		<result column="id" property="id" />
+		<result column="name" property="name" />
+		<result column="parent_id" property="parentId" />
+		<result column="category_id" property="makeSoundCategoryId" />
+		<result column="category_code" property="makeSoundCategoryCode" />
+		<result column="tag_id" property="tagId" />
+	</resultMap>
+	<insert id="add" parameterType="RadioTag" useGeneratedKeys="true" keyProperty="id">
+		insert into
+		tb_lizhi_fm_tag
+		(name, parent_id, category_id, category_code, tag_id)
+		values
+		(#{name},#{parentId}, #{makeSoundCategoryId},#{makeSoundCategoryCode},#{id})
+	</insert>
+	<update id="update"  parameterType="RadioTag">
+		update tb_lizhi_fm_tag tag
+		set 
+			tag.parent_id = #{parentId},
+			tag.category_id = #{makeSoundCategoryId},
+			tag.category_code = #{makeSoundCategoryCode}
+		where tag.id = #{id}
+	</update>
+	<!-- <select id="queryModel" parameterType="java.util.Map" resultMap="radioTag">
+		select * from tb_radio_audio audio where
+		audio.name = #{name} and audio.band = #{band}
+	</select> -->
+	<select id="queryModelByPage" parameterType="java.util.Map" resultMap="radioTag">
+		select * from tb_lizhi_fm_tag tag
+	</select>
+</mapper>
