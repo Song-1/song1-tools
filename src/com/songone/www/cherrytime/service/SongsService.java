@@ -96,7 +96,7 @@ public class SongsService extends BaseService<Songs> {
 	 * @param song
 	 * @return
 	 */
-	public Songs getModelByNameIndex(int id){
+	public Songs getModelById(int id){
 		Songs result = null;
 		if(id <= 0){
 			return result;

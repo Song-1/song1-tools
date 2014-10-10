@@ -96,7 +96,7 @@ public class SongListService extends BaseService<SongList> {
 	 * @param song
 	 * @return
 	 */
-	public SongList getModelByNameIndex(int id){
+	public SongList getModelById(int id){
 		SongList result = null;
 		if(id <= 0){
 			return result;
@@ -108,5 +108,32 @@ public class SongListService extends BaseService<SongList> {
 		}
 		return result;
 	}
+	
+	/**
+	 * 更新歌单的状态为待同步
+	 * @param albumId
+	 */
+	public void updateListState(int id) {
+		if(id <= 0){
+			return ;
+		}
+		SongList songList = getModelById(id);
+		if (songList == null) {
+			return;
+		}
+		int albumSongs = songList.getSongs();
+		int songs = 0;
+		try {
+			Integer result = (Integer) executeDao("getCanSyncSongs", id);
+			songs = result != null ? result.intValue() : songs;
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		if (songs == albumSongs) {
+			songList.setState(2);
+			this.update(songList);
+		}
+	}
+
 
 }

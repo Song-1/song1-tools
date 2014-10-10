@@ -38,9 +38,9 @@
 		where songList.id = #{id}
 	</select>
 	
-	<!-- <select id="getCanSyncAlbumSongs" parameterType="int" resultType="int">
-		select count(song.id) from tb_enjoycd_album_songs song where song.state = 2 and song.parentId = #{albumId};
-	</select> -->
+	<select id="getCanSyncSongs" parameterType="int" resultType="int">
+		select count(song.id) from tb_cherrytime_list_songs song where song.state = 2 and song.parentId = #{id};
+	</select>
 	
 	
 </mapper>

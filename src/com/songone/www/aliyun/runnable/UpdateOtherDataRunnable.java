@@ -8,6 +8,9 @@ import java.util.List;
 import com.songone.www.aliyun.model.AliyunMappingFileModel;
 import com.songone.www.aliyun.model.UploadServiceObserver;
 import com.songone.www.aliyun.service.AliyunMappingFileModelService;
+import com.songone.www.cherrytime.model.Songs;
+import com.songone.www.cherrytime.service.SongListService;
+import com.songone.www.cherrytime.service.SongsService;
 import com.songone.www.enjoy.models.AlbumSong;
 import com.songone.www.enjoy.service.AlbumService;
 import com.songone.www.enjoy.service.AlbumSongService;
@@ -22,7 +25,9 @@ public class UpdateOtherDataRunnable implements Runnable {
 	private AlbumSongService albumSongService = new AlbumSongService();
 	private AlbumService albumService = new AlbumService();
 	private AliyunMappingFileModelService aliyunMappingFileModelService = new AliyunMappingFileModelService();
-
+	private SongListService songListService = new SongListService();
+	private SongsService songsService = new SongsService();
+	
 	public UpdateOtherDataRunnable(UploadServiceObserver observer) {
 		this.observer = observer;
 	}
@@ -42,6 +47,12 @@ public class UpdateOtherDataRunnable implements Runnable {
 			break;
 		case 2:
 			// // 樱桃时光
+			Songs song  = songsService.getModelById(id);
+			if(song != null){
+				song.setState(2);
+				songsService.update(song);
+				songListService.updateListState(song.getParentId());
+			}
 			break;
 
 		default:

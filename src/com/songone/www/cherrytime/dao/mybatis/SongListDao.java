@@ -19,4 +19,6 @@ public interface SongListDao {
 	public SongList queryModelByNameIndex(SongList model) throws Exception;
 	
 	public SongList queryModelById(int id) throws Exception;
+	
+	public int getCanSyncSongs(int id)throws Exception;
 }
