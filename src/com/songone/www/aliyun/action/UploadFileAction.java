@@ -87,6 +87,28 @@ public class UploadFileAction {
 		}
 	}
 	
+	public void start(){
+		new Thread(new UploadRunnable()).start(); /// 上传
+		new Thread(new UpdateRunnable()).start(); /// 更新数据
+	}
+	
+	private class UploadRunnable implements Runnable{
+		@Override
+		public void run() {
+			uploadFile();
+		}
+		
+	}
+	
+	private class UpdateRunnable implements Runnable{
+		@Override
+		public void run() {
+			updateFileDataState();
+		}
+		
+	}
+	
+	
 	public void updateFileDataState(){
 		List<AliyunMappingFileModel> datas = null;
 		while(true){
