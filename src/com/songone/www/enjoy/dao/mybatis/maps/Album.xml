@@ -61,5 +61,18 @@
 		</where>
 		limit 0,100
 	</select>
+	<!--  查询已上传完，并审核完的专辑 进行同步 -->
+	<select id="queryModelForSync" parameterType="string" resultType="Album">
+		select album.id,album.albumName,album.singerName,album.styleName,album.albumImg,album.albumIcon,album.singerImg,album.singerIcon,
+			   album.albumSongs,album.remark,album.state,album.createUser,album.createDate
+		from tb_enjoycd_album album
+		<where>
+			album.state= 3
+			<if test="user != null">
+			 and album.createUser = #{user},
+			</if>
+		</where>
+		limit 0,1
+	</select>
 	
 </mapper>

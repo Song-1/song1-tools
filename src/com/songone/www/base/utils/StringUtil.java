@@ -316,6 +316,26 @@ public class StringUtil {
 			return str;
 		}
 	}
+	
+	/**
+	 * 按指定的时间字符串格式转换时间
+	 * @param str
+	 * @param pattern
+	 * @return
+	 */
+	public static Date getDateFromStr(String str,String pattern){
+		Date date = null;
+		if (isEmptyString(str)) {
+			return date;
+		}
+		SimpleDateFormat formate = new SimpleDateFormat(pattern);
+		try {
+			date = formate.parse(str);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return date;
+	}
 
 	// /// test
 	public static void main(String[] args) throws Exception {

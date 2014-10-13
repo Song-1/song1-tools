@@ -31,5 +31,11 @@
 		where albumsong.parentId = #{parentId} and albumsong.name = #{name}
 	</select>
 	
+	<select id="queryModelForSyncByParentId" parameterType="int" resultType="AlbumSong">
+		select albumsong.id,albumsong.name,albumsong.url,albumsong.parentId,albumsong.seat,albumsong.state
+		from tb_enjoycd_album_songs albumsong
+		where albumsong.parentId = #{parentId} 
+	</select>
+	
 	
 </mapper>

@@ -3,6 +3,8 @@
  */
 package com.songone.www.enjoy.service;
 
+import java.util.List;
+
 import org.apache.ibatis.session.SqlSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -107,6 +109,20 @@ public class AlbumSongService extends BaseService<AlbumSong> {
 		}
 		try{
 			result = (AlbumSong)executeDao( "queryModelById", id);
+		}catch(Exception e){
+			logger.error(e.getMessage(),e);
+		}
+		return result;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<AlbumSong> listForSyncByParentId(int parentId){
+		List<AlbumSong> result = null;
+		if(parentId <= 0){
+			return result;
+		}
+		try{
+			result = (List<AlbumSong>)executeDao("queryModelForSyncByParentId", parentId);
 		}catch(Exception e){
 			logger.error(e.getMessage(),e);
 		}

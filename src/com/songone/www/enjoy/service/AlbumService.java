@@ -137,6 +137,23 @@ public class AlbumService extends BaseService<Album> {
 		}
 		return result;
 	}
+	
+	/**
+	 * 遍历待同步的专辑数据
+	 * 
+	 * @param user
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Album> listAlbumForSync(String user) {
+		List<Album> result = null;
+		try {
+			result = (List<Album>) executeDao("queryModelForSync", user);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return result;
+	}
 
 	/**
 	 * 当专辑的全部专辑歌曲已经上传完毕,更新专辑的状态

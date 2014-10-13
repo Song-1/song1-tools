@@ -16,6 +16,7 @@ import java.util.Set;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
@@ -23,10 +24,13 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.google.gson.Gson;
 
 /**
  * http 连接的辅助类
@@ -36,6 +40,7 @@ import org.apache.logging.log4j.Logger;
 public class HttpClientUtil {
 	private static final Logger logger = LogManager.getLogger(HttpClientUtil.class);
 
+	@SuppressWarnings({ "deprecation", "resource" })
 	public static String doGet(String url) throws Exception {
 		HttpClient httpclient = new DefaultHttpClient();
 		// 创建Get方法实例
@@ -63,6 +68,41 @@ public class HttpClientUtil {
 			post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
 		}
 		HttpResponse response = httpclient.execute(post);
+		HttpEntity entity = response.getEntity();
+		if (entity != null) {
+			InputStream instreams = entity.getContent();
+			String str = convertStreamToString(instreams);
+			return str;
+		}
+		return null;
+	}
+
+	/**
+	 * post提交json数据
+	 * 
+	 * @param url
+	 * @param params
+	 * @return
+	 * @throws Exception
+	 */
+	public static String doPostByJson(String url, Object params) throws Exception {
+		HttpClient httpclient = HttpClients.createDefault();
+		// 创建POST方法实例
+		HttpPost post = new HttpPost(url);
+		String paramJsons = "";
+		if (params != null) {
+			Gson gson = new Gson();
+			paramJsons = gson.toJson(params);
+		}
+		List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+		nvps.add(new BasicNameValuePair("data", paramJsons));
+		post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
+		HttpResponse response = httpclient.execute(post);
+		int statusCode = response.getStatusLine().getStatusCode();
+		if (statusCode != HttpStatus.SC_OK) {
+			logger.error("往URL:::" + url + "发送数据请求[post]返回状态值:::" + statusCode);
+			return null;
+		}
 		HttpEntity entity = response.getEntity();
 		if (entity != null) {
 			InputStream instreams = entity.getContent();

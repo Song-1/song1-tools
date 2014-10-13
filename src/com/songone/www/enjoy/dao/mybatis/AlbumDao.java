@@ -28,6 +28,7 @@ public interface AlbumDao {
 	
 	public Album queryModelById(int id)throws Exception;
 	
+	public List<Album> queryModelForSync(String user)throws Exception;
 	
 
 }

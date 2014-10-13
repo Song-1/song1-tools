@@ -3,6 +3,8 @@
  */
 package com.songone.www.enjoy.dao.mybatis;
 
+import java.util.List;
+
 import com.songone.www.enjoy.models.AlbumSong;
 
 /**
@@ -18,5 +20,7 @@ public interface AlbumSongDao {
 	public AlbumSong queryModelByNameIndex(AlbumSong model) throws Exception;
 	
 	public AlbumSong queryModelById(int id)throws Exception;
+	
+	public List<AlbumSong> queryModelForSyncByParentId(int parentId)throws Exception;
 
 }
