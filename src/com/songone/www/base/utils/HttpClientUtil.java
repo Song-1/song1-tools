@@ -19,14 +19,12 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,10 +37,15 @@ import com.google.gson.Gson;
  */
 public class HttpClientUtil {
 	private static final Logger logger = LogManager.getLogger(HttpClientUtil.class);
+	private static final String CONVERT_STR_ENCODE = "UTF-8";
 
-	@SuppressWarnings({ "deprecation", "resource" })
+	private static CloseableHttpClient getHttpClient() {
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		return httpclient;
+	}
+
 	public static String doGet(String url) throws Exception {
-		HttpClient httpclient = new DefaultHttpClient();
+		CloseableHttpClient httpclient = getHttpClient();
 		// 创建Get方法实例
 		HttpGet httpgets = new HttpGet(url);
 		HttpResponse response = httpclient.execute(httpgets);
@@ -56,7 +59,7 @@ public class HttpClientUtil {
 	}
 
 	public static String doPost(String url, Map<String, String> map) throws Exception {
-		HttpClient httpclient = new DefaultHttpClient();
+		CloseableHttpClient httpclient = getHttpClient();
 		// 创建POST方法实例
 		HttpPost post = new HttpPost(url);
 		if (map != null) {
@@ -65,7 +68,7 @@ public class HttpClientUtil {
 			for (String key : keySet) {
 				nvps.add(new BasicNameValuePair(key, map.get(key)));
 			}
-			post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
+			post.setEntity(new UrlEncodedFormEntity(nvps, CONVERT_STR_ENCODE));
 		}
 		HttpResponse response = httpclient.execute(post);
 		HttpEntity entity = response.getEntity();
@@ -85,35 +88,42 @@ public class HttpClientUtil {
 	 * @return
 	 * @throws Exception
 	 */
-	public static String doPostByJson(String url, Object params) throws Exception {
-		HttpClient httpclient = HttpClients.createDefault();
-		// 创建POST方法实例
-		HttpPost post = new HttpPost(url);
-		String paramJsons = "";
-		if (params != null) {
-			Gson gson = new Gson();
-			paramJsons = gson.toJson(params);
+	public static String doPostByJson(String url, Object params) {
+		String result = null;
+		CloseableHttpClient httpclient = getHttpClient();
+		try {
+			// 创建POST方法实例
+			HttpPost post = new HttpPost(url);
+			String paramJsons = "";
+			if (params != null) {
+				Gson gson = new Gson();
+				paramJsons = gson.toJson(params);
+			}
+			List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+			nvps.add(new BasicNameValuePair("data", paramJsons));
+			post.setEntity(new UrlEncodedFormEntity(nvps, CONVERT_STR_ENCODE));
+			HttpResponse response = httpclient.execute(post);
+			int statusCode = response.getStatusLine().getStatusCode();
+			if (statusCode == HttpStatus.SC_OK) {
+				HttpEntity entity = response.getEntity();
+				if (entity != null) {
+					InputStream instreams = entity.getContent();
+					result = convertStreamToString(instreams);
+				}
+			} else {
+				logger.error("往URL:::" + url + "发送数据请求[post]返回状态值:::" + statusCode);
+			}
+			httpclient.close();
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			httpclient = null;
 		}
-		List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-		nvps.add(new BasicNameValuePair("data", paramJsons));
-		post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
-		HttpResponse response = httpclient.execute(post);
-		int statusCode = response.getStatusLine().getStatusCode();
-		if (statusCode != HttpStatus.SC_OK) {
-			logger.error("往URL:::" + url + "发送数据请求[post]返回状态值:::" + statusCode);
-			return null;
-		}
-		HttpEntity entity = response.getEntity();
-		if (entity != null) {
-			InputStream instreams = entity.getContent();
-			String str = convertStreamToString(instreams);
-			return str;
-		}
-		return null;
+		return result;
 	}
 
 	public static String convertStreamToString(InputStream is) throws Exception {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is, CONVERT_STR_ENCODE));
 		StringBuilder sb = new StringBuilder();
 
 		String line = null;
@@ -155,7 +165,7 @@ public class HttpClientUtil {
 		if (StringUtil.isEmptyString(url)) {
 			return null;
 		}
-		HttpClient httpClient = new DefaultHttpClient();
+		CloseableHttpClient httpClient = getHttpClient();
 		HttpGet httpGet = new HttpGet(url);
 		try {
 			logger.debug("开始下载文件:::" + url);
@@ -187,7 +197,14 @@ public class HttpClientUtil {
 			e.printStackTrace();
 			logger.error(e.getMessage(), e);
 		} finally {
-			httpClient.getConnectionManager().shutdown();
+			try {
+				httpClient.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+				logger.error(e.getMessage(), e);
+			} finally {
+				httpClient = null;
+			}
 		}
 		return null;
 	}
