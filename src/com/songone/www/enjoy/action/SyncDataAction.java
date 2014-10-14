@@ -28,7 +28,7 @@ public class SyncDataAction {
 	private AlbumSongService albumSongService = new AlbumSongService();
 	
 	public void syncDatas() throws Exception{
-		String url = BaseConstants.SONG_ONE_SERVER_HOST + EnjoyCDConstants.SONG_ONE_ENJOY_API_SYNC_ALBUM;
+		String url = BaseConstants.PROTOCOL + BaseConstants.SONG_ONE_SERVER_HOST + EnjoyCDConstants.SONG_ONE_ENJOY_API_SYNC_ALBUM;
 		List<Album> albums = null;
 //		while(true){
 			albums = albumService.listAlbumForSync(null);
