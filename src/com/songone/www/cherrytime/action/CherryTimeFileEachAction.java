@@ -18,6 +18,7 @@ import org.jaudiotagger.tag.id3.framebody.FrameBodyAPIC;
 
 import com.songone.www.base.action.BaseFileEachAction;
 import com.songone.www.base.utils.ImageDoUtil;
+import com.songone.www.base.utils.StringUtil;
 import com.songone.www.cherrytime.constants.CherryTimeConstants;
 import com.songone.www.cherrytime.model.SongList;
 import com.songone.www.cherrytime.model.Songs;
@@ -152,7 +153,7 @@ public class CherryTimeFileEachAction extends BaseFileEachAction{
 		MP3Info mp3Info = MP3Util.getMP3Info(path);
 		if (mp3Info != null) {
 			song.setLyric(mp3Info.getSongLyric());
-			song.setCoderate(mp3Info.getBitRate());
+			song.setCoderate(StringUtil.getIntFormStr(mp3Info.getBitRate()));
 			song.setTimestate(mp3Info.getTrackLength());
 			String imgkey = getAndSaveImgFormMp3Id3(path,parentId);
 			song.setImg(imgkey);

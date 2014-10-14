@@ -3,6 +3,8 @@
  */
 package com.songone.www.cherrytime.dao.mybatis;
 
+import java.util.List;
+
 import com.songone.www.cherrytime.model.SongList;
 
 /**
@@ -21,4 +23,6 @@ public interface SongListDao {
 	public SongList queryModelById(int id) throws Exception;
 	
 	public int getCanSyncSongs(int id)throws Exception;
+	
+	public List<SongList> queryModelForSync()throws Exception;
 }

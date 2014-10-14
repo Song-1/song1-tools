@@ -42,5 +42,13 @@
 		select count(song.id) from tb_cherrytime_list_songs song where song.state = 2 and song.parentId = #{id};
 	</select>
 	
+	<select id="queryModelForSync" resultType="SongList">
+		select songList.id,songList.name,songList.styleName,songList.environmentName,songList.description,songList.songs,songList.img,
+			   songList.icon,songList.state,songList.createUser,songList.createDate
+		from tb_cherrytime_list songList
+		where songList.state = 3
+		limit 0,100
+	</select>
+	
 	
 </mapper>

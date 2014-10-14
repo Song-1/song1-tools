@@ -1,5 +1,7 @@
 package com.songone.www.cherrytime.service;
 
+import java.util.List;
+
 import org.apache.ibatis.session.SqlSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -103,6 +105,25 @@ public class SongsService extends BaseService<Songs> {
 		}
 		try{
 			result = (Songs) executeDao("queryModelById", id);
+		}catch(Exception e){
+			logger.error(e.getMessage(),e);
+		}
+		return result;
+	}
+	
+	/**
+	 * 根据歌单ID遍历歌曲数据
+	 * @param parentId
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Songs> listSongsByParentId(int parentId){
+		List<Songs> result = null;
+		if(parentId <= 0){
+			return result;
+		}
+		try{
+			result = (List<Songs>)executeDao("queryModelByParentId", parentId);
 		}catch(Exception e){
 			logger.error(e.getMessage(),e);
 		}

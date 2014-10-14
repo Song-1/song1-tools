@@ -1,5 +1,7 @@
 package com.songone.www.cherrytime.service;
 
+import java.util.List;
+
 import org.apache.ibatis.session.SqlSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -135,5 +137,19 @@ public class SongListService extends BaseService<SongList> {
 		}
 	}
 
+	/**
+	 * 遍历待同步数据
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<SongList> listSongListsForSync(){
+		List<SongList> result = null;
+		try{
+			result = (List<SongList>)executeDao( "queryModelForSync");
+		}catch(Exception e){
+			logger.error(e.getMessage(),e);
+		}
+		return result;
+	}
 
 }

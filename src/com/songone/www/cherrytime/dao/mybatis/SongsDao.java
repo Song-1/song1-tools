@@ -3,6 +3,8 @@
  */
 package com.songone.www.cherrytime.dao.mybatis;
 
+import java.util.List;
+
 import com.songone.www.cherrytime.model.Songs;
 
 /**
@@ -19,4 +21,6 @@ public interface SongsDao {
 	public Songs queryModelByNameIndex(Songs model) throws Exception;
 	
 	public Songs queryModelById(int id) throws Exception;
+	
+	public List<Songs> queryModelByParentId(int id)throws Exception;
 }
