@@ -29,12 +29,17 @@ public class StringUtil {
 	 */
 	public static String getIntFormStr(String str) {
 		if (isEmptyString(str)) {
-			return "0";
+			return "-1";
 		}
 		String regEx = "[^0-9]";
 		Pattern p = Pattern.compile(regEx);
 		Matcher m = p.matcher(str);
-		return m.replaceAll("").trim();
+		String s = m.replaceAll("").trim();
+		if(isEmptyString(s)){
+			return "-1";
+		}else{
+			return s;
+		}
 	}
 
 	/**
@@ -339,15 +344,7 @@ public class StringUtil {
 
 	// /// test
 	public static void main(String[] args) throws Exception {
-		String str = "Various Artists - Candlelight (Fireplace Session Mix)....MP3";
-		String reg = "^(.+)-(.+)[.]+";
-		Pattern p = Pattern.compile(reg);
-		Matcher m = p.matcher(str);
-		if (m.find()) {
-			String seatStr = m.group(1).trim();
-			String songname = m.group(2).trim();
-			System.out.println(seatStr );
-			System.out.println(songname);
-		}
+		String str = "~qwrqrt";
+		System.out.println(getIntFormStr(str));
 	}
 }
