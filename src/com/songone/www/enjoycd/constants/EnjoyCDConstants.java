@@ -24,6 +24,8 @@ public class EnjoyCDConstants {
 	public static String SONG_ONE_ENJOY_API_ADD_STYLE = "/api/enjoy/" + SONG_ONE_API_VERSION + "/addalbumstyle";
 	public static String SONG_ONE_ENJOY_API_ADD_ALBUM = "/api/enjoy/" + SONG_ONE_API_VERSION + "/addalbum";
 	
+	public static final String SONG_ONE_ENJOY_UPDATE_ALBUM_SONG_STATE = "/api/enjoy/sync/v1/albumsong/state/";
+	
 	/**
 	 * 同步整个专辑数据的API接口
 	 */

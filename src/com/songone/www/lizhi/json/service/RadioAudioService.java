@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.http.HttpStatus;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,6 +18,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.songone.www.base.db.mybatis.MybatisUtil;
 import com.songone.www.base.db.mybatis.PageResultModel;
+import com.songone.www.base.model.HttpResponseData;
 import com.songone.www.base.service.BaseService;
 import com.songone.www.base.utils.BaseConstants;
 import com.songone.www.base.utils.HttpClientUtil;
@@ -208,7 +210,11 @@ public class RadioAudioService extends BaseService<RadioAudio> {
 			String url = RadioConstants.RADIO_AUDIO_API;
 			url = url.replace("#band#", band + "");
 			url = url.replace("#au_cnt#", cu_cnt + "");
-			String json = HttpClientUtil.doGet(url);
+			String json = null;
+			HttpResponseData responseData = HttpClientUtil.doGet(url);
+			if(responseData != null && responseData.getCode() == HttpStatus.SC_OK){
+				json = responseData.getData();
+			}
 			if (StringUtil.isEmptyString(json)) {
 				return null;
 			} else if (!json.startsWith("[{")) {
@@ -251,7 +257,11 @@ public class RadioAudioService extends BaseService<RadioAudio> {
 			params.put("url", getAudioKey(audio.getUrl(), audio.getName(), audio.getRadioName()));
 			uploadToAliyunDataModelService.save(audio.getCover(), audio.getCoverKey());
 			String url = BaseConstants.PROTOCOL + BaseConstants.SONG_ONE_SERVER_HOST + RadioConstants.MAKE_SOUND_PROGRAM_API;
-			String json = HttpClientUtil.doPost(url, params);
+			String json = null;
+			HttpResponseData responseData = HttpClientUtil.doPost(url, params);
+			if(responseData != null && responseData.getCode() == HttpStatus.SC_OK){
+				json = responseData.getData();
+			}
 			logger.debug(json);
 			if (!StringUtil.isEmptyString(json) && json.indexOf(BaseConstants.SONG_ONE_API_RETUEN_STATUS_SUCCESS) > 0) {
 				result = true;

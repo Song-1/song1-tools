@@ -5,9 +5,11 @@ package com.songone.www.enjoy.action;
 
 import java.util.List;
 
+import org.apache.http.HttpStatus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.songone.www.base.model.HttpResponseData;
 import com.songone.www.base.utils.BaseConstants;
 import com.songone.www.base.utils.HttpClientUtil;
 import com.songone.www.enjoy.models.Album;
@@ -43,12 +45,12 @@ public class SyncDataAction {
 				data.setStyleName(album.getStyleName());
 				List<AlbumSong> songs = albumSongService.listForSyncByParentId(album.getId());
 				data.setAlbumSongs(songs);
-				String str = HttpClientUtil.doPostByJson(url, data);
-				if("\"OK\"\n".equals(str)){
+				HttpResponseData responseData = HttpClientUtil.doPost(url, data);
+				if(responseData != null && responseData.getCode() == HttpStatus.SC_OK){
 					album.setState(4); //同步成功
 				}else{
 					album.setState(5); // 同步失败
-					album.setRemark(str);
+					//album.setRemark(str);
 				}
 				albumService.update(album);
 			}

@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.http.HttpStatus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,6 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.songone.www.aliyun.AliyunUtil;
 import com.songone.www.base.model.BaseResultBean;
+import com.songone.www.base.model.HttpResponseData;
 import com.songone.www.base.utils.BaseConstants;
 import com.songone.www.base.utils.CacheUtil;
 import com.songone.www.base.utils.HttpClientUtil;
@@ -66,7 +68,11 @@ public class RadioDataSyncUtil {
 			Type gsonType = new TypeToken<Map<String, List<RadioTag>>>() {
 			}.getType();
 			Gson gson = new Gson();
-			String json = HttpClientUtil.doGet(RadioConstants.RADIO_TAGS_API);
+			String json = null;
+			HttpResponseData responseData = HttpClientUtil.doGet(RadioConstants.RADIO_TAGS_API);
+			if(responseData != null && responseData.getCode() == HttpStatus.SC_OK){
+				json = responseData.getData();
+			}
 			bean = gson.fromJson(json, gsonType);
 			List<RadioTag> tags = bean.get("tagClz");
 			return tags;
@@ -122,7 +128,11 @@ public class RadioDataSyncUtil {
 			Type gsonType = new TypeToken<RadioDataListBtTag>() {
 			}.getType();
 			Gson gson = new Gson();
-			String json = HttpClientUtil.doGet(url);
+			String json = null;
+			HttpResponseData responseData = HttpClientUtil.doGet(url);
+			if(responseData != null && responseData.getCode() == HttpStatus.SC_OK){
+				json = responseData.getData();
+			}
 			bean = gson.fromJson(json, gsonType);
 			if (bean != null) {
 				radios = bean.getRadios();
@@ -151,7 +161,11 @@ public class RadioDataSyncUtil {
 			Type gsonType = new TypeToken<Radio>() {
 			}.getType();
 			Gson gson = new Gson();
-			String json = HttpClientUtil.doGet(url);
+			String json = null;
+			HttpResponseData responseData = HttpClientUtil.doGet(url);
+			if(responseData != null && responseData.getCode() == HttpStatus.SC_OK){
+				json = responseData.getData();
+			}
 			r = gson.fromJson(json, gsonType);
 			if (r != null) {
 				radio = r;
@@ -178,7 +192,11 @@ public class RadioDataSyncUtil {
 			Type gsonType = new TypeToken<Radio>() {
 			}.getType();
 			Gson gson = new Gson();
-			String json = HttpClientUtil.doGet(url);
+			String json = null;
+			HttpResponseData responseData = HttpClientUtil.doGet(url);
+			if(responseData != null && responseData.getCode() == HttpStatus.SC_OK){
+				json = responseData.getData();
+			}
 			r = gson.fromJson(json, gsonType);
 			if (r != null) {
 				return r;
@@ -210,7 +228,11 @@ public class RadioDataSyncUtil {
 			Type gsonType = new TypeToken<List<RadioAudio>>() {
 			}.getType();
 			Gson gson = new Gson();
-			String json = HttpClientUtil.doGet(url);
+			String json = null;
+			HttpResponseData responseData = HttpClientUtil.doGet(url);
+			if(responseData != null && responseData.getCode() == HttpStatus.SC_OK){
+				json = responseData.getData();
+			}
 			bean = gson.fromJson(json, gsonType);
 			if (bean != null && !bean.isEmpty()) {
 				return bean;
@@ -266,7 +288,11 @@ public class RadioDataSyncUtil {
 			Type gsonType = new TypeToken<BaseResultBean<Map<String, String>>>() {
 			}.getType();
 			Gson gson = new Gson();
-			String json = HttpClientUtil.doPost(url, params);
+			String json = null;
+			HttpResponseData responseData = HttpClientUtil.doPost(url, params);
+			if(responseData != null && responseData.getCode() == HttpStatus.SC_OK){
+				json = responseData.getData();
+			}
 			bean = gson.fromJson(json, gsonType);
 			if ("1000".equals(bean.getStatus())) {
 				Map<String, String> map = bean.getData();
@@ -306,7 +332,11 @@ public class RadioDataSyncUtil {
 			Type gsonType = new TypeToken<BaseResultBean<Map<String, Integer>>>() {
 			}.getType();
 			Gson gson = new Gson();
-			String json = HttpClientUtil.doPost(url, params);
+			String json = null;
+			HttpResponseData responseData = HttpClientUtil.doPost(url, params);
+			if(responseData != null && responseData.getCode() == HttpStatus.SC_OK){
+				json = responseData.getData();
+			}
 			logger.debug("返回的json数据:::" + json);
 			bean = gson.fromJson(json, gsonType);
 			if ("1000".equals(bean.getStatus())) {
@@ -360,7 +390,11 @@ public class RadioDataSyncUtil {
 			Type gsonType = new TypeToken<BaseResultBean<String>>() {
 			}.getType();
 			Gson gson = new Gson();
-			String json = HttpClientUtil.doPost(url, params);
+			String json = null;
+			HttpResponseData responseData = HttpClientUtil.doPost(url, params);
+			if(responseData != null && responseData.getCode() == HttpStatus.SC_OK){
+				json = responseData.getData();
+			}
 			bean = gson.fromJson(json, gsonType);
 			if ("1000".equals(bean.getStatus())) {
 				return true;

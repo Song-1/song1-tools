@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.http.HttpStatus;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.songone.www.base.model.BaseResultBean;
+import com.songone.www.base.model.HttpResponseData;
 import com.songone.www.base.service.BaseService;
 import com.songone.www.base.utils.BaseConstants;
 import com.songone.www.base.utils.HttpClientUtil;
@@ -165,7 +167,11 @@ public class SyncEnjoyCDModelService extends BaseService<SyncEnjoyCDModel> {
 			params.put("createUser", createuser);
 			String url = BaseConstants.PROTOCOL + BaseConstants.SONG_ONE_SERVER_HOST + EnjoyCDConstants.SONG_ONE_ENJOY_API_ADD_SONG;
 			logger.debug("send datas:::" + params);
-			String json = HttpClientUtil.doPost(url, params);
+			String json = null;
+			HttpResponseData responseData = HttpClientUtil.doPost(url, params);
+			if(responseData != null && responseData.getCode() == HttpStatus.SC_OK){
+				json = responseData.getData();
+			}
 			logger.debug(json);
 			if (!StringUtil.isEmptyString(json) && json.indexOf(BaseConstants.SONG_ONE_API_RETUEN_STATUS_SUCCESS) > 0) {
 				BaseResultBean<String> bean = new BaseResultBean<String>();
@@ -198,7 +204,11 @@ public class SyncEnjoyCDModelService extends BaseService<SyncEnjoyCDModel> {
 			params.put("icon", icon);
 			String url = BaseConstants.PROTOCOL + BaseConstants.SONG_ONE_SERVER_HOST + EnjoyCDConstants.SONG_ONE_ENJOY_API_ADD_SINGER;
 			logger.debug("send datas:::" + params);
-			String json = HttpClientUtil.doPost(url, params);
+			String json = null;
+			HttpResponseData responseData = HttpClientUtil.doPost(url, params);
+			if(responseData != null && responseData.getCode() == HttpStatus.SC_OK){
+				json = responseData.getData();
+			}
 			logger.debug(json);
 			if (!StringUtil.isEmptyString(json) && json.indexOf(BaseConstants.SONG_ONE_API_RETUEN_STATUS_SUCCESS) > 0) {
 				BaseResultBean<String> bean = new BaseResultBean<String>();
@@ -229,7 +239,11 @@ public class SyncEnjoyCDModelService extends BaseService<SyncEnjoyCDModel> {
 			params.put("name", name);
 			String url = BaseConstants.PROTOCOL + BaseConstants.SONG_ONE_SERVER_HOST + EnjoyCDConstants.SONG_ONE_ENJOY_API_ADD_STYLE;
 			logger.debug("send datas:::" + params);
-			String json = HttpClientUtil.doPost(url, params);
+			String json = null;
+			HttpResponseData responseData = HttpClientUtil.doPost(url, params);
+			if(responseData != null && responseData.getCode() == HttpStatus.SC_OK){
+				json = responseData.getData();
+			}
 			logger.debug(json);
 			if (!StringUtil.isEmptyString(json) && json.indexOf(BaseConstants.SONG_ONE_API_RETUEN_STATUS_SUCCESS) > 0) {
 				BaseResultBean<String> bean = new BaseResultBean<String>();
@@ -268,7 +282,11 @@ public class SyncEnjoyCDModelService extends BaseService<SyncEnjoyCDModel> {
 			params.put("createUser", createUser);
 			String url = BaseConstants.PROTOCOL + BaseConstants.SONG_ONE_SERVER_HOST + EnjoyCDConstants.SONG_ONE_ENJOY_API_ADD_ALBUM;
 			logger.debug("send datas:::" + params);
-			String json = HttpClientUtil.doPost(url, params);
+			String json = null;
+			HttpResponseData responseData = HttpClientUtil.doPost(url, params);
+			if(responseData != null && responseData.getCode() == HttpStatus.SC_OK){
+				json = responseData.getData();
+			}
 			logger.debug(json);
 			if (!StringUtil.isEmptyString(json) && json.indexOf(BaseConstants.SONG_ONE_API_RETUEN_STATUS_SUCCESS) > 0) {
 				result = true;

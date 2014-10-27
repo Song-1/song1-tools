@@ -5,6 +5,9 @@ package com.songone.www.cherrytime.action;
 
 import java.util.List;
 
+import org.apache.http.HttpStatus;
+
+import com.songone.www.base.model.HttpResponseData;
 import com.songone.www.base.utils.BaseConstants;
 import com.songone.www.base.utils.HttpClientUtil;
 import com.songone.www.cherrytime.constants.CherryTimeConstants;
@@ -38,8 +41,8 @@ public class CherryTimeSyncDataAction {
 				data.setSongList(songList);
 				List<Songs> songs = songsService.listSongsByParentId(songList.getId());
 				data.setSongListSongs(songs);
-				String str = HttpClientUtil.doPostByJson(url, data);
-				if("\"OK\"\n".equals(str)){
+				HttpResponseData responseData = HttpClientUtil.doPost(url, data);
+				if(responseData != null && responseData.getCode() == HttpStatus.SC_OK){
 					songList.setState(4); //同步成功
 				}else{
 					songList.setState(5); // 同步失败
