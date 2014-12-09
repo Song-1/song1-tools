@@ -41,9 +41,7 @@ import com.aliyun.openservices.oss.model.PartSummary;
 import com.aliyun.openservices.oss.model.PutObjectResult;
 import com.aliyun.openservices.oss.model.UploadPartRequest;
 import com.aliyun.openservices.oss.model.UploadPartResult;
-import com.tools.song1.log.LogType;
 import com.tools.song1.util.FileDoUtil;
-import com.tools.song1.util.OutLogUtil;
 import com.tools.song1.util.StringUtil;
 import com.upload.aliyun.EtagComparator;
 import com.upload.aliyun.MusicConstants;
@@ -81,7 +79,6 @@ public class OSSUploadUtil {
 		long times = new Date().getTime();
 		Date expiration = new Date(times + expirationTimes);
 		URL url = client.generatePresignedUrl(bucket, key, expiration);
-		OutLogUtil.outLog(url.toString(),LogType.DEBUG);
 		return url.toString();
 	}
 
@@ -175,7 +172,6 @@ public class OSSUploadUtil {
 		long size = uploadFile.length();
 		int partCount = calPartCount(size);
 		if (partCount <= 1) {
-			OutLogUtil.outLog("[INFO]上传文件的大小小于一个Part的字节数：" + PART_SIZE + ",使用单文件上传",LogType.DEBUG);
 			uploadObject(bucketName, key, uploadFile);
 		} else {
 			String uploadId = "";
