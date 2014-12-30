@@ -74,7 +74,7 @@ public class FileDoUtil {
 	public static void mkDirs(File file){
 		if (file != null && !file.exists()) {
 			String path = file.getAbsolutePath();
-			System.out.println(path);
+			System.out.println("生成文件：" + path);
 			int index = path.lastIndexOf(File.separator);
 			String dirsPath = new String(path.substring(0, index));
 			File filedirs = new File(dirsPath);

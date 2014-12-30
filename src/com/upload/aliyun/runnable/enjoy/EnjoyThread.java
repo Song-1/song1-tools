@@ -128,7 +128,11 @@ public class EnjoyThread {
 		return id;
 	}
 
-	// // 专辑
+	/**
+	 * 保存专辑
+	 * @param data
+	 * @return
+	 */
 	public static String saveAlbum(EnjoyAlbumData data) {
 		if(data == null){
 			return null;

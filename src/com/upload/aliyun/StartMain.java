@@ -27,52 +27,81 @@ import com.upload.aliyun.util.StringUtil;
  */
 public class StartMain {
 	private static Map<String, List<File>> fileMaps = new TreeMap<String, List<File>>();
+	
+	public static final int CHERRYTIME = 1;
+	public static final int LOVEBOOK = 2;
+	public static final int ENJOYCD = 3;
+	public static final int ALIYUNOPTION = 4;
+	public static final int EXIT = 0;
+	
+	//阿里云文件操作
+	public static final int OPTION_COPY = 1;
+	public static final int OPTION_MOVE = 2;
+	public static final int OPTION_DELETE = 3;
+	public static final int OPTION_CHECK = 4;
+	public static final int OPTION_UPLOAD = 5;
+	
+	//BOOK 操作
+	public static final int BOOK_UPLOAD = 1;
+	public static final int BOOK_UPLOAD_MP3 = 2;
+	//享CD 操作
+	public static final int ENJOYCD_UPLOAD = 1;
+	public static final int ENJOYCD_CHECK = 2;
+	
 	private static final Map<Integer, String> GLOBAL_MENU_MAP = new HashMap<Integer, String>() {
 		private static final long serialVersionUID = 3832481997454745090L;
 		{
-			put(1, "樱桃时光");
-			put(2, "状元听书");
-			put(3, "享CD");
-			put(4, "阿里云文件操作");
-			put(5, "退出");
+			put(CHERRYTIME, "樱桃时光");
+			put(LOVEBOOK, "状元听书");
+			put(ENJOYCD, "享CD");
+			put(ALIYUNOPTION, "阿里云文件操作");
+			put(EXIT, "退出");
 		}
 	};
 	private static final Map<Integer, String> ALIYUN_MENU_MAP = new HashMap<Integer, String>() {
 		private static final long serialVersionUID = 3832481997454745090L;
 		{
-			put(1, "复制文件");
-			put(2, "移动文件");
-			put(3, "删除文件");
-			put(4, "查看文件");
-			put(5, "上传文件");
-			put(0, "返回");
+			put(OPTION_COPY, "复制文件");
+			put(OPTION_MOVE, "移动文件");
+			put(OPTION_DELETE, "删除文件");
+			put(OPTION_CHECK, "查看文件");
+			put(OPTION_UPLOAD, "上传文件");
+			put(EXIT, "返回");
+		}
+	};
+	private static final Map<Integer, String> ENJOYCD_MENU_MAP = new HashMap<Integer, String>() {
+		private static final long serialVersionUID = 3832481997454745090L;
+		{
+			put(ENJOYCD_UPLOAD, "上传享CD");
+			put(ENJOYCD_CHECK, "检查享CD文件");
+			put(EXIT, "返回");
 		}
 	};
 	private static final Map<Integer, String> BOOK_MENU_MAP = new HashMap<Integer, String>() {
 		private static final long serialVersionUID = 3832481997454745090L;
 		{
-			put(1, "上传书籍和书单数据");
-			put(2, "给书籍的文件加上MP3后缀");
-			put(3, "返回");
+			put(BOOK_UPLOAD, "上传书籍和书单数据");
+			put(BOOK_UPLOAD_MP3, "给书籍的文件加上MP3后缀");
+			put(EXIT, "返回");
 		}
 	};
 
 	public static void main(String[] args) throws Exception {
-		System.out.println(".............加载配置文件并初始化...................");
+		FileDoUtil.outLog(".............加载配置文件并初始化...................");
 		// /// 加载配置文件
 		MusicConstants.loadConfig();
 		OSSUploadUtil.init();
 		JavascriptUtil.init();
-		System.out.println("................初始化 完成...................");
+		FileDoUtil.outLog("................初始化 完成...................");
 		//
 		while (true) {
-			System.out.println("=============== 请选择功能操作=================");
+			FileDoUtil.outLog("=============== 请选择功能操作=================");
 			for (Map.Entry<Integer, String> entry : GLOBAL_MENU_MAP.entrySet()) {
-				System.out.println(" 【" + entry.getKey().intValue() + "】 " + entry.getValue());
+				FileDoUtil.outLog(" 【" + entry.getKey().intValue() + "】 " + entry.getValue());
 			}
 			int doIndex = convertInputStr("请输入你要选择的操作的编号:::");
-			if (doIndex == 5) {
-				System.out.println("系统退出..................");
+			if (doIndex == EXIT) {
+				FileDoUtil.outLog("系统退出..................");
 				break;
 			}
 			doStart(doIndex);
@@ -94,7 +123,7 @@ public class StartMain {
 	public static int convertInputStr(String str) {
 		String intput = inputStr(str);
 		while (StringUtil.isEmptyString(intput)) {
-			System.out.println("输入不能为空!");
+			FileDoUtil.outLog("输入不能为空!");
 			intput = inputStr(str);
 		}
 		boolean flag = true;
@@ -103,7 +132,7 @@ public class StartMain {
 			try {
 				doIndex = Integer.parseInt(intput.trim());
 			} catch (Exception e) {
-				System.out.println("输入的操作编号不对!");
+				FileDoUtil.outLog("输入的操作编号不对!");
 			}
 			if (doIndex > 0) {
 				break;
@@ -115,55 +144,97 @@ public class StartMain {
 
 	public static void doStart(int index) {
 		switch (index) {
-		case 1:
-			System.out.println("开始上传樱桃时光的数据...........");
+		case CHERRYTIME:
+			FileDoUtil.outLog("开始上传樱桃时光的数据...........");
 			musicDoStart();
 			break;
-		case 2:
-			while (true) {
-				System.out.println("=============== 请选择状元听书操作=================");
-				for (Map.Entry<Integer, String> entry : BOOK_MENU_MAP.entrySet()) {
-					System.out.println(" 【" + entry.getKey().intValue() + "】 " + entry.getValue());
-				}
-				int doIndex = convertInputStr("请输入你要选择的操作的编号:::");
-				if (3 == doIndex) {
-					break;
-				} else {
-					bookDoStart(doIndex);
-				}
-			}
-
+		case LOVEBOOK:
+			loveBookOption();
 			break;
-		case 3:
-			System.out.println("开始上传享CD的数据...........");
-			EnjoyFileEachUtil.doEnjoy();
+		case ENJOYCD:
+			enjoyCDOption();
 			break;
-		case 4:
-			while (true) {
-				System.out.println("=============== 请选择阿里云文件操作=================");
-				for (Map.Entry<Integer, String> entry : ALIYUN_MENU_MAP.entrySet()) {
-					System.out.println(" 【" + entry.getKey().intValue() + "】 " + entry.getValue());
-				}
-				int doIndex = convertInputStr("请输入你要选择的操作的编号:::");
-				if (0 == doIndex) {
-					break;
-				} else {
-					aliyunDoStart(doIndex);
-				}
-			}
+		case ALIYUNOPTION:
+			aliyunOption();
 			break;
 
 		default:
-			System.out.println("没有此功能操作,请输入正确的功能操作编码...........");
+			FileDoUtil.outLog("没有此功能操作,请输入正确的功能操作编码...........");
 			break;
 		}
 
 	}
 
+	private static void enjoyCDOption() {
+
+		while (true) {
+			FileDoUtil.outLog("=============== 请选择阿里云文件操作=================");
+			for (Map.Entry<Integer, String> entry : ENJOYCD_MENU_MAP.entrySet()) {
+				FileDoUtil.outLog(" 【" + entry.getKey().intValue() + "】 " + entry.getValue());
+			}
+			int doIndex = convertInputStr("请输入你要选择的操作的编号:::");
+			if (EXIT == doIndex) {
+				break;
+			} else {
+				enjoyDoStart(doIndex);
+			}
+		}
+	
+	}
+
+	/**
+	 * 享CD操作入口
+	 * @param doIndex
+	 */
+	private static void enjoyDoStart(int doIndex) {
+		switch (doIndex) {
+		case ENJOYCD_UPLOAD:
+			FileDoUtil.outLog("开始上传享CD的数据...........");
+			EnjoyFileEachUtil.doEnjoy();
+			break;
+		case ENJOYCD_CHECK:
+			FileDoUtil.outLog("开始检查享CD的数据...........");
+			EnjoyFileEachUtil.checkEnjoy();
+			break;
+		default:
+			break;
+		}
+	}
+
+	private static void aliyunOption() {
+		while (true) {
+			FileDoUtil.outLog("=============== 请选择阿里云文件操作=================");
+			for (Map.Entry<Integer, String> entry : ALIYUN_MENU_MAP.entrySet()) {
+				FileDoUtil.outLog(" 【" + entry.getKey().intValue() + "】 " + entry.getValue());
+			}
+			int doIndex = convertInputStr("请输入你要选择的操作的编号:::");
+			if (EXIT == doIndex) {
+				break;
+			} else {
+				aliyunDoStart(doIndex);
+			}
+		}
+	}
+
+	private static void loveBookOption() {
+		while (true) {
+			FileDoUtil.outLog("=============== 请选择状元听书操作=================");
+			for (Map.Entry<Integer, String> entry : BOOK_MENU_MAP.entrySet()) {
+				FileDoUtil.outLog(" 【" + entry.getKey().intValue() + "】 " + entry.getValue());
+			}
+			int doIndex = convertInputStr("请输入你要选择的操作的编号:::");
+			if (EXIT == doIndex) {
+				break;
+			} else {
+				bookDoStart(doIndex);
+			}
+		}
+	}
+
 	public static void bookDoStart(int index) {
 		switch (index) {
-		case 1:
-			System.out.println("开始上传状元听书的数据...........");
+		case BOOK_UPLOAD:
+			FileDoUtil.outLog("开始上传状元听书的数据...........");
 			try {
 				MusicConstants.DO_TYPE = "book";
 				eachFiles();
@@ -172,8 +243,8 @@ public class StartMain {
 				e.printStackTrace();
 			}
 			break;
-		case 2:
-			System.out.println("开始   给书籍的文件加上MP3后缀  .........");
+		case BOOK_UPLOAD_MP3:
+			FileDoUtil.outLog("开始   给书籍的文件加上MP3后缀  .........");
 			String bucket = inputStr("请输入阿里云BUCKET:::");
 			String key = inputStr("请输入阿里云文件路径:::");
 			boolean validateFlag = OSSUploadUtil.modifyTheFileStuffix(bucket, key, true, false);
@@ -224,7 +295,7 @@ public class StartMain {
 					new GetMusicTypeFromExcel().doExcel(file);
 				}
 			} else {
-				System.out.println("歌单分类文件不存在");
+				FileDoUtil.outLog("歌单分类文件不存在");
 				return;
 			}
 			eachFiles();
@@ -236,16 +307,16 @@ public class StartMain {
 
 	public static void aliyunDoStart(int doIndex) {
 		switch (doIndex) {
-		case 1:
-			System.out.println(" 开始阿里云文件复制,请进行操作配置 :::");
+		case OPTION_COPY:
+			FileDoUtil.outLog(" 开始阿里云文件复制,请进行操作配置 :::");
 			String oldBucket = inputStr("请输入复制文件所属BUCKET::");
 			String oldKey = inputStr("请输入复制文件路径::");
 			String newBucket = inputStr("请输入复制到文件所属BUCKET::");
 			String newKey = inputStr("请输入复制到文件路径::");
 			OSSUploadUtil.modifyAliyunFloderName(oldBucket, oldKey, newBucket, newKey);
 			break;
-		case 2:
-			System.out.println(" 开始阿里云文件移动,请进行操作配置 :::");
+		case OPTION_MOVE:
+			FileDoUtil.outLog(" 开始阿里云文件移动,请进行操作配置 :::");
 			String oldBucket2 = inputStr("请输入移动文件所属BUCKET::");
 			String oldKey2 = inputStr("请输入移动文件路径::");
 			String newBucket2 = inputStr("请输入移动到文件所属BUCKET::");
@@ -253,14 +324,14 @@ public class StartMain {
 			OSSUploadUtil.modifyAliyunFloderName(oldBucket2, oldKey2, newBucket2, newKey2);
 			// /// delete
 			break;
-		case 3:
-			System.out.println(" 开始阿里云文件删除,请进行操作配置 :::");
+		case OPTION_DELETE:
+			FileDoUtil.outLog(" 开始阿里云文件删除,请进行操作配置 :::");
 			String bucket = inputStr("请输入删除文件所属BUCKET::");
 			String key = inputStr("请输入删除文件路径::");
 			OSSUploadUtil.deleteKey(bucket, key);
 			break;
-		case 4:
-			System.out.println(" 开始阿里云文件查看,请进行操作配置 :::");
+		case OPTION_CHECK:
+			FileDoUtil.outLog(" 开始阿里云文件查看,请进行操作配置 :::");
 			String bucket4 = inputStr("请输入查看文件所属BUCKET::");
 			String key4 = inputStr("请输入查看文件路径::");
 			key4 = key4.trim();
@@ -272,8 +343,8 @@ public class StartMain {
 				List<String> list = new ArrayList<String>();
 				List<OSSObjectSummary> fileList = new ArrayList<OSSObjectSummary>();
 				OSSUploadUtil.listAliyunFloder(bucket4, key4, list, fileList);
-				System.out.println(key4);
-				System.out.println(index + "【功能】 ..");
+				FileDoUtil.outLog(key4);
+				FileDoUtil.outLog(index + "【功能】 ..");
 				for (String string : list) {
 					if (string.endsWith("/")) {
 						string = new String(string.substring(0, string.length() - 1));
@@ -282,7 +353,7 @@ public class StartMain {
 					if (i > 0) {
 						string = new String(string.substring(i + 1));
 					}
-					System.out.println(index + "【文件夹】 " + string);
+					FileDoUtil.outLog(index + "【文件夹】 " + string);
 				}
 				for (OSSObjectSummary os : fileList) {
 					String osName = os.getKey();
@@ -290,9 +361,9 @@ public class StartMain {
 					if (i > 0) {
 						osName = new String(osName.substring(i + 1));
 					}
-					System.out.println(index + "【文件】 " + osName);
+					FileDoUtil.outLog(index + "【文件】 " + osName);
 				}
-				System.out.println(index + "【功能】 exit");
+				FileDoUtil.outLog(index + "【功能】 exit");
 				String inputStr = inputStr("请输入要查看文件夹路径(exit:退出;..:返回上层目录)::");
 				inputStr = inputStr.trim();
 				if ("exit".equalsIgnoreCase(inputStr)) {
@@ -316,7 +387,7 @@ public class StartMain {
 				}
 			}
 			break;
-		case 5:
+		case OPTION_UPLOAD:
 			String ubucket = inputStr("请输入上传文件所属BUCKET:");
 			String ukey = inputStr("请输入上传文件在OSS阿里云的路径前缀:");
 			String sourcePrefix = inputStr("请输入本地文件路径:");
@@ -324,10 +395,10 @@ public class StartMain {
 			ukey = replaceSeparator(ukey, false);
 			sourcePrefix = replaceSeparator(sourcePrefix, false);
 			OSSUploadUtil.uploadDir(ubucket, sourcePrefix, ukey);
-			System.out.println("上传成功:" + sourcePrefix);
+			FileDoUtil.outLog("上传成功:" + sourcePrefix);
 			break;
 		default:
-			System.out.println("没有此功能操作,请输入正确的功能操作编码...........");
+			FileDoUtil.outLog("没有此功能操作,请输入正确的功能操作编码...........");
 			break;
 		}
 
@@ -354,7 +425,7 @@ public class StartMain {
 			} else if ("rename".equals(MusicConstants.DO_TYPE)) {
 				List<OSSObjectSummary> listObject = OSSUploadUtil.listObject("cherrytime", MusicConstants.SERVER_PATH_ROOT);
 				for (OSSObjectSummary ossObjectSummary : listObject) {
-					System.out.println(ossObjectSummary.getKey());
+					FileDoUtil.outLog(ossObjectSummary.getKey());
 				}
 				return;
 			} else if ("music".equals(MusicConstants.DO_TYPE)) {
@@ -365,7 +436,7 @@ public class StartMain {
 						new GetMusicTypeFromExcel().doExcel(file);
 					}
 				} else {
-					System.out.println("歌单分类文件不存在");
+					FileDoUtil.outLog("歌单分类文件不存在");
 					return;
 				}
 			}
